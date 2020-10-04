@@ -17,7 +17,7 @@ export default () => {
     <Layout>
       <div className="flex flex-wrap h-screen">
         <div className="w-full flex items-center text-white">
-          <div className="flex flex-col px-8 font-thin max-w-lg">
+          <div className="flex flex-col px-8 font-thin w-full">
             <div className="flex flex-wrap items-end mb-4 font-thin text-2xl">
               <span>
                 <span className="text-secondary-base mr-2">2</span>. Where I've
@@ -25,8 +25,8 @@ export default () => {
               </span>
               <hr className="ml-4 w-40 mb-2" />
             </div>
-            <div className="flex flex-wrap items-start">
-              <div className="flex flex-row md:flex-col w-full md:w-1/4 text-left ml-0 md:ml-4 overflow-x-auto">
+            <div className="flex flex-wrap items-start w-full">
+              <div className="flex flex-row md:flex-col w-full md:w-1/4 text-left overflow-x-auto">
                 {Object.keys(types).map(type => (
                   <button
                     className={cx(
@@ -42,7 +42,7 @@ export default () => {
                   </button>
                 ))}
               </div>
-              <div className="ml-2 md:ml-8 w-full md:w-3/4">
+              <div className="ml-2 md:ml-0 w-full md:w-3/4">
                 {types[active]}
               </div>
             </div>
