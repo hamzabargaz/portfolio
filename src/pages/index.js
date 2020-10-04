@@ -9,7 +9,7 @@ const imgQuery = graphql`
     file(relativePath: { eq: "coding-pattern.png" }) {
       childImageSharp {
         fluid(maxWidth: 2000) {
-          ...GatsbyImageSharpFluid
+          src
         }
       }
     }
@@ -17,6 +17,7 @@ const imgQuery = graphql`
 `
 
 export default () => {
+  const data = useStaticQuery(imgQuery)
   return (
     <Layout>
       <div className="flex flex-wrap h-screen">
@@ -34,13 +35,22 @@ export default () => {
               technologies in all of these sections.
             </p>
             <div className="">
-              <button className="text-sm px-8 py-2 text-black bg-secondary-base">
+              <a
+                href="mailto:hamza.bargaz@gmail.com"
+                className="text-sm px-8 py-2 text-black bg-secondary-base"
+              >
                 Get In Touch
-              </button>
+              </a>
             </div>
           </div>
         </div>
-        <div className="w-full md:w-1/2 bg-secondary-base"></div>
+        <div
+          className="w-full md:w-1/2 bg-secondary-base"
+          style={{
+            backgroundImage: `url(${data.file.childImageSharp.fluid.src})`,
+            backgroundSize: "70%",
+          }}
+        ></div>
       </div>
     </Layout>
   )
