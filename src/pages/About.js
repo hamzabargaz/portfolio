@@ -5,11 +5,11 @@ export default () => {
   return (
     <Layout>
       <div className="flex flex-wrap h-screen">
-        <div className="w-full flex items-center text-white">
-          <div className="flex flex-col px-8 font-thin max-w-lg">
-            <div className="flex flex-wrap items-end mb-4 font-thin text-2xl">
+        <div className="w-full flex flex-col text-white">
+          <div className="w-full flex flex-col px-8 font-thin text-xl max-w-2xl">
+            <div className="flex flex-wrap items-end mb-4 text-3xl font-serif">
               <span>
-                <span className="text-secondary-base mr-2">1</span>. About me
+                About <span className="text-secondary-base ml-2">me</span>
               </span>
               <hr className="ml-4 w-40 mb-2" />
             </div>
