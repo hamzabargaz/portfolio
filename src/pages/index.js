@@ -9,7 +9,7 @@ export default ({ data }) => {
     <Layout>
       <div className="flex flex-col text-white h-screen">
         <div className="w-full md:w-2/3 flex items-start mb-20">
-          <div className="flex flex-col px-8 mx-auto">
+          <div className="flex flex-col px-8">
             <div className="flex items-end mb-4 font-serif text-3xl">
               Hi <Hand className="w-6 mx-1" />,
               <hr className="ml-2 w-40 mb-2" />
