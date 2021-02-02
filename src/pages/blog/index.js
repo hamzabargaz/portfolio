@@ -17,7 +17,7 @@ export default ({ data }) => {
                 Articles to
                 <span className="text-secondary-base ml-2">read</span>
               </span>
-              <hr className="ml-4 w-40 mb-2" />
+              <hr className="ml-4 w-40 mb-2 bg-white" />
             </div>
             {data.allMarkdownRemark.edges.map(({ node }) => (
               <Card key={node.id} node={node} />

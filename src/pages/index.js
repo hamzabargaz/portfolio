@@ -34,7 +34,7 @@ export default ({ data }) => {
           <div className="flex flex-col">
             <div className="flex items-end  mb-4 font-serif text-3xl">
               Last <span className="text-secondary-base mx-1">Articles</span>
-              <hr className="ml-2 w-40 mb-2" />
+              <hr className="ml-2 w-40 mb-2 bg-white" />
             </div>
             <div className="pr-4">
               {data.allMarkdownRemark.edges.map(({ node }) => (
