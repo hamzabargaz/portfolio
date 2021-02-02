@@ -1,16 +1,12 @@
 import React from "react"
-import { Link } from "../components"
+import { Header } from "../components"
 
 export default ({ children }) => {
   return (
-    <div className="bg-primary-base mx-auto h-screen w-full">
-      {children}
-      <div className="flex absolute bottom-0 text-white">
-        <Link title="Intro" to="/" />
-        <Link title="About" to="/About/" />
-        <Link title="Experiences" to="/Experiences/" />
-        <Link title="Works" to="/Works/" />
-        <Link title="Contact" to="/Contact/" />
+    <div className="bg-primary-base w-full">
+      <div className="mx-auto container overflow-auto">
+        <Header />
+        <div className="">{children}</div>
       </div>
     </div>
   )
