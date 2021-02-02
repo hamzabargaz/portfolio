@@ -3,7 +3,7 @@ import { Layout } from "../components"
 
 export default () => (
   <Layout>
-    <div className="flex flex-wrap h-screen -mt-32">
+    <div className="flex flex-wrap h-screen" style={{ height: "86vh" }}>
       <div className="w-full flex text-white">
         <div className="w-full flex flex-col justify-center items-center px-8 text-center font-thin">
           <div className="flex items-end mb-4 text-2xl font-serif">
