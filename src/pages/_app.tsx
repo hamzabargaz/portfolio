@@ -1,14 +1,15 @@
 import { ThemeProvider } from "next-themes";
 import "../styles/globals.css";
+import "../styles/style.css";
 import type { AppProps } from "next/app";
-import { Inter } from "@next/font/google";
+import { Lato } from "@next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+const lato = Lato({ subsets: ["latin"], weight: ["100", "300", "400", "700"] });
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider attribute="class">
-      <main className={inter.className}>
+      <main className={lato.className}>
         <Component {...pageProps} />
       </main>
     </ThemeProvider>
