@@ -1,4 +1,10 @@
-import { Section, Link, NavigationMobile, ThemeSwitch } from "@/components";
+import {
+  Section,
+  ActiveLink,
+  Link,
+  NavigationMobile,
+  ThemeSwitch,
+} from "@/components";
 import { paths } from "@/lib";
 
 type Props = {};
@@ -13,16 +19,17 @@ export default function NavigationHeader({}: Props) {
           </div>
         </Link>
         <div>
-          <div className="flex items-center text-base leading-5">
-            <div className="hidden sm:block">
+          <div className="flex items-start text-base leading-5">
+            <div className="hidden sm:flex items-start">
               {paths.map((link) => (
-                <Link
+                <ActiveLink
                   key={link.title}
                   href={link.href}
-                  className="p-1 font-medium text-gray-900 dark:text-gray-100 sm:p-4"
+                  activeClassName="after:content-[''] after:border-b-2 after:border-primary after:dark:border-tertiary after:w-6 after:block after:mx-auto after:mb-1 after:mt-1"
+                  className="px-3 py-1 font-medium text-primary dark:text-tertiary"
                 >
                   {link.title}
-                </Link>
+                </ActiveLink>
               ))}
             </div>
             <ThemeSwitch />
@@ -33,3 +40,8 @@ export default function NavigationHeader({}: Props) {
     </Section>
   );
 }
+
+// content: '';
+//   border-bottom: 3px solid #000;
+//   width: 10px;
+//   display: block;
