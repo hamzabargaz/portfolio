@@ -1,5 +1,5 @@
 import React from "react";
-import { NavigationHeader } from "@/components";
+import { NavigationHeader, Section } from "@/components";
 
 type Props = {
   children: React.ReactNode;
@@ -7,9 +7,9 @@ type Props = {
 
 export default function Layout({ children }: Props) {
   return (
-    <div className="bg-gray-50 dark:bg-gray-900 relative min-h-screen">
+    <div className="bg-gray-50 dark:bg-primary relative min-h-screen text-primary dark:text-tertiary">
       <NavigationHeader />
-      {children}
+      <Section>{children}</Section>
     </div>
   );
 }
