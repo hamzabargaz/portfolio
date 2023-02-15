@@ -10,8 +10,8 @@ export default function ArrowRight({ className }: Props) {
       <g
         fill="none"
         stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       >
         <line x1="37" y1="14" x2="47" y2="24"></line>
         <line x1="47" y1="24" x2="37" y2="34"></line>

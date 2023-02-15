@@ -35,6 +35,8 @@ export default function CustomLink({
       href={href}
       className={className}
       onClick={onClick}
-    />
+    >
+      {children}
+    </a>
   );
 }

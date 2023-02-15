@@ -6,7 +6,7 @@ type Props = {};
 
 export default function ArticlesList({}: Props) {
   return (
-    <div className="flex flex-col">
+    <div className="">
       {blogs.map((node) => (
         <Link
           className="flex group py-6 mb-4 border-t-2 first:border-t-0"
