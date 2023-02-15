@@ -5,6 +5,7 @@ import { Layout, Link, Title } from "@/components";
 import { WavingHand, ArrowRight } from "@/icons";
 import { Roboto_Mono } from "@next/font/google";
 import ArticlesList from "@/layout/ArticlesList";
+import { avatar } from "../lib/info";
 
 const robotoMono = Roboto_Mono({
   subsets: ["latin"],
@@ -27,18 +28,28 @@ export default function Home() {
                 <WavingHand className="w-6 mx-1" />,
               </Title>
               <h1
-                className={cx("my-4 text-3xl font-light", robotoMono.className)}
+                className={cx(
+                  "my-4 text-3xl tracking-tighter font-light",
+                  robotoMono.className
+                )}
               >
                 I&apos;m Hamza Bargaz
               </h1>
-              <p className="mb-6 font-light text-xl tracking-wide">
+              <p className="mb-6 font-extralight text-xl tracking-wide">
                 I&apos;m a frontend developer with experience ranging from
                 frontend over backend to mobile development and I have written
                 apps with technologies in all of these sections.
               </p>
             </div>
             <div className="flex justify-center w-full">
-              <div className="w-52 h-52 rounded-full bg-white" />
+              {/* <div className="w-52 h-52 rounded-full bg-white" /> */}
+              <Image
+                src={avatar}
+                alt="my picture"
+                width={200}
+                height={200}
+                className="rounded-full bg-blend-overlay"
+              />
             </div>
           </div>
           {/* last articles */}
