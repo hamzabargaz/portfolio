@@ -1,0 +1,8 @@
+/* css hover scale image on hover */
+.hover:opacity-100 {
+  opacity: 1;
+}
+
+.hover:scale-105 {
+  transform: scale(1.05);
+}
