@@ -17,7 +17,9 @@ export default function ArticlesList({}: Props) {
             <div className="group-hover:text-secondary text-2xl mb-2">
               {node.title}
             </div>
-            <p className="text-lg text-gray-400">{node.excerpt}</p>
+            <p className="text-lg font-light text-primary-50 dark:text-gray-400">
+              {node.excerpt}
+            </p>
           </div>
           <div className="flex items-center ml-auto relative">
             <ArrowRight className="w-12 block group-hover:hidden absolute right-0 top-0" />
