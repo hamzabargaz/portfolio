@@ -19,7 +19,7 @@ export default function NavigationHeader({}: Props) {
           </div>
         </Link>
         <div>
-          <div className="flex items-start text-base leading-5">
+          <div className="flex items-center text-base leading-5">
             <div className="hidden sm:flex items-start">
               {paths.map((link) => (
                 <ActiveLink
@@ -40,8 +40,3 @@ export default function NavigationHeader({}: Props) {
     </Section>
   );
 }
-
-// content: '';
-//   border-bottom: 3px solid #000;
-//   width: 10px;
-//   display: block;

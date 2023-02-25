@@ -23,7 +23,7 @@ export default function NavigationMobile({}: Props) {
     <div className="sm:hidden">
       <button
         type="button"
-        className="ml-1 mr-1 h-8 w-8 rounded py-1"
+        className="h-8 w-8 rounded ml-1 sm:ml-4"
         aria-label="Toggle Menu"
         onClick={onToggleNav}
       >

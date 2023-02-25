@@ -21,7 +21,7 @@ export default function ArticlesList({}: Props) {
               {node.excerpt}
             </p>
           </div>
-          <div className="flex items-center ml-auto relative">
+          <div className="hidden md:flex items-center ml-auto relative">
             <ArrowRight className="w-12 block group-hover:hidden absolute right-0 top-0" />
             <div className="transition duration-500 transform opacity-0 group-hover:opacity-100 group-hover:scale-105">
               <div className="bg-white shadow-lg h-44 w-44 absolute right-0 -top-24" />

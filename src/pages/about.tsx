@@ -10,7 +10,7 @@ type Props = {};
 export default function About({}: Props) {
   return (
     <Layout>
-      <main className="mt-44">
+      <main className="mt-24 md:mt-44">
         <Section className="!p-0">
           <div className="flex items-center justify-between mb-20">
             <div className="flex flex-col">

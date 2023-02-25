@@ -7,9 +7,11 @@ type Props = {
 
 export default function Layout({ children }: Props) {
   return (
-    <div className="bg-gray-50 dark:bg-primary relative min-h-screen text-primary dark:text-tertiary">
-      <NavigationHeader />
-      <Section>{children}</Section>
+    <div className="bg-gray-50 dark:bg-primary h-full text-primary dark:text-tertiary">
+      <div className="min-h-screen relative overflow-auto">
+        <NavigationHeader />
+        <Section>{children}</Section>
+      </div>
     </div>
   );
 }
