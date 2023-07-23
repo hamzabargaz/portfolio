@@ -6,7 +6,7 @@ import { getPost } from "@/lib/mdx";
 import "@/assets/styles/atom-one-dark.css";
 
 export async function generateMetadata({ params }: any) {
-  const post = getPost(params);
+  const post = await getPost(params);
 
   return {
     title: post.frontMatter.title,
@@ -30,8 +30,8 @@ const options = {
 //   // code: InlineCode,
 // }
 
-export default function Post({ params }: any) {
-  const props = getPost(params);
+export default async function Post({ params }: any) {
+  const props = await getPost(params);
   return (
     <article className='py-20 prose prose-sm md:prose-base lg:prose-lg prose-slate !prose-invert mx-auto'>
       <h1 className='text-center pb-10'>{props.frontMatter.title}</h1>
