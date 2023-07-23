@@ -17,7 +17,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const theme = cookies().get("theme") ?? { value: "dark" };
+  const theme = cookies().get("theme") || { value: "dark" };
 
   return (
     <html lang='en' className={theme?.value}>
