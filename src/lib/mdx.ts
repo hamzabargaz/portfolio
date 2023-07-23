@@ -2,9 +2,12 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
+const root = process.cwd();
+const contentDir = path.join(root, "src", "content");
+
 export const getPost = async ({ slug }: { slug: string }) => {
   const markdownFile = fs.readFileSync(
-    path.join("src", "content", slug + ".mdx"),
+    path.join(root, "src", "content", slug + ".mdx"),
     "utf-8"
   );
 
@@ -18,7 +21,7 @@ export const getPost = async ({ slug }: { slug: string }) => {
 };
 
 export const getAllPostsMeta = async () => {
-  const files = fs.readdirSync(path.join("src", "content"), "utf-8");
+  const files = fs.readdirSync(contentDir);
 
   const posts = files.map((filename) => {
     const fileContent = fs.readFileSync(
