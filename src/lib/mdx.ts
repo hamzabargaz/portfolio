@@ -18,7 +18,7 @@ export const getPost = async ({ slug }: { slug: string }) => {
 };
 
 export const getAllPostsMeta = async () => {
-  const files = fs.readdirSync(path.join("src", "content"));
+  const files = fs.readdirSync(path.join("src", "content"), "utf-8");
 
   const posts = files.map((filename) => {
     const fileContent = fs.readFileSync(
