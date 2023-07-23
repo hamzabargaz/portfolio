@@ -33,8 +33,10 @@ const options = {
 export default async function Post({ params }: any) {
   const props = await getPost(params);
   return (
-    <article className='py-20 prose prose-sm md:prose-base lg:prose-lg prose-slate !prose-invert mx-auto'>
-      <h1 className='text-center pb-10'>{props.frontMatter.title}</h1>
+    <article className='py-20 prose prose-sm md:prose-base lg:prose-lg prose-slate !prose-invert mx-auto text-primary dark:text-tertiary'>
+      <h1 className='text-center pb-10 text-primary dark:text-white'>
+        {props.frontMatter.title}
+      </h1>
       <MDXRemote source={props.content} options={options} />
     </article>
   );
