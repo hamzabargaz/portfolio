@@ -50,7 +50,7 @@ export default function Home() {
             <div className='flex items-end mb-4 font-serif text-3xl tracking-wide'>
               <span>Recent</span>
               <span className='text-secondary mx-1'>Posts</span>
-              <hr className='ml-2 w-full mb-2' />
+              <hr className='ml-2 w-full mb-2 border-primary dark:border-tertiary' />
             </div>
             <Posts />
           </div>

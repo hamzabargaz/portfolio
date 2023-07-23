@@ -2,6 +2,7 @@ import { NavigationHeader, Section } from "@/components";
 import "../assets/styles/globals.css";
 import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
+import cx from "classnames";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,13 +21,17 @@ export default function RootLayout({
 
   return (
     <html lang='en' className={theme?.value}>
-      <body className={inter.className}>
-        <div className='bg-gray-50 dark:bg-primary h-full text-primary dark:text-tertiary'>
-          <div className='min-h-screen relative overflow-auto'>
-            <NavigationHeader theme={theme} />
-            <Section>{children}</Section>
-          </div>
-        </div>
+      <body
+        className={cx(
+          inter.className,
+          "bg-gray-50 dark:bg-primary h-full text-primary dark:text-tertiary",
+          "antialiased max-w-4xl mb-40 flex flex-col md:flex-row mx-4 lg:mx-auto "
+        )}
+      >
+        <main className='flex-auto min-w-0 mt-6 flex flex-col px-2 md:px-0'>
+          <NavigationHeader theme={theme} />
+          <Section>{children}</Section>
+        </main>
       </body>
     </html>
   );

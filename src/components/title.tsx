@@ -20,7 +20,7 @@ export default function Title({ children, className = "pr-20" }: Props) {
       >
         {children}
       </span>
-      <hr className='ml-2 w-full mb-1' />
+      <hr className='ml-2 w-full mb-1 border-primary dark:border-tertiary' />
     </div>
   );
 }
