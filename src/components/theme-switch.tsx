@@ -1,28 +1,38 @@
-import { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
-import { Sun, Moon } from "@/icons";
+"use client";
+import { useState } from "react";
+import { Theme } from "@types";
+import { Sun, Moon } from "@assets/icons";
 
-type Props = {};
+interface Props {
+  theme: Theme;
+}
 
-export default function ThemeSwitch({}: Props) {
-  const [mounted, setMounted] = useState(false);
-  const { theme, setTheme, resolvedTheme } = useTheme();
-  const isDark = theme === "dark" || resolvedTheme === "dark";
+export default function ThemeSwitcher({ theme }: Props) {
+  const [_theme, setTheme] = useState<Theme>(theme);
 
-  // When mounted on client, now we can show the UI
-  useEffect(() => setMounted(true), []);
+  const toggleTheme = () => {
+    const root = document.getElementsByTagName("html")[0];
+    root.classList.toggle(Theme.dark);
+    if (root.classList.contains(Theme.dark)) {
+      setTheme(Theme.dark);
+      document.cookie = `theme=${Theme.dark}`;
+    } else {
+      setTheme(Theme.light);
+      document.cookie = `theme=${Theme.light}`;
+    }
+  };
 
   return (
     <button
-      type="button"
-      aria-label="Toggle Dark Mode"
-      className="ml-1 mr-1 h-8 w-8 rounded p-1 sm:ml-4"
-      onClick={() => setTheme(isDark ? "light" : "dark")}
+      type='button'
+      aria-label='Toggle Dark Mode'
+      className='ml-1 mr-1 h-8 w-8 rounded p-1 sm:ml-4'
+      onClick={toggleTheme}
     >
-      {mounted && isDark ? (
-        <Sun className="text-gray-900 dark:text-gray-100" />
+      {_theme == Theme.dark ? (
+        <Sun className='text-gray-900 dark:text-gray-100' />
       ) : (
-        <Moon className="text-gray-900 dark:text-gray-100" />
+        <Moon className='text-gray-900 dark:text-gray-100' />
       )}
     </button>
   );

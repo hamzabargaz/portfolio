@@ -1,5 +1,5 @@
-import { Courgette } from "@next/font/google";
 import cx from "classnames";
+import { Courgette } from "next/font/google";
 
 type Props = {
   className?: string;
@@ -7,6 +7,7 @@ type Props = {
 };
 const courgette = Courgette({
   weight: ["400"],
+  subsets: ["latin"],
 });
 export default function Title({ children, className = "pr-20" }: Props) {
   return (
@@ -19,7 +20,7 @@ export default function Title({ children, className = "pr-20" }: Props) {
       >
         {children}
       </span>
-      <hr className="ml-2 w-full mb-1" />
+      <hr className='ml-2 w-full mb-1' />
     </div>
   );
 }
