@@ -1,24 +1,16 @@
 "use client";
-import { useState } from "react";
-import { Theme } from "@types";
 import { Sun, Moon } from "@assets/icons";
+import { useTheme } from "next-themes";
 
-interface Props {
-  theme: Theme;
-}
-
-export default function ThemeSwitcher({ theme }: Props) {
-  const [_theme, setTheme] = useState<Theme>(theme);
+export default function ThemeSwitcher() {
+  const { setTheme, resolvedTheme } = useTheme();
 
   const toggleTheme = () => {
-    const root = document.getElementsByTagName("html")[0];
-    root.classList.toggle(Theme.dark);
-    if (root.classList.contains(Theme.dark)) {
-      setTheme(Theme.dark);
-      document.cookie = `theme=${Theme.dark}`;
-    } else {
-      setTheme(Theme.light);
-      document.cookie = `theme=${Theme.light}`;
+    if (resolvedTheme === "light") {
+      setTheme("dark");
+    }
+    if (resolvedTheme === "dark") {
+      setTheme("light");
     }
   };
 
@@ -29,7 +21,7 @@ export default function ThemeSwitcher({ theme }: Props) {
       className='ml-1 mr-1 h-8 w-8 rounded p-1 sm:ml-4'
       onClick={toggleTheme}
     >
-      {_theme == Theme.dark ? (
+      {resolvedTheme === "dark" ? (
         <Sun className='text-gray-900 dark:text-gray-100' />
       ) : (
         <Moon className='text-gray-900 dark:text-gray-100' />

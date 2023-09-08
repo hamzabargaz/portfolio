@@ -1,10 +1,19 @@
 import { NavigationHeader, Section } from "@/components";
 import "../assets/styles/globals.css";
-import { Inter } from "next/font/google";
+import { Inter, Darker_Grotesque, Epilogue } from "next/font/google";
 import { cookies } from "next/headers";
 import cx from "classnames";
+import { ThemeProvider } from "@/lib/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
+const darkerGrotesque = Darker_Grotesque({
+  subsets: ["latin"],
+  weight: ["500", "700"],
+});
+const epilogue = Epilogue({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
+});
 
 export const metadata = {
   title: "Hamza Bargaz - Software Engineer",
@@ -17,21 +26,23 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const theme = cookies().get("theme") || { value: "dark" };
-
   return (
-    <html lang='en' className={theme?.value}>
+    <html lang='en'>
       <body
         className={cx(
-          inter.className,
-          "bg-gray-50 dark:bg-primary h-full text-primary dark:text-tertiary",
-          "antialiased max-w-4xl mb-40 flex flex-col md:flex-row mx-4 lg:mx-auto "
+          // inter.className,
+          // darkerGrotesque.className,
+          epilogue.className,
+          "bg-gray-50 dark:bg-black h-full text-[#212121CC] dark:text-[#EEEEEE",
+          "antialiased max-w-screen-lg mx-4 lg:mx-auto"
         )}
       >
-        <main className='flex-auto min-w-0 mt-6 flex flex-col px-2 md:px-0'>
-          <NavigationHeader theme={theme} />
-          <Section>{children}</Section>
-        </main>
+        <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+          <main className='mt-6 mx-auto flex flex-col px-2 md:px-0'>
+            <NavigationHeader />
+            <Section>{children}</Section>
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   );
