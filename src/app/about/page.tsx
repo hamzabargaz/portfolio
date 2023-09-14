@@ -5,13 +5,14 @@ import Link from "next/link";
 import { Section } from "@/components";
 import Title from "@/components/title";
 import { ArrowUpRight, GithubIcon, LinkedinIcon } from "@/assets/icons";
+import Card from "@/components/card";
 
 type Props = {};
 
 export default function About({}: Props) {
   return (
-    <main className='mt-24 md:mt-44'>
-      <Section className='!p-0'>
+    <main className='mt-6'>
+      <Card className='p-6'>
         <div className='flex items-center justify-between mb-20'>
           <div className='flex flex-col'>
             <Title>. About me</Title>
@@ -61,7 +62,7 @@ export default function About({}: Props) {
               />
             </div> */}
         </div>
-      </Section>
+      </Card>
     </main>
   );
 }

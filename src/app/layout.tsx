@@ -1,7 +1,6 @@
 import { NavigationHeader, Section } from "@/components";
 import "../assets/styles/globals.css";
 import { Inter, Darker_Grotesque, Epilogue } from "next/font/google";
-import { cookies } from "next/headers";
 import cx from "classnames";
 import { ThemeProvider } from "@/lib/theme-provider";
 
@@ -33,7 +32,7 @@ export default function RootLayout({
           // inter.className,
           // darkerGrotesque.className,
           epilogue.className,
-          "bg-gray-50 dark:bg-black h-full text-[#212121CC] dark:text-[#EEEEEE",
+          "bg-light-100 dark:bg-dark-100 h-full text-light-300 dark:text-dark-300",
           "antialiased max-w-screen-lg mx-4 lg:mx-auto"
         )}
       >

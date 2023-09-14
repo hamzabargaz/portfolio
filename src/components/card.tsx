@@ -10,7 +10,8 @@ export default function Card({ children, className = "p-4", ...props }: TCard) {
     <div
       className={cx(
         className,
-        "rounded-xl border border-[#1e1e1e] bg-gray-200 dark:bg-[#171717]"
+        "rounded-xl bg-light-200 dark:bg-dark-200"
+        // " border border-gray-200 dark:border-[#1e1e1e]"
       )}
     >
       {children}
