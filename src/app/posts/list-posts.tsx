@@ -10,7 +10,7 @@ type Props = {};
 export default async function Posts({}: Props) {
   const posts = await getAllPostsMeta();
   return (
-    <div className='mt-6'>
+    <div className='mt-3'>
       {posts.map((post: any) => (
         <PostCard key={post.slug} {...post} />
       ))}

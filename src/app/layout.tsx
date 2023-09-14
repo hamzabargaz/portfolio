@@ -1,4 +1,4 @@
-import { NavigationHeader, Section } from "@/components";
+import { Footer, NavigationHeader, Section } from "@/components";
 import "../assets/styles/globals.css";
 import { Inter, Darker_Grotesque, Epilogue } from "next/font/google";
 import cx from "classnames";
@@ -37,9 +37,12 @@ export default function RootLayout({
         )}
       >
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-          <main className='mt-6 mx-auto flex flex-col px-2 md:px-0'>
-            <NavigationHeader />
-            <Section>{children}</Section>
+          <main className='py-6 mx-auto flex flex-col h-screen justify-between px-2 md:px-0'>
+            <div>
+              <NavigationHeader />
+              <Section>{children}</Section>
+            </div>
+            <Footer />
           </main>
         </ThemeProvider>
       </body>

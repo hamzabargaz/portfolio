@@ -11,7 +11,7 @@ type Props = {};
 
 export default function About({}: Props) {
   return (
-    <main className='mt-6'>
+    <main className='mt-3'>
       <Card className='p-6'>
         <div className='flex items-center justify-between mb-20'>
           <div className='flex flex-col'>
