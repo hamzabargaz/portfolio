@@ -43,8 +43,8 @@ const Project = ({ title, description, icon: Icon }: TProject) => {
           </div>
         </div>
       </div>
-      <div className='flex flex-col gap-4'>
-        <div>{title}</div>
+      <div className='flex flex-col gap-4 text-xs'>
+        <div className='font-bold'>{title}</div>
         <p>{description}</p>
         <div className='flex items-center gap-4'>
           <Badge>React</Badge>

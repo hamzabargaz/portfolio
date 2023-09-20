@@ -14,7 +14,7 @@ export default function Badge({
 }: Props) {
   const variants: any = {
     default:
-      "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
+      "border-transparent bg-light-200 dark:bg-dark-200 hover:bg-light-200/80 hover:dark:bg-dark-200/80",
     secondary:
       "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
 

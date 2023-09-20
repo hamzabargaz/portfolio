@@ -13,7 +13,7 @@ export default function About({}: Props) {
   return (
     <main className='mt-3'>
       <Card className='p-6'>
-        <div className='flex items-center justify-between mb-20'>
+        <div className='flex items-center justify-between'>
           <div className='flex flex-col'>
             <Title>. About me</Title>
             <p className='my-6 pr-0 md:pr-24 text-lg tracking-normal leading-8'>
