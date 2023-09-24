@@ -6,7 +6,7 @@ import Recent from "./recent";
 
 export default function Home() {
   return (
-    <div className='mt-3 pb-20 md:pb-0'>
+    <div className='mt-3 flex flex-col h-full pb-20 md:pb-0'>
       <div className='grid gap-4 grid-cols-1 md:grid-cols-2 mb-4'>
         <Card className='p-6'>
           <Intro />
@@ -15,7 +15,7 @@ export default function Home() {
           <Featured />
         </Card>
       </div>
-      <Card className='h-80 p-4'>
+      <Card className='grow p-4'>
         <Recent />
       </Card>
       {/* <Card className='h-20 col-span-2'>

@@ -37,10 +37,10 @@ export default function RootLayout({
         )}
       >
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-          <main className='py-6 mx-auto flex flex-col h-screen justify-between px-2 md:px-0'>
-            <div>
+          <main className='py-6 gap-y-2 mx-auto flex flex-col h-screen justify-between px-2 md:px-0'>
+            <div className='grow flex flex-col'>
               <NavigationHeader />
-              <Section>{children}</Section>
+              <Section className='h-full'>{children}</Section>
             </div>
             <Footer />
           </main>

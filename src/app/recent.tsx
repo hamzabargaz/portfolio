@@ -6,14 +6,14 @@ type Props = {};
 
 export default function Recent({}: Props) {
   return (
-    <>
+    <div className='flex flex-col h-full'>
       <h3 className='mb-6'>Recent Posts</h3>
-      <div className='flex flex-col gap-4 max-h-60 overflow-auto pr-4 relative'>
-        {Array.from({ length: 4 }).map((_, i) => (
+      <div className='flex flex-col gap-4 pr-4'>
+        {Array.from({ length: 1 }).map((_, i) => (
           <Post key={i} />
         ))}
       </div>
-    </>
+    </div>
   );
 }
 
