@@ -18,7 +18,7 @@ export default function ThemeSwitcher() {
     <button
       type='button'
       aria-label='Toggle Dark Mode'
-      className='ml-1 mr-1 h-8 w-8 rounded p-1 sm:ml-4'
+      className='ml-1 mr-1 h-8 w-8 rounded p-1 sm:ml-4 shrink-0'
       onClick={toggleTheme}
     >
       {resolvedTheme === "dark" ? (

@@ -34,7 +34,7 @@ const Project = ({ title, description, icon: Icon }: TProject) => {
         <div className='p-2 rounded-xl bg-light-200 dark:bg-dark-200'>
           {Icon ?? <Layers />}
         </div>
-        <div className='flex gap-2 text-xs'>
+        <div className='flex flex-wrap justify-end gap-2 text-xs'>
           <div className='flex items-center gap-2'>
             <Calendar className='w-4 h-4' /> <span>date xxx | date xxx</span>
           </div>

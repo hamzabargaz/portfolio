@@ -1,3 +1,4 @@
+import { Badge } from "@/components";
 import { Newspaper } from "lucide-react";
 import React from "react";
 
@@ -18,17 +19,17 @@ export default function Recent({}: Props) {
 
 const Post = () => {
   return (
-    <div className='rounded-xl p-4 bg-light-100 dark:bg-dark-100 flex'>
-      <div className='w-1/3 bg-light-200 dark:bg-dark-200 h-32 rounded-xl p-4 flex items-center justify-center'>
+    <div className='rounded-xl p-4 bg-light-100 dark:bg-dark-100 flex flex-wrap'>
+      <div className='w-full md:w-1/3 bg-light-200 dark:bg-dark-200 h-32 rounded-xl p-4 flex items-center justify-center'>
         <Newspaper />
       </div>
-      <div className='pl-6 w-2/3 flex flex-col gap-4'>
+      <div className='pl-6 pt-6 md:pt-0 w-full md:w-2/3 flex flex-col gap-4'>
         <div className=''>
           <h4 className='text-lg font-medium mb-2'>Post 1</h4>
-          <div className='flex items-center mb-4'>
-            <div className='p-2 bg-light-200 dark:bg-dark-200 rounded-xl'>
-              Tag 1
-            </div>
+          <div className='flex flex-wrap items-center gap-2 mb-4'>
+            <Badge>React</Badge>
+            <Badge>Next.js</Badge>
+            <Badge>Typescript</Badge>
           </div>
           <p>
             Lorem, ipsum dolor sit amet consectetur adipisicing elit. Corrupti
