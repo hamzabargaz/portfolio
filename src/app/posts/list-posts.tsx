@@ -7,10 +7,24 @@ import Card from "@/components/card";
 import { Newspaper } from "lucide-react";
 import { Badge } from "@/components";
 
+import { getDatabase } from "@/lib/notion";
+import Text from "@/components/text";
+import styles from "@assets/styles/notion-render.module.css";
+
 type Props = {};
 
+export const databaseId =
+  process.env?.NOTION_DATABASE_ID ?? "NOTION_DATABASE_ID";
+
+async function getPosts() {
+  const database = await getDatabase();
+
+  return database;
+}
+
 export default async function Posts({}: Props) {
-  const posts = await getAllPostsMeta();
+  const posts = await getPosts();
+  console.log("posts list ============> ", posts);
   return (
     <div className='mt-3'>
       <Card className='w-full p-4 flex flex-col gap-4 mb-4'>
@@ -23,11 +37,14 @@ export default async function Posts({}: Props) {
 }
 
 function Post(post: any) {
+  console.log("post data ============> ", post);
+  const slug = post.properties?.slug?.rich_text[0]?.text.content;
+  const title = post.properties?.Name?.title[0]?.plain_text;
   return (
-    <Link href={"/posts/" + post.slug}>
+    <Link href={"/posts/" + slug}>
       <div className='flex flex-wrap rounded-xl p-4 bg-light-100 dark:bg-dark-100'>
         <div className='w-full sm:w-1/3 bg-light-200 dark:bg-dark-200 h-44 rounded-xl flex items-center justify-center'>
-          {!post.meta.hero ? (
+          {post?.meta?.hero ? (
             <Image
               alt={post.slug}
               src={post.meta.hero}
@@ -41,7 +58,7 @@ function Post(post: any) {
         </div>
         <div className='pl-6 pt-6 sm:pt-0 w-full sm:w-2/3 flex flex-col gap-4'>
           <div className=''>
-            <h2 className='text-xl font-bold mb-2'>Post 1</h2>
+            <h2 className='text-xl font-bold mb-2'>{title}</h2>
             <div className='flex items-center gap-4 mb-4'>
               <Badge>React</Badge>
               <Badge>Next.js</Badge>
