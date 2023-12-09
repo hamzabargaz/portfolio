@@ -1,5 +1,6 @@
-import { Footer, NavigationHeader, Section } from "@/components";
 import "../assets/styles/globals.css";
+import "react-loading-skeleton/dist/skeleton.css";
+import { Footer, NavigationHeader, Section } from "@/components";
 import { Inter, Darker_Grotesque, Epilogue } from "next/font/google";
 import cx from "classnames";
 import { ThemeProvider } from "@/lib/theme-provider";
