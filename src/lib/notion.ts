@@ -23,9 +23,28 @@ const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
 
+export const getFeatured = cache(async () => {
+  const response = await notion.databases.query({
+    database_id: databaseId,
+    filter: {
+      property: "type",
+      select: {
+        equals: "feature",
+      },
+    },
+  });
+  return response.results;
+});
+
 export const getDatabase = cache(async () => {
   const response = await notion.databases.query({
     database_id: databaseId,
+    filter: {
+      property: "type",
+      select: {
+        equals: "post",
+      },
+    },
   });
   return response.results;
 });
