@@ -11,7 +11,6 @@ export const databaseId =
 
 async function getPosts() {
   const database = await getAllPosts();
-  await new Promise((resolve) => setTimeout(resolve, 2000));
   return database;
 }
 
