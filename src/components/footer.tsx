@@ -1,15 +1,21 @@
 import React from "react";
 import cx from "classnames";
-import { Github, Linkedin, Twitter } from "lucide-react";
+import { Github, Linkedin, Twitter, Instagram } from "lucide-react";
 import { DM_Serif_Display } from "next/font/google";
 import Card from "./card";
+import { getBlocks, getDatabase, getPageFromSlug } from "@/lib/notion";
+import Link from "next/link";
 
 const dmSerifDisplay = DM_Serif_Display({
   subsets: ["latin"],
   weight: "400",
 });
 
-export default function Footer() {
+export default async function Footer() {
+  const data: any = await getPageFromSlug("social_media");
+  const database = await getBlocks(data.id);
+  const socialMedia = await getDatabase(database[0].id);
+
   return (
     <Card className='flex items-center w-full p-4 mt-6'>
       <div className='flex items-center space-x-4'>
@@ -24,16 +30,33 @@ export default function Footer() {
         {/* <span className=''>All rights reserved</span> */}
       </div>
       <div className='flex items-center ml-auto gap-4'>
-        <div className='p-2 rounded-xl bg-light-100 dark:bg-dark-100 hover:opacity-50 cursor-pointer'>
-          <Twitter />
-        </div>
-        <div className='p-2 rounded-xl bg-light-100 dark:bg-dark-100 hover:opacity-50 cursor-pointer'>
-          <Linkedin />
-        </div>
-        <div className='p-2 rounded-xl bg-light-100 dark:bg-dark-100 hover:opacity-50 cursor-pointer'>
-          <Github />
-        </div>
+        {socialMedia.map((item: any, i: number) => (
+          <SocialItem key={i} item={item} />
+        ))}
       </div>
     </Card>
   );
 }
+
+const SocialItem = ({ item }: any) => {
+  const name = item?.properties?.name?.title[0]?.plain_text.toLowerCase();
+  const url = item?.properties?.url?.url;
+
+  const getIcon: any = {
+    linkedin: Linkedin,
+    twitter: Twitter,
+    github: Github,
+    instagram: Instagram,
+  };
+
+  const Icon: any = getIcon[name];
+
+  return (
+    <Link
+      href={url}
+      className='p-2 rounded-xl bg-light-100 dark:bg-dark-100 hover:opacity-50 cursor-pointer'
+    >
+      <Icon />
+    </Link>
+  );
+};
