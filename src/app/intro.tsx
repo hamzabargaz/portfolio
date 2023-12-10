@@ -16,7 +16,6 @@ type Props = {};
 
 export default async function Intro({}: Props) {
   const data: any = await getInfo();
-  // console.log("info data =======> ", data);
 
   const info = data.find(
     (item: any) => item.properties?.slug.rich_text[0].plain_text === "intro"
@@ -24,8 +23,6 @@ export default async function Intro({}: Props) {
   const name = info.properties?.Name?.title[0]?.plain_text;
   const description = info.properties?.description?.rich_text[0]?.plain_text;
   const avatar = info.properties?.Image.files[0]?.file?.url;
-
-  console.log("avatar =====> ", avatar);
 
   return (
     <div className='flex flex-col justify-center items-center text-center'>
