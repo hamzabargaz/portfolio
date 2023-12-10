@@ -23,6 +23,26 @@ const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
 
+export const getDatabase = cache(async (id: any) => {
+  const response = await notion.databases.query({
+    database_id: id,
+  });
+  return response.results;
+});
+
+export const getInfo = cache(async () => {
+  const response = await notion.databases.query({
+    database_id: databaseId,
+    filter: {
+      property: "type",
+      select: {
+        equals: "info",
+      },
+    },
+  });
+  return response.results;
+});
+
 export const getFeatured = cache(async () => {
   const response = await notion.databases.query({
     database_id: databaseId,
@@ -36,7 +56,7 @@ export const getFeatured = cache(async () => {
   return response.results;
 });
 
-export const getDatabase = cache(async () => {
+export const getAllPosts = cache(async () => {
   const response = await notion.databases.query({
     database_id: databaseId,
     filter: {
