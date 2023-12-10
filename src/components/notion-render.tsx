@@ -71,9 +71,10 @@ export function renderBlock(block: any) {
       const src =
         value.type === "external" ? value.external.url : value.file.url;
       const caption = value.caption ? value.caption[0]?.plain_text : "";
+      console.log("src ======> ", src);
       return (
-        <figure>
-          <Image src={src} alt={caption} />
+        <figure className='relative'>
+          {/* <Image fill src={src} alt={caption} /> */}
           {caption && <figcaption>{caption}</figcaption>}
         </figure>
       );
