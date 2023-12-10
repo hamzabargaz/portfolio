@@ -25,7 +25,6 @@ export default async function Posts({ posts }: Props) {
 }
 
 function Post(post: any) {
-  console.log("post data ============> ", post);
   const slug = post.properties?.slug?.rich_text[0]?.text.content;
   const title = post.properties?.Name?.title[0]?.plain_text;
   return (

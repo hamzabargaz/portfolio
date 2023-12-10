@@ -1,7 +1,7 @@
 import { Badge } from "@/components";
 import { Newspaper } from "lucide-react";
 import React from "react";
-import { getDatabase } from "@/lib/notion";
+import { getAllPosts } from "@/lib/notion";
 import Link from "next/link";
 
 type Props = {};
@@ -10,7 +10,7 @@ export const databaseId =
   process.env?.NOTION_DATABASE_ID ?? "NOTION_DATABASE_ID";
 
 async function getPosts() {
-  const database = await getDatabase();
+  const database = await getAllPosts();
   await new Promise((resolve) => setTimeout(resolve, 2000));
   return database;
 }
