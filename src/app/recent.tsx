@@ -22,7 +22,7 @@ export default async function Recent({}: Props) {
       <h3 className='mb-6'>Recent Posts</h3>
       <div className='flex flex-col gap-4 pr-4'>
         {posts.map((post: any) => (
-          <Post key={post.slug} {...post} />
+          <Post key={post.id} {...post} />
         ))}
       </div>
     </div>

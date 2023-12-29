@@ -10,7 +10,7 @@ export function renderBlock(block: any) {
   switch (type) {
     case "paragraph":
       return (
-        <p>
+        <p className='my-6 pr-0 md:pr-24 text-lg tracking-normal leading-8'>
           <Text title={value.rich_text} />
         </p>
       );

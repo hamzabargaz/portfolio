@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Card from "@/components/card";
+import Card from "@/components/kit/card";
 import { Newspaper } from "lucide-react";
 import { Badge } from "@/components";
 
@@ -9,12 +9,9 @@ type Props = {
   posts: any;
 };
 
-export const databaseId =
-  process.env?.NOTION_DATABASE_ID ?? "NOTION_DATABASE_ID";
-
 export default async function Posts({ posts }: Props) {
   return (
-    <div className='mt-3'>
+    <div className='my-4'>
       <Card className='w-full p-4 flex flex-col gap-4 mb-4'>
         {posts.map((post: any) => (
           <Post key={post.slug} {...post} />

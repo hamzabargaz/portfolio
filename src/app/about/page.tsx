@@ -1,44 +1,33 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Link from "next/link";
 // import Image from "next/image";
 // import Avatar from "@assets/images/me.jpg";
 import { Section } from "@/components";
-import Title from "@/components/title";
+import Title from "@/components/ui/title";
 import { ArrowUpRight, GithubIcon, LinkedinIcon } from "@/assets/icons";
-import Card from "@/components/card";
+import Card from "@/components/kit/card";
+import { getBlocks, getDatabase, getInfo } from "@/lib/notion";
+import { renderBlock } from "@/components/kit/notion-render";
 
 type Props = {};
 
-export default function About({}: Props) {
+export default async function About({}: Props) {
+  const data: any = await getInfo();
+  const about = data.find(
+    (item: any) => item.properties?.slug.rich_text[0].plain_text === "about_me"
+  );
+  const page = await getBlocks(about.id);
+
   return (
     <main className='mt-3'>
       <Card className='p-6'>
         <div className='flex items-center justify-between'>
           <div className='flex flex-col'>
             <Title>. About me</Title>
-            <p className='my-6 pr-0 md:pr-24 text-lg tracking-normal leading-8'>
-              Hi there! My name is Hamza Bargaz, and I am a frontend developer.
-              I have a deep passion for technology and love using my skills to
-              create visually appealing and user-friendly web applications. I
-              believe in the power of continual learning and am always seeking
-              to expand my knowledge and skills.
-              <br />
-              <br />
-              As a team player, I believe in the importance of collaboration and
-              am always willing to help my co-workers and share my expertise. I
-              am driven by the desire to build amazing tech products that make a
-              positive impact on people&apos;s lives.
-              <br />
-              <br />
-              In my current role as a frontend developer, I am using my skills
-              to build and maintain high-quality web applications that deliver
-              exceptional user experiences. I am excited about the future of
-              technology and am eager to continue learning and growing in my
-              career.
-              <br />
-              <br />
-            </p>
-            <div className='flex items-center gap-4'>
+            {page.map((block) => (
+              <Fragment key={block.id}>{renderBlock(block)}</Fragment>
+            ))}
+            {/* <div className='flex items-center gap-4'>
               <SocialLink
                 href='https://github.com/hamzabargaz/'
                 icon={GithubIcon}
@@ -49,7 +38,7 @@ export default function About({}: Props) {
                 icon={LinkedinIcon}
                 name='Linkedin'
               />
-            </div>
+            </div> */}
           </div>
           {/* <div className="flex justify-center w-full">
               <div className="w-64 h-80 bg-white" />
@@ -67,23 +56,23 @@ export default function About({}: Props) {
   );
 }
 
-type SocialLinkProps = {
-  href: string;
-  icon: React.FC<React.SVGProps<SVGSVGElement>>;
-  name: string;
-};
+// type SocialLinkProps = {
+//   href: string;
+//   icon: React.FC<React.SVGProps<SVGSVGElement>>;
+//   name: string;
+// };
 
-const SocialLink = ({ href, icon: Icon, name }: SocialLinkProps) => {
-  return (
-    <Link
-      className='flex items-center border rounded-lg p-2 cursor-pointer hover:bg-white/20'
-      href={href}
-    >
-      <div className='flex items-center'>
-        <Icon className='w-5 h-5' />
-        <span className='ml-3'>{name}</span>
-      </div>
-      <ArrowUpRight className='ml-6 w-5 h-5' />
-    </Link>
-  );
-};
+// const SocialLink = ({ href, icon: Icon, name }: SocialLinkProps) => {
+//   return (
+//     <Link
+//       className='flex items-center border rounded-lg p-2 cursor-pointer hover:bg-white/20'
+//       href={href}
+//     >
+//       <div className='flex items-center'>
+//         <Icon className='w-5 h-5' />
+//         <span className='ml-3'>{name}</span>
+//       </div>
+//       <ArrowUpRight className='ml-6 w-5 h-5' />
+//     </Link>
+//   );
+// };

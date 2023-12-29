@@ -3,10 +3,10 @@ import Head from "next/head";
 import Link from "next/link";
 
 import { getBlocks, getPageFromSlug } from "@/lib/notion";
-import Text from "@/components/text";
-import { renderBlock } from "@/components/notion-render";
+import Text from "@/components/ui/text";
+import { renderBlock } from "@/components/kit/notion-render";
 import styles from "@assets/styles/notion-render.module.css";
-import Card from "@/components/card";
+import Card from "@/components/kit/card";
 
 export default async function Page({ params }: any) {
   const page: any = await getPageFromSlug(params?.slug);

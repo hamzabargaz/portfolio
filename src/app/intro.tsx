@@ -1,11 +1,11 @@
 import React from "react";
 import Image from "next/image";
-// import Avatar from "@assets/images/me.jpg";
 import Link from "next/link";
-import { Button } from "@/components";
+import { Button, CTA } from "@/components";
 import { DM_Serif_Display } from "next/font/google";
 import cx from "classnames";
 import { getInfo } from "@/lib/notion";
+import { Copy } from "lucide-react";
 
 const dmSerifDisplay = DM_Serif_Display({
   subsets: ["latin"],
@@ -44,8 +44,7 @@ export default async function Intro({}: Props) {
         </Link>
       </p>
       <div className='flex items-center gap-4 mt-4'>
-        <Button>Hire me</Button>
-        <Button appearance='secondary'>Contact</Button>
+        <CTA />
       </div>
     </div>
   );

@@ -1,10 +1,11 @@
-import Card from "@/components/card";
-import { Footer } from "@/components";
+import Card from "@/components/kit/card";
 import Intro from "./intro";
 import Featured from "./featured";
 import Recent from "./recent";
 import { Suspense } from "react";
 import Skeleton from "react-loading-skeleton";
+import { times } from "ramda";
+import { PostSkeleton } from "@/components/kit/loaders";
 
 export default async function Home() {
   return (
@@ -19,16 +20,16 @@ export default async function Home() {
       </div>
       <Card className='grow p-4'>
         <Suspense
-          fallback={
-            <Skeleton className='h-44 w-full opacity-50 mb-4' count={3} />
-          }
+          fallback={times(
+            (i) => (
+              <PostSkeleton key={i} />
+            ),
+            3
+          )}
         >
           <Recent />
         </Suspense>
       </Card>
-      {/* <Card className='h-20 col-span-2'>
-        <Footer />
-      </Card> */}
     </div>
   );
 }

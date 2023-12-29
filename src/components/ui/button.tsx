@@ -18,7 +18,7 @@ export default function CTABtn({
       className={cx(
         className,
         styles[appearance],
-        "px-4 py-2 font-medium rounded-lg hover:bg-opacity-75"
+        "px-4 py-2 font-medium rounded-xl"
       )}
       {...props}
     >
@@ -28,8 +28,13 @@ export default function CTABtn({
 }
 
 const styles = {
-  primary:
-    "bg-light-400 dark:bg-dark-400 border-4 border-light-100 dark:border-dark-100",
-  secondary: "bg-white text-black hover:bg-white/50",
+  primary: cx(
+    "border border-transparent dark:hover:!border-light-400 hover:!border-dark-400",
+    "bg-dark-400  dark:bg-light-400 hover:!bg-transparent ",
+    "text-light-400 dark:text-dark-400 dark:hover:text-light-400 hover:text-dark-400"
+  ),
+  secondary: cx(
+    "text-dark-400 dark:text-light-400 hover:bg-dark-400/5 dark:hover:bg-light-400/10"
+  ),
   none: "",
 };

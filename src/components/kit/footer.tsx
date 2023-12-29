@@ -1,10 +1,12 @@
 import React from "react";
 import cx from "classnames";
-import { Github, Linkedin, Twitter, Instagram } from "lucide-react";
+import { Linkedin, Twitter, Instagram } from "@assets/icons";
 import { DM_Serif_Display } from "next/font/google";
 import Card from "./card";
 import { getBlocks, getDatabase, getPageFromSlug } from "@/lib/notion";
 import Link from "next/link";
+import classNames from "classnames";
+import { Github } from "lucide-react";
 
 const dmSerifDisplay = DM_Serif_Display({
   subsets: ["latin"],
@@ -17,24 +19,25 @@ export default async function Footer() {
   const socialMedia = await getDatabase(database[0].id);
 
   return (
-    <Card className='flex items-center w-full p-4 mt-6'>
-      <div className='flex items-center space-x-4'>
-        <span
-          className={cx(
-            dmSerifDisplay.className,
-            "relative flex items-center text-sm font-bold whitespace-pre leading-3"
-          )}
-        >
-          {`Hamza\nBargaz.`}
-        </span>
-        {/* <span className=''>All rights reserved</span> */}
-      </div>
-      <div className='flex items-center ml-auto gap-4'>
-        {socialMedia.map((item: any, i: number) => (
-          <SocialItem key={i} item={item} />
-        ))}
-      </div>
-    </Card>
+    <footer className='py-6'>
+      <Card className='flex items-center w-full p-4'>
+        <div className='flex items-center space-x-4'>
+          <span
+            className={cx(
+              dmSerifDisplay.className,
+              "relative flex items-center text-sm font-bold whitespace-pre leading-3"
+            )}
+          >
+            {`Hamza\nBargaz.`}
+          </span>
+        </div>
+        <div className='flex items-center ml-auto gap-4'>
+          {socialMedia.map((item: any, i: number) => (
+            <SocialItem key={i} item={item} />
+          ))}
+        </div>
+      </Card>
+    </footer>
   );
 }
 
@@ -56,7 +59,7 @@ const SocialItem = ({ item }: any) => {
       href={url}
       className='p-2 rounded-xl bg-light-100 dark:bg-dark-100 hover:opacity-50 cursor-pointer'
     >
-      <Icon />
+      <Icon className='w-6 h-6' />
     </Link>
   );
 };

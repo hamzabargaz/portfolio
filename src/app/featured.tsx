@@ -27,7 +27,7 @@ export default async function Featured({}: Props) {
   return (
     <>
       <h3 className='mb-6'> Featured Projects</h3>
-      <div className=' gap-4 flex flex-col max-h-72 overflow-auto pr-4'>
+      <div className=' gap-4 flex flex-col h-auto md:max-h-72 overflow-auto pr-4'>
         {projects.map((item: any, i: number) => {
           return <Project key={i} item={item} />;
         })}
@@ -53,16 +53,21 @@ const Project = ({ item }: TProject) => {
   return (
     <div className='flex flex-col gap-4 rounded-xl bg-light-100 dark:bg-dark-100 p-4'>
       <div className='flex items-start justify-between'>
-        <div className='p-2 rounded-xl bg-light-200 dark:bg-dark-200'>
+        <div className='p-2 rounded-xl bg-light-200 dark:bg-dark-200 w-10 h-10 relative '>
           {icon ? (
-            <Image src={icon} width={40} height={40} alt='' />
+            <Image
+              src={icon}
+              fill
+              alt=''
+              className='w-full h-full object-contain rounded-xl'
+            />
           ) : (
             <Layers />
           )}
         </div>
         <div className='flex flex-wrap justify-end gap-2 text-xs'>
           <div className='flex items-center gap-2'>
-            <Calendar className='w-4 h-4' />{" "}
+            <Calendar className='w-4 h-4' />
             <span>
               {formatDate(start_date)} | {formatDate(end_date)}
             </span>
