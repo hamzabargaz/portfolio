@@ -1,12 +1,7 @@
 import React, { Fragment } from "react";
-import Link from "next/link";
-// import Image from "next/image";
-// import Avatar from "@assets/images/me.jpg";
-import { Section } from "@/components";
 import Title from "@/components/ui/title";
-import { ArrowUpRight, GithubIcon, LinkedinIcon } from "@/assets/icons";
 import Card from "@/components/kit/card";
-import { getBlocks, getDatabase, getInfo } from "@/lib/notion";
+import { getBlocks, getInfo } from "@/lib/notion";
 import { renderBlock } from "@/components/kit/notion-render";
 
 type Props = {};
@@ -27,18 +22,6 @@ export default async function About({}: Props) {
             {page.map((block) => (
               <Fragment key={block.id}>{renderBlock(block)}</Fragment>
             ))}
-            {/* <div className='flex items-center gap-4'>
-              <SocialLink
-                href='https://github.com/hamzabargaz/'
-                icon={GithubIcon}
-                name='Github'
-              />
-              <SocialLink
-                href='https://www.linkedin.com/in/hamzabargaz/'
-                icon={LinkedinIcon}
-                name='Linkedin'
-              />
-            </div> */}
           </div>
           {/* <div className="flex justify-center w-full">
               <div className="w-64 h-80 bg-white" />
@@ -55,24 +38,3 @@ export default async function About({}: Props) {
     </main>
   );
 }
-
-// type SocialLinkProps = {
-//   href: string;
-//   icon: React.FC<React.SVGProps<SVGSVGElement>>;
-//   name: string;
-// };
-
-// const SocialLink = ({ href, icon: Icon, name }: SocialLinkProps) => {
-//   return (
-//     <Link
-//       className='flex items-center border rounded-lg p-2 cursor-pointer hover:bg-white/20'
-//       href={href}
-//     >
-//       <div className='flex items-center'>
-//         <Icon className='w-5 h-5' />
-//         <span className='ml-3'>{name}</span>
-//       </div>
-//       <ArrowUpRight className='ml-6 w-5 h-5' />
-//     </Link>
-//   );
-// };
