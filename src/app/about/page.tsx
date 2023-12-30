@@ -14,7 +14,7 @@ export default async function About({}: Props) {
   const page = await getBlocks(about.id);
 
   return (
-    <main className='mt-3'>
+    <main className='mt-4'>
       <Card className='p-6'>
         <div className='flex items-center justify-between'>
           <div className='flex flex-col'>

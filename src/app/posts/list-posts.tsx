@@ -23,15 +23,19 @@ export default async function Posts({ posts }: Props) {
 
 function Post(post: any) {
   const slug = post.properties?.slug?.rich_text[0]?.text.content;
-  const title = post.properties?.Name?.title[0]?.plain_text;
+  const title = post.properties?.name?.title[0]?.plain_text;
+  const description = post.properties?.description?.rich_text[0]?.text.content;
+  const tags = post.properties?.tags?.multi_select;
+  const image = post.properties?.image?.files[0]?.file?.url;
+
   return (
     <Link href={"/posts/" + slug}>
       <div className='flex flex-wrap rounded-xl p-4 bg-light-100 dark:bg-dark-100'>
         <div className='w-full sm:w-1/3 bg-light-200 dark:bg-dark-200 h-44 rounded-xl flex items-center justify-center'>
-          {post?.meta?.hero ? (
+          {image ? (
             <Image
               alt={post.slug}
-              src={post.meta.hero}
+              src={image}
               width={176}
               height={176}
               className='h-full w-full object-cover rounded-xl'
@@ -44,13 +48,12 @@ function Post(post: any) {
           <div className=''>
             <h2 className='text-xl font-bold mb-2'>{title}</h2>
             <div className='flex items-center gap-4 mb-4'>
-              <Badge>React</Badge>
-              <Badge>Next.js</Badge>
-              <Badge>Typescript</Badge>
+              {tags.map((tag: any) => (
+                <Badge key={tag.id}>{tag?.name}</Badge>
+              ))}
             </div>
             <p>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Corrupti
-              voluptatum ipsum laborum voluptates vero amet
+              {description} <span className='italic'>...Read more</span>
             </p>
           </div>
         </div>

@@ -20,9 +20,9 @@ export default async function Intro({}: Props) {
   const info = data.find(
     (item: any) => item.properties?.slug.rich_text[0].plain_text === "intro"
   );
-  const name = info.properties?.Name?.title[0]?.plain_text;
+  const name = info.properties?.name?.title[0]?.plain_text;
   const description = info.properties?.description?.rich_text[0]?.plain_text;
-  const avatar = info.properties?.Image.files[0]?.file?.url;
+  const avatar = info.properties?.image.files[0]?.file?.url;
 
   return (
     <div className='flex flex-col justify-center items-center text-center'>

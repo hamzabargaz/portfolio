@@ -19,14 +19,14 @@ export default async function Page({ params }: any) {
   return (
     <div>
       <Head>
-        <title>{page?.properties?.Name?.title[0].plain_text}</title>
+        <title>{page?.properties?.name?.title[0].plain_text}</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
       <Card className='p-6 mt-3 h-full'>
         <article className={styles.container}>
           <h1 className={styles.name}>
-            <Text title={page?.properties.Name.title} />
+            <Text title={page?.properties.name.title} />
           </h1>
           <section>
             {blocks.map((block) => (

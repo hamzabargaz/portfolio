@@ -31,7 +31,7 @@ export default async function Recent({}: Props) {
 
 const Post = (post: any) => {
   const slug = post.properties?.slug?.rich_text[0]?.text.content;
-  const title = post.properties?.Name?.title[0]?.plain_text;
+  const title = post.properties?.name?.title[0]?.plain_text;
   return (
     <Link href={"/posts/" + slug}>
       <div className='rounded-xl p-4 bg-light-100 dark:bg-dark-100 flex flex-wrap'>
