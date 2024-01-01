@@ -1,7 +1,12 @@
 export { default as Sun } from "./ui/sun";
 export { default as Moon } from "./ui/moon";
+export { default as Menu } from "./ui/menu";
+export { default as Close } from "./ui/close";
 export { default as WavingHand } from "./ui/waving-hand";
 export { default as ArrowRight } from "./ui/arrow-right";
-export { default as GithubIcon } from "./social/github";
-export { default as LinkedinIcon } from "./social/linked-in";
 export { default as ArrowUpRight } from "./ui/arrow-up-right";
+// export { default as Github } from "./social/github";
+export { default as Linkedin } from "./social/linkedin";
+export { default as Twitter } from "./social/twitter";
+export { default as Instagram } from "./social/instagram";
+export { default as Facebook } from "./social/facebook";

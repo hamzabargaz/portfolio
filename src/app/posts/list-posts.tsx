@@ -1,47 +1,60 @@
 import React from "react";
-// import { compareDesc, format, parseISO } from "date-fns";
 import Link from "next/link";
-import { ArrowRight } from "@/assets/icons";
-import { getAllPostsMeta } from "@/lib/mdx";
 import Image from "next/image";
+import Card from "@/components/kit/card";
+import { Newspaper } from "lucide-react";
+import { Badge } from "@/components";
 
-type Props = {};
+type Props = {
+  posts: any;
+};
 
-export default async function Posts({}: Props) {
-  const posts = await getAllPostsMeta();
+export default async function Posts({ posts }: Props) {
   return (
-    <div className=''>
-      {posts.map((post: any) => (
-        <PostCard key={post.slug} {...post} />
-      ))}
+    <div className='my-4'>
+      <Card className='w-full p-4 flex flex-col gap-4 mb-4'>
+        {posts.map((post: any) => (
+          <Post key={post.slug} {...post} />
+        ))}
+      </Card>
     </div>
   );
 }
 
-function PostCard(post: any) {
+function Post(post: any) {
+  const slug = post.properties?.slug?.rich_text[0]?.text.content;
+  const title = post.properties?.name?.title[0]?.plain_text;
+  const description = post.properties?.description?.rich_text[0]?.text.content;
+  const tags = post.properties?.tags?.multi_select;
+  const image = post.properties?.image?.files[0]?.file?.url;
+
   return (
-    <Link
-      className='flex group py-6 mb-4 border-t-2 first:border-t-0'
-      href={"/posts/" + post.slug}
-    >
-      <div className='flex-col'>
-        <div className='group-hover:text-secondary text-2xl mb-2'>
-          {post.meta.title}
-        </div>
-        <p className='text-lg font-light text-primary-50 dark:text-gray-400'>
-          {post.meta.description}
-        </p>
-      </div>
-      <div className='hidden md:flex items-center ml-auto relative'>
-        <ArrowRight className='w-12 block group-hover:hidden absolute right-0 top-0' />
-        <div className='transition duration-500 transform opacity-0 group-hover:opacity-100 group-hover:scale-105'>
-          <div className='bg-white shadow-lg rounded-xl h-44 w-44 absolute right-0 -top-24'>
+    <Link href={"/posts/" + slug}>
+      <div className='flex flex-wrap rounded-xl p-4 bg-light-100 dark:bg-dark-100'>
+        <div className='w-full sm:w-1/3 bg-light-200 dark:bg-dark-200 h-44 rounded-xl flex items-center justify-center'>
+          {image ? (
             <Image
               alt={post.slug}
-              src={post.meta.hero}
-              fill
-              className='shadow-lg h-full w-full absolute right-0 -top-24 object-contain'
+              src={image}
+              width={176}
+              height={176}
+              className='h-full w-full object-cover rounded-xl'
             />
+          ) : (
+            <Newspaper className='w-10 h-10' />
+          )}
+        </div>
+        <div className='pl-6 pt-6 sm:pt-0 w-full sm:w-2/3 flex flex-col gap-4'>
+          <div className=''>
+            <h2 className='text-xl font-bold mb-2'>{title}</h2>
+            <div className='flex items-center gap-4 mb-4'>
+              {tags.map((tag: any) => (
+                <Badge key={tag.id}>{tag?.name}</Badge>
+              ))}
+            </div>
+            <p>
+              {description} <span className='italic'>...Read more</span>
+            </p>
           </div>
         </div>
       </div>
