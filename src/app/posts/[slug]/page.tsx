@@ -7,6 +7,7 @@ import Text from "@/components/ui/text";
 import { renderBlock } from "@/components/kit/notion-render";
 import styles from "@assets/styles/notion-render.module.css";
 import Card from "@/components/kit/card";
+import Image from "next/image";
 
 export default async function Page({ params }: any) {
   const page: any = await getPageFromSlug(params?.slug);
@@ -25,9 +26,16 @@ export default async function Page({ params }: any) {
 
       <Card className='p-6 mt-3 h-full'>
         <article className={styles.container}>
-          <h1 className={styles.name}>
+          <h1 className={styles.name + "text-center"}>
             <Text title={page?.properties.name.title} />
           </h1>
+          <Image
+            src={page?.properties?.image?.files[0]?.file?.url}
+            alt={page?.properties?.name?.title[0]?.plain_text}
+            width={176}
+            height={360}
+            className='h-full w-full object-fill rounded-xl my-10'
+          />
           <section>
             {blocks.map((block) => (
               <Fragment key={block.id}>{renderBlock(block)}</Fragment>

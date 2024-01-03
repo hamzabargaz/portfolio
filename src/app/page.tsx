@@ -5,7 +5,7 @@ import Recent from "./recent";
 import { Suspense } from "react";
 import Skeleton from "react-loading-skeleton";
 import { times } from "ramda";
-import { PostSkeleton } from "@/components/kit/loaders";
+import { PostsSkeleton } from "@/components/kit/loaders";
 
 export default async function Home() {
   return (
@@ -22,7 +22,7 @@ export default async function Home() {
         <Suspense
           fallback={times(
             (i) => (
-              <PostSkeleton key={i} />
+              <PostsSkeleton key={i} />
             ),
             3
           )}

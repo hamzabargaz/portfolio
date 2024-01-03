@@ -1,11 +1,10 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button, CTA } from "@/components";
+import { CTA } from "@/components";
 import { DM_Serif_Display } from "next/font/google";
 import cx from "classnames";
 import { getInfo } from "@/lib/notion";
-import { Copy } from "lucide-react";
 
 const dmSerifDisplay = DM_Serif_Display({
   subsets: ["latin"],

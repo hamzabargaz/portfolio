@@ -15,7 +15,11 @@ const dmSerifDisplay = DM_Serif_Display({
   weight: "400",
 });
 
-export default function NavigationHeader() {
+type Props = {
+  title: string;
+};
+
+export default function NavigationHeader({ title }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMobile();
   const pathname = usePathname();
@@ -38,7 +42,7 @@ export default function NavigationHeader() {
                 "flex items-center text-sm font-bold whitespace-pre leading-3"
               )}
             >
-              {`Hamza\nBargaz.`}
+              {`${title.replace(" ", "\n")}.`}
             </Link>
             <div className='flex items-center ml-auto'>
               <NavItems />
