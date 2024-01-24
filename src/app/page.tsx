@@ -3,7 +3,6 @@ import Intro from "./intro";
 import Featured from "./featured";
 import Recent from "./recent";
 import { Suspense } from "react";
-import Skeleton from "react-loading-skeleton";
 import { times } from "ramda";
 import { PostsSkeleton } from "@/components/kit/loaders";
 

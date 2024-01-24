@@ -4,46 +4,21 @@ import { Footer, NavigationHeader, Section } from "@/components";
 import { Epilogue } from "next/font/google";
 import cx from "classnames";
 import { ThemeProvider } from "@/lib/theme-provider";
-import { getBlocks, getInfo } from "@/lib/notion";
-
-const getData = async () => {
-  const data: any = await getInfo();
-
-  const page = data.find(
-    (item: any) => item.properties?.slug.rich_text[0].plain_text === "metadata"
-  );
-
-  const info = await getBlocks(page.id);
-  const data_table = info.find((item) => item.type === "table").children;
-  const table = {
-    title: data_table[0]?.table_row?.cells[1][0]?.plain_text || "",
-    url: data_table[1]?.table_row?.cells[1][0]?.plain_text || "",
-    description: data_table[2]?.table_row?.cells[1][0]?.plain_text || "",
-    twitter: data_table[3]?.table_row?.cells[1][0]?.plain_text || "",
-  };
-  return table;
-};
+import { getAuthor } from "@/lib/hygraph";
 
 export async function generateMetadata() {
-  const data = await getData();
+  const { seo } = await getAuthor();
   return {
-    title: data.title,
-    description: data.description,
-    metadataBase: new URL(data.url),
+    title: seo.title,
+    description: seo.description,
+    metadataBase: new URL(seo.url),
     openGraph: {
-      title: data.title,
-      description: data.description,
-      url: data.url,
-      siteName: data.title,
-      // images: [
-      //   {
-      //     url: '/assets/thumbnail/thumbnail.png',
-      //     width: 800,
-      //     height: 600,
-      //   },
-      // ],
+      ...seo.openGraph,
+      images: seo.openGraph.images.map((image: any) => ({
+        ...image,
+        url: new URL(image.url, seo.url).href,
+      })),
       locale: "en-US",
-      type: "website",
     },
     // icons: {
     //   icon: '/assets/favicon/favicon-32x32.png',
@@ -51,12 +26,8 @@ export async function generateMetadata() {
     //   apple: '/assets/favicon/apple-touch-icon.png',
     // },
     twitter: {
-      card: "summary_large_image",
-      creator: data.twitter,
-      title: data.title,
-      description: data.description,
-      site: data.url,
-      // images: '/assets/thumbnail/thumbnail.png',
+      ...seo.twitter,
+      image: seo.twitter.image.url,
     },
     // manifest: '/assets/favicon/site.webmanifest',
   };
@@ -72,7 +43,8 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const data = await getData();
+  const data = await getAuthor();
+
   return (
     <html lang='en'>
       <body
@@ -85,10 +57,10 @@ export default async function RootLayout({
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
           <main className='py-6 gap-y-2 mx-auto flex flex-col h-screen justify-between px-2 md:px-0'>
             <div className='grow flex flex-col'>
-              <NavigationHeader title={data.title} />
+              <NavigationHeader title={data.full_name} />
               <Section className='h-full'>{children}</Section>
             </div>
-            <Footer title={data.title} />
+            <Footer title={data.full_name} />
           </main>
         </ThemeProvider>
       </body>

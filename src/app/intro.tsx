@@ -4,7 +4,7 @@ import Link from "next/link";
 import { CTA } from "@/components";
 import { DM_Serif_Display } from "next/font/google";
 import cx from "classnames";
-import { getInfo } from "@/lib/notion";
+import { getAuthor } from "@/lib/hygraph";
 
 const dmSerifDisplay = DM_Serif_Display({
   subsets: ["latin"],
@@ -14,30 +14,25 @@ const dmSerifDisplay = DM_Serif_Display({
 type Props = {};
 
 export default async function Intro({}: Props) {
-  const data: any = await getInfo();
-
-  const info = data.find(
-    (item: any) => item.properties?.slug.rich_text[0].plain_text === "intro"
-  );
-  const name = info.properties?.name?.title[0]?.plain_text;
-  const description = info.properties?.description?.rich_text[0]?.plain_text;
-  const avatar = info.properties?.image.files[0]?.file?.url;
+  const author: any = await getAuthor();
 
   return (
     <div className='flex flex-col justify-center items-center text-center'>
       <div className='w-32 h-32 relative rounded-full border-8 border-[#EEEEEE] dark:border-[#282828]'>
         <Image
-          src={avatar}
+          src={author.avatar.url}
           alt='my picture'
-          fill
+          width={128}
+          height={128}
+          // fill
           className='rounded-full w-full h-full object-cover bg-blend-overlay shrink-0'
         />
       </div>
       <h1 className={cx(dmSerifDisplay.className, "text-3xl font-medium my-2")}>
-        {name}
+        {author.full_name}
       </h1>
       <p className='font-light'>
-        {description}
+        {author.intro}
         <Link href='/about' className='mx-1 underline italic'>
           read more about me
         </Link>

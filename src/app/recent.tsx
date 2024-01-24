@@ -1,23 +1,14 @@
 import { Badge } from "@/components";
 import { Newspaper } from "lucide-react";
 import React from "react";
-import { getAllPosts } from "@/lib/notion";
 import Link from "next/link";
 import Image from "next/image";
+import { getAllPosts } from "@/lib/hygraph";
 
 type Props = {};
 
-export const databaseId =
-  process.env?.NOTION_DATABASE_ID ?? "NOTION_DATABASE_ID";
-
-async function getPosts() {
-  const database = await getAllPosts();
-  return database;
-}
-
 export default async function Recent({}: Props) {
-  const posts = await getPosts();
-
+  const posts = await getAllPosts();
   return (
     <div className='flex flex-col h-full'>
       <h3 className='mb-6'>Recent Posts</h3>
@@ -31,21 +22,17 @@ export default async function Recent({}: Props) {
 }
 
 const Post = (post: any) => {
-  const slug = post.properties?.slug?.rich_text[0]?.text.content;
-  const title = post.properties?.name?.title[0]?.plain_text;
-  const description = post.properties?.description?.rich_text[0]?.text.content;
-  const tags = post.properties?.tags?.multi_select;
-  const image = post.properties?.image?.files[0]?.file?.url;
+  const { title, excerpt, tags, slug, hero_image } = post;
   return (
     <Link href={"/posts/" + slug}>
       <div className='rounded-xl p-4 bg-light-100 dark:bg-dark-100 flex flex-wrap'>
         <div className='w-full sm:w-1/3 bg-light-200 dark:bg-dark-200 h-44 rounded-xl flex items-center justify-center'>
-          {image ? (
+          {hero_image ? (
             <Image
               alt={post.slug}
-              src={image}
-              width={176}
-              height={176}
+              src={hero_image.url}
+              width={hero_image.width}
+              height={hero_image.height}
               className='h-full w-full object-cover rounded-xl'
             />
           ) : (
@@ -57,12 +44,12 @@ const Post = (post: any) => {
           <div className=''>
             <h4 className='text-lg font-medium mb-2'>{title}</h4>
             <div className='flex items-center gap-4 mb-4'>
-              {tags.map((tag: any) => (
-                <Badge key={tag.id}>{tag?.name}</Badge>
+              {tags.split(",").map((tag: any) => (
+                <Badge key={tag}>{tag}</Badge>
               ))}
             </div>
             <p>
-              {description} <span className='italic'>...Read more</span>
+              {excerpt} <span className='italic'>...Read more</span>
             </p>
           </div>
         </div>
