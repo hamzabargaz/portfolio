@@ -14,17 +14,14 @@ export default async function Home() {
     <div className='mt-3 flex flex-col h-full pb-20 md:pb-0'>
       <div className='grid gap-4 grid-cols-1 md:grid-cols-2 mb-4'>
         <Card className='p-6'>
-          {/* @ts-expect-error Server Component */}
           <Intro author={author} />
         </Card>
         <Card className='p-6'>
-          {/* @ts-expect-error Server Component */}
           <Featured features={features} />
         </Card>
       </div>
       {!isEmpty(posts) && (
         <Card className='grow p-4'>
-          {/* @ts-expect-error Server Component */}
           <Recent posts={posts} />
         </Card>
       )}
