@@ -63,7 +63,6 @@ export default async function RootLayout({
               />
               <Section className='h-full'>{children}</Section>
             </div>
-            {/* @ts-expect-error Server Component */}
             <Footer title={data.full_name} />
           </main>
         </ThemeProvider>
