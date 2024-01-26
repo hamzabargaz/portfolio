@@ -1,4 +1,10 @@
-import { AllFeatures, AllPosts, Author, SinglePost } from "./queries";
+import {
+  AllFeatures,
+  AllPosts,
+  Author,
+  SinglePost,
+  TotalPosts,
+} from "./queries";
 
 const API_URL = process.env.HYGRAPH_ENDPOINT;
 
@@ -17,6 +23,23 @@ const getAllPosts = async () => {
   const json = await response.json();
 
   return json.data.all_posts;
+};
+
+const getTotalPosts = async () => {
+  const response = await fetch(`${API_URL}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query: TotalPosts,
+    }),
+    next: { tags: ["total-posts"] },
+  });
+
+  const json = await response.json();
+
+  return json.data.all_postsConnection.aggregate.count;
 };
 
 const getSinglePost = async (slug: string) => {
@@ -71,4 +94,4 @@ const getAllFeatures = async () => {
   return json.data.all_features;
 };
 
-export { getAllPosts, getSinglePost, getAuthor, getAllFeatures };
+export { getAllPosts, getSinglePost, getAuthor, getAllFeatures, getTotalPosts };

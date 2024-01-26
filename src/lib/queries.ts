@@ -16,6 +16,17 @@ query AllPosts {
   }
 `;
 
+const TotalPosts = `
+query posts_count {
+  all_postsConnection {
+    aggregate {
+      count
+    }
+  }
+}
+
+`;
+
 const SinglePost = `
 query SinglePost($slug: String!) {
     post(where: {slug: $slug}) {
@@ -90,6 +101,7 @@ query Author($website_url: String = "https://bargaz.me/") {
 const AllFeatures = `
 query AllFeatures {
     all_features {
+      title_section
       id
       name
       start_date
@@ -106,4 +118,4 @@ query AllFeatures {
   }
 `;
 
-export { AllPosts, SinglePost, Author, AllFeatures };
+export { AllPosts, TotalPosts, SinglePost, Author, AllFeatures };

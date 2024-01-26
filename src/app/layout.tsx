@@ -4,7 +4,7 @@ import { Footer, NavigationHeader, Section } from "@/components";
 import { Epilogue } from "next/font/google";
 import cx from "classnames";
 import { ThemeProvider } from "@/lib/theme-provider";
-import { getAuthor } from "@/lib/hygraph";
+import { getAuthor, getTotalPosts } from "@/lib/hygraph";
 
 export async function generateMetadata() {
   const { seo } = await getAuthor();
@@ -44,7 +44,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const data = await getAuthor();
-
+  const total_posts = await getTotalPosts();
   return (
     <html lang='en'>
       <body
@@ -57,9 +57,13 @@ export default async function RootLayout({
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
           <main className='py-6 gap-y-2 mx-auto flex flex-col h-screen justify-between px-2 md:px-0'>
             <div className='grow flex flex-col'>
-              <NavigationHeader title={data.full_name} />
+              <NavigationHeader
+                total_posts={total_posts}
+                title={data.full_name}
+              />
               <Section className='h-full'>{children}</Section>
             </div>
+            {/* @ts-expect-error Server Component */}
             <Footer title={data.full_name} />
           </main>
         </ThemeProvider>

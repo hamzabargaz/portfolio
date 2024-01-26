@@ -11,11 +11,11 @@ const dmSerifDisplay = DM_Serif_Display({
   weight: "400",
 });
 
-type Props = {};
+type Props = {
+  author: any;
+};
 
-export default async function Intro({}: Props) {
-  const author: any = await getAuthor();
-
+export default async function Intro({ author }: Props) {
   return (
     <div className='flex flex-col justify-center items-center text-center'>
       <div className='w-32 h-32 relative rounded-full border-8 border-[#EEEEEE] dark:border-[#282828]'>
@@ -24,7 +24,6 @@ export default async function Intro({}: Props) {
           alt='my picture'
           width={128}
           height={128}
-          // fill
           className='rounded-full w-full h-full object-cover bg-blend-overlay shrink-0'
         />
       </div>
@@ -34,7 +33,7 @@ export default async function Intro({}: Props) {
       <p className='font-light'>
         {author.intro}
         <Link href='/about' className='mx-1 underline italic'>
-          read more about me
+          read more
         </Link>
       </p>
       <div className='flex items-center gap-4 mt-4'>

@@ -3,16 +3,16 @@ import { Calendar, Layers, MapPin } from "lucide-react";
 import React from "react";
 import { format } from "date-fns";
 import Image from "next/image";
-import { getAllFeatures } from "@/lib/hygraph";
+import { isEmpty, isNotNil } from "ramda";
 
-type Props = {};
+type Props = {
+  features: any;
+};
 
-export default async function Featured({}: Props) {
-  const features: any = await getAllFeatures();
-
+export default async function Featured({ features }: Props) {
   return (
     <>
-      <h3 className='mb-6'> Featured Projects</h3>
+      <h3 className='mb-6'>{features[0].title_section}</h3>
       <div className=' gap-4 flex flex-col h-auto md:max-h-72 overflow-auto pr-4'>
         {features.map((item: any, i: number) => {
           return <Project key={i} item={item} />;
@@ -31,6 +31,7 @@ const Project = ({ item }: TProject) => {
     item;
   const formatDate = (date: string) =>
     date && format(new Date(date), "MMM yyyy");
+  const isNotNilOrEmpty = (x: any) => isNotNil(x) && !isEmpty(x);
   return (
     <div className='flex flex-col gap-4 rounded-xl bg-light-100 dark:bg-dark-100 p-4'>
       <div className='flex items-start justify-between'>
@@ -50,9 +51,13 @@ const Project = ({ item }: TProject) => {
         <div className='flex flex-wrap justify-end gap-2 text-xs'>
           <div className='flex items-center gap-2'>
             <Calendar className='w-4 h-4' />
-            <span>
-              {formatDate(start_date)} | {formatDate(end_date)}
-            </span>
+            <div>
+              <span>{formatDate(start_date)}</span>
+              <span className='mx-1'>|</span>
+              <span>
+                {isNotNilOrEmpty(end_date) ? formatDate(end_date) : " Present"}
+              </span>
+            </div>
           </div>
           <div className='flex items-center gap-1'>
             <MapPin className='w-4 h-4' /> <span>{location}</span>
