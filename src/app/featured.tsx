@@ -35,7 +35,7 @@ const Project = ({ item }: TProject) => {
   return (
     <div className='flex flex-col gap-4 rounded-xl bg-light-100 dark:bg-dark-100 p-4'>
       <div className='flex items-start justify-between'>
-        <div className='p-2 rounded-xl bg-light-200 dark:bg-dark-200 w-10 h-10 relative '>
+        <div className='p-2 rounded-xl w-10 h-10 relative '>
           {icon ? (
             <Image
               src={icon.url}

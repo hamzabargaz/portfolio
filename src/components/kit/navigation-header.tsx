@@ -32,8 +32,8 @@ export default function NavigationHeader({ title, total_posts }: Props) {
   }, [pathname]);
 
   return (
-    <header className=''>
-      <Section className='sticky top-5 z-20 shadow-lg rounded-xl dark:shadow-light-400/5'>
+    <Section className='sticky top-5 z-20 shadow-lg rounded-xl dark:shadow-light-400/5'>
+      <header className=''>
         <Card className='px-6 py-4 rounded-xl'>
           <div className='flex items-center justify-between'>
             <Link
@@ -61,8 +61,8 @@ export default function NavigationHeader({ title, total_posts }: Props) {
             <MobileNav total_posts={total_posts} />
           </Card>
         )}
-      </Section>
-    </header>
+      </header>
+    </Section>
   );
 }
 
