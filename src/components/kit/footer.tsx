@@ -3,9 +3,9 @@ import cx from "classnames";
 import { Linkedin, Twitter, Instagram, Facebook } from "@assets/icons";
 import { DM_Serif_Display } from "next/font/google";
 import Card from "./card";
-import { getBlocks, getDatabase, getPageFromSlug } from "@/lib/notion";
 import Link from "next/link";
 import { Github } from "lucide-react";
+import { getAuthor } from "@/lib/hygraph";
 
 const dmSerifDisplay = DM_Serif_Display({
   subsets: ["latin"],
@@ -17,9 +17,8 @@ type Props = {
 };
 
 export default async function Footer({ title }: Props) {
-  const data: any = await getPageFromSlug("social_media");
-  const database = await getBlocks(data.id);
-  const socialMedia = await getDatabase(database[0].id);
+  const author: any = await getAuthor();
+  const socialMedia = author.author_social_Media;
 
   return (
     <footer className='py-6'>
@@ -36,7 +35,7 @@ export default async function Footer({ title }: Props) {
         </div>
         <div className='flex items-center ml-auto gap-4'>
           {socialMedia.map((item: any, i: number) => (
-            <SocialItem key={i} item={item} />
+            <SocialItem key={item.id} item={item} />
           ))}
         </div>
       </Card>
@@ -45,8 +44,7 @@ export default async function Footer({ title }: Props) {
 }
 
 const SocialItem = ({ item }: any) => {
-  const name = item?.properties?.name?.title[0]?.plain_text.toLowerCase();
-  const url = item?.properties?.url?.url;
+  const { url, name } = item;
 
   const getIcon: any = {
     linkedin: Linkedin,

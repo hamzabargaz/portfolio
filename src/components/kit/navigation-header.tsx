@@ -3,7 +3,7 @@ import { Section, ThemeSwitch, CTA } from "@/components/index";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import cx from "classnames";
-import { User, Newspaper, Copy } from "lucide-react";
+import { User, Newspaper } from "lucide-react";
 import Card from "./card";
 import { DM_Serif_Display } from "next/font/google";
 import { Close, Menu } from "@/assets/icons";
@@ -17,9 +17,10 @@ const dmSerifDisplay = DM_Serif_Display({
 
 type Props = {
   title: string;
+  total_posts: number;
 };
 
-export default function NavigationHeader({ title }: Props) {
+export default function NavigationHeader({ title, total_posts }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMobile();
   const pathname = usePathname();
@@ -31,7 +32,7 @@ export default function NavigationHeader({ title }: Props) {
   }, [pathname]);
 
   return (
-    <Section className='sticky top-5 z-20'>
+    <Section className='sticky top-5 z-20 shadow-lg rounded-xl dark:shadow-light-400/5'>
       <header className=''>
         <Card className='px-6 py-4 rounded-xl'>
           <div className='flex items-center justify-between'>
@@ -45,7 +46,7 @@ export default function NavigationHeader({ title }: Props) {
               {`${title.replace(" ", "\n")}.`}
             </Link>
             <div className='flex items-center ml-auto'>
-              <NavItems />
+              <NavItems total_posts={total_posts} />
               <ThemeSwitch />
               <MenuToggle
                 isOpen={isOpen}
@@ -57,7 +58,7 @@ export default function NavigationHeader({ title }: Props) {
         </Card>
         {isMobile && isOpen && (
           <Card className='block sm:hidden mt-3 p-4'>
-            <MobileNav />
+            <MobileNav total_posts={total_posts} />
           </Card>
         )}
       </header>
@@ -84,13 +85,15 @@ const MenuToggle = ({ isOpen, setIsOpen, isMobile }: TMenuToggle) => {
   );
 };
 
-const MobileNav = () => {
+const MobileNav = ({ total_posts }: { total_posts: number }) => {
   const pathname = usePathname();
   return (
     <div className='flex sm:hidden flex-col gap-2 text-sm mt-6'>
       {[
         { href: "/about", title: "About", Icon: User },
-        { href: "/posts", title: "Posts", Icon: Newspaper },
+        ...(total_posts !== 0
+          ? [{ href: "/posts", title: "Posts", Icon: Newspaper }]
+          : []),
       ].map((link) => {
         const isActive = pathname === link.href;
         return (
@@ -116,14 +119,16 @@ const MobileNav = () => {
   );
 };
 
-const NavItems = () => {
+const NavItems = ({ total_posts }: { total_posts: number }) => {
   const pathname = usePathname();
   return (
     <div className='hidden sm:flex items-center gap-x-2 text-base leading-5 '>
       <div className='hidden sm:flex gap-x-4 items-start'>
         {[
           { href: "/about", title: "About", Icon: User },
-          { href: "/posts", title: "Posts", Icon: Newspaper },
+          ...(total_posts !== 0
+            ? [{ href: "/posts", title: "Posts", Icon: Newspaper }]
+            : []),
         ].map((link) => {
           const isActive = pathname === link.href;
           return (

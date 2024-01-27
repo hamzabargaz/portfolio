@@ -5,3 +5,5 @@ export { default as Button } from "./ui/button";
 export { default as Badge } from "./ui/badge";
 export { default as Footer } from "./kit/footer";
 export { default as CTA } from "./kit/cta";
+export { default as ContentRender } from "./kit/content-render";
+export { default as PostCard } from "./kit/post-card";

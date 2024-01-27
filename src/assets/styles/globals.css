@@ -1,3 +1,68 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+::selection {
+  background-color: #47a3f3;
+  color: #fefefe;
+}
+
+:root {
+  --code-block-background: #f8f8f8; /* Light gray background for code block */
+  --code-block-border: #e0e0e0; /* Light border color for code block */
+
+  --sh-class: #005cc5;
+  --sh-identifier: #d73a49;
+  --sh-sign: #848484; /* Light gray for signs/operators */
+  --sh-string: #22863a;
+  --sh-keyword: #6f42c1;
+  --sh-comment: #6a737d;
+  --sh-jsxliterals: #005cc5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --code-block-background: #1e1e1e; /* Dark background for code block in dark mode */
+    --code-block-border: #2a2a2a; /* Dark border color for code block in dark mode */
+
+    --sh-class: #6cb6ff;
+    --sh-identifier: #d73a49;
+    --sh-keyword: #c678dd;
+    --sh-string: #50a14f;
+  }
+}
+
+pre {
+  @apply bg-[#f8f8f8] border border-[#e0e0e0] rounded-lg p-4 overflow-x-auto dark:bg-[#1e1e1e] dark:border-[#2a2a2a];
+}
+
+code {
+  @apply px-1 py-0.5 rounded-lg;
+}
+pre code {
+  @apply p-0;
+  border: initial;
+  line-height: 1.5;
+}
+code span {
+  @apply font-medium;
+}
+
+pre::-webkit-scrollbar {
+  display: none;
+}
+
+pre {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  padding: 1rem 0.5rem;
+  margin: 1rem 0;
+}
+
+pre code {
+  counter-reset: sh-line-number;
+}
+
+.title {
+  text-wrap: balance;
+}
