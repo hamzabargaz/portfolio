@@ -2,16 +2,50 @@ import Link from "next/link";
 import Card from "@/components/kit/card";
 import Image from "next/image";
 import { getSinglePost } from "@/lib/hygraph";
-import { RichText } from "@graphcms/rich-text-react-renderer";
 import { notFound } from "next/navigation";
 import { ContentRender } from "@/components";
-import { Inter } from "next/font/google";
 import cx from "classnames";
+import { Metadata } from "next";
 
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-});
+export async function generateMetadata({
+  params,
+}: any): Promise<Metadata | undefined> {
+  let post = await getSinglePost(params?.slug);
+  if (!post) {
+    return;
+  }
+
+  let {
+    title,
+    date,
+    excerpt: description,
+    hero_image: { url: ogImage },
+  } = post;
+  const publishedTime = new Date(date).toISOString();
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      publishedTime,
+      url: `${post.slug}`,
+      images: [
+        {
+          url: ogImage,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
+    },
+  };
+}
 
 export default async function Page({ params }: any) {
   const post: any = await getSinglePost(params?.slug);
@@ -26,7 +60,6 @@ export default async function Page({ params }: any) {
         <h1
           className={cx(
             "text-center text-5xl font-bold my-6 font-sans leading-normal"
-            // inter.className
           )}
         >
           {post.title}

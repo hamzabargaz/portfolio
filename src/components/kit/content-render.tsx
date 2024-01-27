@@ -1,6 +1,7 @@
 import React from "react";
 import { RichText } from "@graphcms/rich-text-react-renderer";
 import { highlight } from "sugar-high";
+import Image from "next/image";
 
 type Props = {
   content: any;
@@ -11,6 +12,13 @@ export default function ContentRender({ content }: Props) {
     <RichText
       content={content}
       renderers={{
+        img: ({ props }: any) => {
+          return (
+            <div className='flex justify-center'>
+              <Image alt={props.altText} className='rounded-lg' {...props} />;
+            </div>
+          );
+        },
         p: ({ children }) => {
           return <p className='mb-4'>{children}</p>;
         },
