@@ -1,21 +1,20 @@
-import React, { Suspense } from "react";
-import ListPosts from "./list-posts";
-// import { getAllPosts } from "@/lib/notion";
+import React from "react";
 import Card from "@/components/kit/card";
-import Skeleton from "react-loading-skeleton";
 import { getAllPosts } from "@/lib/hygraph";
-
-// async function getPosts() {
-//   const database = await getAllPosts();
-//   return database;
-// }
+import { PostCard } from "@/components";
 
 export default async function Posts() {
   const posts = await getAllPosts();
 
   return (
     <>
-      <ListPosts posts={posts} />
+      <div className='my-4'>
+        <Card className='w-full p-4 flex flex-col gap-4 mb-4'>
+          {posts.map((post: any, i: number) => (
+            <PostCard key={i} {...post} />
+          ))}
+        </Card>
+      </div>
     </>
   );
 }
