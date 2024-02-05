@@ -5,6 +5,7 @@ import { Epilogue } from "next/font/google";
 import cx from "classnames";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { getAuthor, getTotalPosts } from "@/lib/hygraph";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 export async function generateMetadata() {
   const { seo } = await getAuthor();
@@ -38,6 +39,8 @@ const epilogue = Epilogue({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
 });
 
+const gaID = process.env.GA_ID || "";
+
 export default async function RootLayout({
   children,
 }: {
@@ -45,6 +48,7 @@ export default async function RootLayout({
 }) {
   const data = await getAuthor();
   const total_posts = await getTotalPosts();
+  console.log("GA_ID ", gaID);
   return (
     <html lang='en'>
       <body
@@ -67,6 +71,8 @@ export default async function RootLayout({
           </main>
         </ThemeProvider>
       </body>
+
+      <GoogleAnalytics gaId={gaID} />
     </html>
   );
 }
