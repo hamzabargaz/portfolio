@@ -7,6 +7,7 @@ import {
 } from "./queries";
 
 const API_URL = process.env.HYGRAPH_ENDPOINT;
+const ID_AUTHOR = process.env.HYGRAPH_AUTHOR_ID;
 
 const getAllPosts = async () => {
   const response = await fetch(`${API_URL}`, {
@@ -68,6 +69,7 @@ const getAuthor = async () => {
     },
     body: JSON.stringify({
       query: Author,
+      variables: { id: ID_AUTHOR },
     }),
     next: { tags: ["author"] },
   });

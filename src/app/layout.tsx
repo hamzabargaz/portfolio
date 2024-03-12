@@ -48,7 +48,6 @@ export default async function RootLayout({
 }) {
   const data = await getAuthor();
   const total_posts = await getTotalPosts();
-  console.log("GA_ID ", gaID);
   return (
     <html lang='en'>
       <body

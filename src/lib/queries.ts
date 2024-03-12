@@ -47,8 +47,8 @@ query SinglePost($slug: String!) {
 `;
 
 const Author = `
-query Author($website_url: String = "https://bargaz.me/") {
-  author(where: {website_url: $website_url}) {
+query Author($id: ID!) {
+  author(where: {id: $id}) {
     full_name
     intro
     website_url
