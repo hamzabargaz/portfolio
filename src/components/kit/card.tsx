@@ -8,11 +8,8 @@ type TCard = {
 export default function Card({ children, className = "p-4", ...props }: TCard) {
   return (
     <div
-      className={cx(
-        className,
-        "rounded-xl bg-light-200 dark:bg-dark-200"
-        // " border border-gray-200 dark:border-[#1e1e1e]"
-      )}
+      className={cx(className, "rounded-3xl bg-light-200 dark:bg-dark-200")}
+      style={{ boxShadow: "0 0 0 1px rgba(82,82,82,.2)" }}
     >
       {children}
     </div>

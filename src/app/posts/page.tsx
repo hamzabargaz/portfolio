@@ -9,11 +9,11 @@ export default async function Posts() {
   return (
     <>
       <div className='my-4'>
-        <Card className='w-full p-4 flex flex-col gap-4 mb-4'>
+        <div className='w-full mb-4 grid grid-cols-1 md:grid-cols-2 gap-4'>
           {posts.map((post: any, i: number) => (
             <PostCard key={i} {...post} />
           ))}
-        </Card>
+        </div>
       </div>
     </>
   );

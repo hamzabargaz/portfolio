@@ -34,7 +34,7 @@ export default function NavigationHeader({ title, total_posts }: Props) {
   return (
     <Section className='sticky top-5 z-20 shadow-lg rounded-xl dark:shadow-light-400/5'>
       <header className=''>
-        <Card className='px-6 py-4 rounded-xl'>
+        <Card className='px-6 py-4'>
           <div className='flex items-center justify-between'>
             <Link
               href='/'

@@ -8,8 +8,16 @@ type Props = {
 export default async function Recent({ posts }: Props) {
   return (
     <div className='flex flex-col h-full'>
-      <h3 className='mb-6'>Recent Posts</h3>
-      <div className='flex flex-col gap-4 pr-4'>
+      <h2
+        className='text-2xl mb-6 font-bold bg-clip-text text-transparent'
+        style={{
+          backgroundImage:
+            "linear-gradient(0deg, #00000000 -30.000000000000004%, #ffffff 195.00000000000003%)",
+        }}
+      >
+        Recent Posts
+      </h2>
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
         {posts.map((post: any) => (
           <PostCard key={post.id} {...post} />
         ))}
