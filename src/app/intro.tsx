@@ -47,11 +47,10 @@ export default async function Intro({ author }: Props) {
       <Card className='p-6'>
         <div className='gap-4 flex flex-col h-full pr-4 justify-center group relative'>
           <h1
-            className='text-4xl font-bold bg-clip-text text-transparent'
-            style={{
-              backgroundImage:
-                "linear-gradient(0deg, #00000000 -30.000000000000004%, #ffffff 195.00000000000003%)",
-            }}
+            className={cx(
+              "text-4xl font-bold bg-clip-text text-transparent",
+              "bg-gradient-to-r from-dark-300 dark:from-light-300 to-dark-400 dark:to-light-400"
+            )}
           >
             Hey There i'm Hamza 👋
           </h1>
