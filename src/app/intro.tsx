@@ -45,28 +45,27 @@ export default async function Intro({ author }: Props) {
         </div>
       </Card>
       <Card className='p-6'>
-        <div className='gap-4 flex flex-col h-full pr-4 justify-center group relative'>
-          <h1
-            className={cx(
-              "text-4xl font-bold bg-clip-text text-transparent",
-              "bg-gradient-to-r from-dark-300 dark:from-light-300 to-dark-400 dark:to-light-400"
-            )}
-          >
-            Hey There i'm Hamza 👋
-          </h1>
-          <p className='leading-6'>
-            A passionate front-end developer for technology and love using my
-            skills to create visually appealing and user-friendly web
-            applications. I believe in the power of continual learning and am
-            always seeking to expand my knowledge and skills.
-          </p>
-          <Link
-            href='/about'
-            className='hidden group-hover:flex w-10 h-10 rounded-full items-center justify-center bg-dark-400 border border-light-400 hover:opacity-40 absolute bottom-0 right-3'
-          >
-            <ArrowRight className='w-6 h-6 text-light-100 stroke-2' />
-          </Link>
-        </div>
+        <Link href='/about'>
+          <div className='gap-4 flex flex-col h-full pr-4 justify-center group relative'>
+            <h1
+              className={cx(
+                "text-4xl font-bold bg-clip-text text-transparent",
+                "bg-gradient-to-r from-dark-300 dark:from-light-300 to-dark-400 dark:to-light-400"
+              )}
+            >
+              Hey There i'm Hamza 👋
+            </h1>
+            <p className='leading-6'>
+              A passionate front-end developer for technology and love using my
+              skills to create visually appealing and user-friendly web
+              applications. I believe in the power of continual learning and am
+              always seeking to expand my knowledge and skills.
+            </p>
+            <div className='hidden group-hover:flex w-10 h-10 rounded-full items-center justify-center bg-dark-400 border border-light-400 hover:opacity-40 absolute bottom-0 right-3'>
+              <ArrowRight className='w-6 h-6 text-light-100 stroke-2' />
+            </div>
+          </div>
+        </Link>
       </Card>
     </>
   );
