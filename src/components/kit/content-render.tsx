@@ -12,6 +12,15 @@ export default function ContentRender({ content }: Props) {
     <RichText
       content={content}
       renderers={{
+        h1: ({ children }: any) => {
+          return <h1 className='text-4xl font-bold mt-6 mb-4'>{children}</h1>;
+        },
+        h2: ({ children }: any) => {
+          return <h2 className='text-3xl font-bold mt-6 mb-4'>{children}</h2>;
+        },
+        h3: ({ children }: any) => {
+          return <h3 className='text-2xl font-bold mt-6 mb-4'>{children}</h3>;
+        },
         img: ({ props }: any) => {
           return (
             <div className='flex justify-center'>

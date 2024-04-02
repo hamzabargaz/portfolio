@@ -24,14 +24,15 @@ export default async function Footer({ title }: Props) {
     <footer className='py-6'>
       <Card className='flex items-center w-full p-4'>
         <div className='flex items-center space-x-4'>
-          <span
+          <Link
+            href='/'
             className={cx(
               dmSerifDisplay.className,
-              "relative flex items-center text-sm font-bold whitespace-pre leading-3"
+              "flex items-center text-sm font-bold whitespace-pre leading-3"
             )}
           >
             {`${title.replace(" ", "\n")}.`}
-          </span>
+          </Link>
         </div>
         <div className='flex items-center ml-auto gap-4'>
           {socialMedia.map((item: any, i: number) => (

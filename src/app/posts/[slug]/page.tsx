@@ -56,10 +56,10 @@ export default async function Page({ params }: any) {
 
   return (
     <Card className='p-6 mt-3 h-full'>
-      <article className='px-5 max-w-2xl mx-auto leading-6 whitespace-pre-line'>
+      <article className='px-5 mx-auto leading-6 whitespace-pre-line'>
         <h1
           className={cx(
-            "text-center text-5xl font-bold my-6 font-sans leading-normal"
+            "text-center text-3xl md:text-5xl font-bold my-6 font-sans leading-normal"
           )}
         >
           {post.title}
