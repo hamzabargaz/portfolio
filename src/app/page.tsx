@@ -1,4 +1,3 @@
-import Card from "@/components/kit/card";
 import Intro from "./intro";
 import Recent from "./recent";
 import { isEmpty } from "ramda";
