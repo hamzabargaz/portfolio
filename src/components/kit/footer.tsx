@@ -22,7 +22,7 @@ export default async function Footer({ title }: Props) {
 
   return (
     <footer className='py-6'>
-      <Card className='flex items-center w-full p-4'>
+      <Card className='flex items-center w-full p-4 !bg-transparent'>
         <div className='flex items-center space-x-4'>
           <Link
             href='/'
