@@ -1,7 +1,7 @@
 import React from "react";
 import { PostCard } from "@/components";
 import cx from "classnames";
-import { FadeIn, SlideUp } from "@/components/kit/animate";
+import { FadeIn } from "@/components/kit/animate";
 
 type Props = {
   posts: any;
