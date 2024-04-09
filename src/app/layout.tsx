@@ -21,11 +21,18 @@ export async function generateMetadata() {
       })),
       locale: "en-US",
     },
-    // icons: {
-    //   icon: '/assets/favicon/favicon-32x32.png',
-    //   shortcut: '/assets/favicon/favicon.ico',
-    //   apple: '/assets/favicon/apple-touch-icon.png',
-    // },
+    icons: {
+      icon: [
+        {
+          media: "(prefers-color-scheme: light)",
+          url: seo.icon_light.url,
+        },
+        {
+          media: "(prefers-color-scheme: dark)",
+          url: seo.icon_dark.url,
+        },
+      ],
+    },
     twitter: {
       ...seo.twitter,
       image: seo.twitter.image.url,

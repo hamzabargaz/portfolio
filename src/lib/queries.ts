@@ -67,6 +67,14 @@ query Author($id: ID!) {
       title
       description
       url
+      icon_light {
+        id
+        url
+      }
+      icon_dark {
+        id
+        url
+      }
       openGraph {
         title
         description
