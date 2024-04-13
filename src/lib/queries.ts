@@ -42,6 +42,18 @@ query SinglePost($slug: String!) {
       content {
         raw
       }
+      seo {
+        openGraph {
+          authors
+          type
+          url
+          siteName
+        }
+        twitter {
+          site
+          creator
+        }
+      }
     }
   }
 `;

@@ -20,28 +20,37 @@ export async function generateMetadata({
     title,
     date,
     excerpt: description,
-    hero_image: { url: ogImage },
+    hero_image: { url: ogImage, width, height },
+    seo,
   } = post;
   const publishedTime = new Date(date).toISOString();
-
+  const { openGraph, twitter } = seo;
   return {
     title,
     description,
     openGraph: {
+      type: "article",
       title,
       description,
-      type: "article",
       publishedTime,
-      url: `${post.slug}`,
+      url: openGraph.url,
+      siteName: openGraph.siteName,
+      locale: "en_US",
+      tags: post?.tags,
+      authors: openGraph.authors,
       images: [
         {
           url: ogImage,
+          width,
+          height,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
       title,
+      creator: twitter.creator,
+      site: twitter.site,
       description,
       images: [ogImage],
     },

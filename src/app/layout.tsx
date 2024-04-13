@@ -37,7 +37,6 @@ export async function generateMetadata() {
       ...seo.twitter,
       image: seo.twitter.image.url,
     },
-    // manifest: '/assets/favicon/site.webmanifest',
   };
 }
 
