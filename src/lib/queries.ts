@@ -32,6 +32,7 @@ query SinglePost($slug: String!) {
     post(where: {slug: $slug}) {
       slug
       title
+      excerpt
       tags
       date
       hero_image {
