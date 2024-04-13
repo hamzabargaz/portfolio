@@ -19,19 +19,19 @@ export async function generateMetadata({
   let {
     title,
     date,
-    excerpt: description,
-    hero_image: { url: ogImage, width, height },
+    excerpt,
+    hero_image: { url: image, width, height },
     seo,
   } = post;
   const publishedTime = new Date(date).toISOString();
   const { openGraph, twitter } = seo;
   return {
     title,
-    description,
+    description: excerpt,
     openGraph: {
       type: "article",
       title,
-      description,
+      description: excerpt,
       publishedTime,
       url: openGraph.url,
       siteName: openGraph.siteName,
@@ -40,7 +40,7 @@ export async function generateMetadata({
       authors: openGraph.authors,
       images: [
         {
-          url: ogImage,
+          url: image,
           width,
           height,
         },
@@ -51,8 +51,8 @@ export async function generateMetadata({
       title,
       creator: twitter.creator,
       site: twitter.site,
-      description,
-      images: [ogImage],
+      description: excerpt,
+      images: [image],
     },
   };
 }
