@@ -65,12 +65,12 @@ export default async function Page({ params }: any) {
   }
 
   return (
-    <Card className='p-6 mt-3 h-full'>
+    <div className='mt-20 h-full'>
       <FadeIn>
         <article className='px-5 mx-auto leading-6 whitespace-pre-line'>
           <h1
             className={cx(
-              "text-center text-3xl md:text-5xl font-bold my-6 font-sans leading-normal"
+              "text-center text-3xl md:text-5xl font-bold my-10 font-sans leading-normal"
             )}
           >
             {post.title}
@@ -90,6 +90,6 @@ export default async function Page({ params }: any) {
           </section>
         </article>
       </FadeIn>
-    </Card>
+    </div>
   );
 }
