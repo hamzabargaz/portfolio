@@ -1,0 +1,223 @@
+---
+title: "How to Configure Custom Auth Token Refresh for Next.js 14 Server Components"
+slug: "how-to-configure-custom-auth-token-refresh-for-nextjs-14-server-components"
+date: "02-04-2024"
+excerpt: "In modern web development, security in the processing of authentication is critical to current web development. This is made simple with Next.js"
+tags:
+  ["Next.js", "Server-Components", "Architecture", "Frontend", "Refresh-Token"]
+hero_image: "/images/blog/auth-configuration.jpeg"
+seo:
+  openGraph:
+    authors: ["Hamza Bargaz"]
+    type: "article"
+    url: "https://www.bargaz.me/posts/how-to-configure-custom-auth-token-refresh-for-nextjs-14-server-components"
+    siteName: "Hamza Bargaz"
+  twitter:
+    card: summary_large_image
+    site: "https://www.bargaz.me/posts/how-to-configure-custom-auth-token-refresh-for-nextjs-14-server-components"
+    creator: "@hamza_bargaz"
+---
+
+In modern web development, security in the processing of authentication is critical to current web development. This is made simple with Next.js, which includes an integrated authentication system that interfaces with server-side components.
+
+In this article, we'll look at how to set up custom authentication for Next.js 14 server components and ensure secure data fetching.
+
+## Custom Authentication Overview
+
+Next.js offers a built-in authentication mechanism, but there are times when custom solutions are necessary, such as integrating with third-party authentication providers or implementing complex workflows for authentication.
+
+## Exploring the Code
+
+Let's look at a sample code snippet that demonstrates how to configure custom data fetching for server-side in a Next.js application:
+
+### Step 1: Create a Send Function
+
+First, let's create a send function using the native Fetch API to retrieve the necessary data:
+
+```typescript
+type FetcherProps = {
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  path: string;
+  data?: any;
+  headers?: object;
+  configs?: object;
+};
+
+// Define API base URL
+const host = process.env.API_URL;
+
+// Function for sending HTTP requests
+export default function send(option: FetcherProps) {
+  const { method, path, data, headers, configs } = option;
+  return fetch(`${host}${path}`, {
+    method,
+    headers,
+    credentials: "include",
+    body: JSON.stringify(data),
+    ...configs,
+  });
+}
+```
+
+### Step 2: Create Server Request Function
+
+Next, we need to create a reusable function `server-request.ts` that can be used for all API data calls in server-side components to handle the server fetch request:
+
+```typescript
+// Import necessary modules and types
+import { cookies } from "next/headers";
+import send from "./send.ts";
+import { actionRefreshToken } from "@/actions";
+
+type FetcherProps = {
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  path: string;
+  data?: any;
+  headers?: object;
+  configs?: object;
+};
+
+// Define a function for making server requests
+export default async function serverRequest({
+  method,
+  path,
+  headers,
+  data,
+  configs,
+}: FetcherProps) {
+  // Retrieve authentication token from cookies
+  const cookieStore = cookies();
+  const token = cookieStore.get("token")?.value;
+
+  // Send HTTP request with authentication token
+  const res = await send({
+    method,
+    path,
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...headers,
+    },
+    data,
+    configs,
+  });
+
+  // Handle response
+  let status = res.status;
+  let body = await res.json();
+  let resHeaders = res.headers;
+
+  // Handle error responses
+  if (!res.ok) {
+    // We add a condition to handle the invalid token error from BE
+    if (status === 401 && body?.detail === "Invalid token.") {
+      // Refresh token if invalid and return token value or error
+      const refresh = await actionRefreshToken();
+
+      if (refresh?.error) {
+        throw { data: "session ended", status: 401 };
+      }
+      // if no error we recall the function of serverRequest with new refresh token
+      return await serverRequest({
+        method,
+        path,
+        headers: {
+          Authorization: `Bearer ${refresh.token}`,
+          ...headers,
+        },
+        data,
+        configs,
+      });
+    }
+    // return any other error in this object format
+    throw { data: body, status, headers: resHeaders };
+  }
+
+  // Return response
+  return { data: body, status, headers: resHeaders };
+}
+```
+
+### Step 3: Handle Refresh Token
+
+For handling refresh token function, we have two ways: either we refresh it with server actions or with router handler. For this example, we're using server actions `actionRefreshToken.ts`:
+
+```typescript
+"use server";
+
+import { cookies } from "next/headers";
+import send from "@lib/send";
+
+export async function actionRefreshToken() {
+  try {
+    const body = await send({
+      method: "GET",
+      path: "/refresh-token",
+    });
+    const { token } = await body.json();
+    // Set the new token in the cookie
+    cookies().set({
+      name: "token",
+      value: token,
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24, // minutes to milliseconds
+      path: "/",
+    });
+    return { token };
+  } catch (error: any) {
+    // If the token is invalid, delete it from the cookie
+    cookies().delete("token");
+    return { error: error.message };
+  }
+}
+```
+
+## Usage Example
+
+Now, let's see how we can use the `getUser` function in a Next.js `app/page.tsx`:
+
+```typescript
+// Import the function
+import serverRequest from "@lib/server-request"
+import { redirect } from 'next/navigation';
+
+// Function to fetch user data
+const getUser = async () => {
+  try {
+    const response = await serverRequest({
+      method: 'GET',
+      path: `/user/me`,
+      configs: {
+        cache: 'force-cache',
+        next: { tags: ['user'] },
+      }
+    });
+    const user = await response.data;
+    return user;
+  } catch (error: any) {
+    if (error.status === 401 && error.data === 'session ended') {
+      // we redirect the user to login page if the session ended
+      redirect('/login');
+    }
+    return error.data;
+  }
+};
+
+// Next.js page component
+export default async function Page() {
+  // Fetch user data
+  const user = await getUser();
+
+  // Use user data in the page component
+  // ......
+
+  return (
+    // ......
+  );
+}
+```
+
+## Conclusion
+
+And that's it! I hope that this article has helped you understand how to configure custom authentication in Next.js applications.
+
+If you enjoyed it and found this post helpful, please share it with your network so that others can benefit as well. If you require any additional information, please do not hesitate to contact me. I am pleased to assist.
