@@ -4,7 +4,7 @@ import { Footer, NavigationHeader, Section } from "@/components";
 import { Epilogue } from "next/font/google";
 import cx from "classnames";
 import { ThemeProvider } from "@/lib/theme-provider";
-import { getAuthor, getTotalPosts } from "@/lib/hygraph";
+import { getAuthor, getTotalPosts } from "@/lib/json-data";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
 export async function generateMetadata() {
