@@ -4,11 +4,11 @@ import { Footer, NavigationHeader, Section } from "@/components";
 import { Epilogue } from "next/font/google";
 import cx from "classnames";
 import { ThemeProvider } from "@/lib/theme-provider";
-import { getAuthor, getTotalPosts } from "@/lib/json-data";
+import { getAuthorAction, getTotalPostsAction } from "@/lib/actions";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
 export async function generateMetadata() {
-  const { seo } = await getAuthor();
+  const { seo } = await getAuthorAction();
   return {
     title: seo.title,
     description: seo.description,
@@ -52,10 +52,10 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const data = await getAuthor();
-  const total_posts = await getTotalPosts();
+  const data = await getAuthorAction();
+  const total_posts = await getTotalPostsAction();
   return (
-    <html lang='en'>
+    <html lang='en' suppressHydrationWarning>
       <body
         className={cx(
           "bg-light-100 dark:bg-dark-100 h-full text-light-300 dark:text-dark-300",

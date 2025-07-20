@@ -5,7 +5,7 @@ import { DM_Serif_Display } from "next/font/google";
 import Card from "./card";
 import Link from "next/link";
 import { Github } from "lucide-react";
-import { getAuthor } from "@/lib/json-data";
+import { getAuthorAction } from "@/lib/actions";
 
 const dmSerifDisplay = DM_Serif_Display({
   subsets: ["latin"],
@@ -17,8 +17,8 @@ type Props = {
 };
 
 export default async function Footer({ title }: Props) {
-  const author: any = await getAuthor();
-  const socialLinks = author.social_links;
+  const author = await getAuthorAction();
+  const socialLinks = author.social_links || [];
 
   return (
     <footer className='py-6'>

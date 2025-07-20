@@ -25,7 +25,7 @@ export default async function Intro({ author }: Props) {
           <div className='flex flex-col justify-center items-center text-center'>
             <div className='w-32 h-32 relative rounded-full border-8 border-[#EEEEEE] dark:border-[#282828]'>
               <Image
-                src={author.avatar.url}
+                src={author.avatar}
                 alt='my picture'
                 width={128}
                 height={128}

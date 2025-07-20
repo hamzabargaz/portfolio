@@ -1,5 +1,5 @@
 import React from "react";
-import { getAllPosts } from "@/lib/hygraph";
+import { getAllPosts } from "@/lib/mdx-posts";
 import { PostCard } from "@/components";
 import { FadeIn } from "@/components/kit/animate";
 
