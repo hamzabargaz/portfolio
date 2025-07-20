@@ -1,3 +1,5 @@
+"use server";
+
 import fs from "fs";
 import path from "path";
 
@@ -53,44 +55,30 @@ export interface AuthorData {
   };
 }
 
-export const getAuthor = async (): Promise<AuthorData> => {
+export async function getAuthorAction(): Promise<AuthorData> {
   const contentPath = path.join(process.cwd(), "content", "author.json");
 
   if (!fs.existsSync(contentPath)) {
     throw new Error(`Author data file not found at: ${contentPath}`);
   }
 
-  try {
-    const fileContents = fs.readFileSync(contentPath, "utf8");
-    const data = JSON.parse(fileContents) as AuthorData;
+  const fileContents = fs.readFileSync(contentPath, "utf8");
+  const data = JSON.parse(fileContents) as AuthorData;
 
-    if (!data || !data.full_name) {
-      throw new Error("Invalid author data format");
-    }
-
-    return data;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(`Failed to load author data: ${error.message}`);
-    }
-    throw new Error("Failed to load author data");
+  if (!data || !data.full_name) {
+    throw new Error("Invalid author data format");
   }
-};
 
-export const getTotalPosts = async (): Promise<number> => {
+  return data;
+}
+
+export async function getTotalPostsAction(): Promise<number> {
   const postsPath = path.join(process.cwd(), "content", "posts");
 
   if (!fs.existsSync(postsPath)) {
     throw new Error(`Posts directory not found at: ${postsPath}`);
   }
 
-  try {
-    const files = fs.readdirSync(postsPath);
-    return files.filter((file) => file.endsWith(".mdx")).length;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(`Failed to count posts: ${error.message}`);
-    }
-    throw new Error("Failed to count posts");
-  }
-};
+  const files = fs.readdirSync(postsPath);
+  return files.filter((file) => file.endsWith(".mdx")).length;
+}

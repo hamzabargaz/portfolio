@@ -1,6 +1,4 @@
-import fs from "fs";
-import path from "path";
-
+// This file is server-side only
 export interface AuthorData {
   website_url: string;
   full_name: string;
@@ -54,43 +52,37 @@ export interface AuthorData {
 }
 
 export const getAuthor = async (): Promise<AuthorData> => {
+  // Dynamic import to ensure fs is only loaded on server
+  const fs = await import("fs");
+  const path = await import("path");
+
   const contentPath = path.join(process.cwd(), "content", "author.json");
 
   if (!fs.existsSync(contentPath)) {
     throw new Error(`Author data file not found at: ${contentPath}`);
   }
 
-  try {
-    const fileContents = fs.readFileSync(contentPath, "utf8");
-    const data = JSON.parse(fileContents) as AuthorData;
+  const fileContents = fs.readFileSync(contentPath, "utf8");
+  const data = JSON.parse(fileContents) as AuthorData;
 
-    if (!data || !data.full_name) {
-      throw new Error("Invalid author data format");
-    }
-
-    return data;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(`Failed to load author data: ${error.message}`);
-    }
-    throw new Error("Failed to load author data");
+  if (!data || !data.full_name) {
+    throw new Error("Invalid author data format");
   }
+
+  return data;
 };
 
 export const getTotalPosts = async (): Promise<number> => {
+  // Dynamic import to ensure fs is only loaded on server
+  const fs = await import("fs");
+  const path = await import("path");
+
   const postsPath = path.join(process.cwd(), "content", "posts");
 
   if (!fs.existsSync(postsPath)) {
     throw new Error(`Posts directory not found at: ${postsPath}`);
   }
 
-  try {
-    const files = fs.readdirSync(postsPath);
-    return files.filter((file) => file.endsWith(".mdx")).length;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(`Failed to count posts: ${error.message}`);
-    }
-    throw new Error("Failed to count posts");
-  }
+  const files = fs.readdirSync(postsPath);
+  return files.filter((file) => file.endsWith(".mdx")).length;
 };
