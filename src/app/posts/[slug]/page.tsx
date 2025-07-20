@@ -3,7 +3,7 @@ import Card from "@/components/kit/card";
 import Image from "next/image";
 import { getSinglePost } from "@/lib/mdx-posts";
 import { notFound } from "next/navigation";
-import { ContentRender } from "@/components";
+import { ContentRender, BlogPostingSchema } from "@/components";
 import cx from "classnames";
 import { Metadata } from "next";
 import { FadeIn } from "@/components/kit/animate";
@@ -92,6 +92,7 @@ export default async function Page({ params }: any) {
             </Link>
           </section>
         </article>
+        <BlogPostingSchema post={post} />
       </FadeIn>
     </div>
   );

@@ -3,6 +3,7 @@ import Recent from "./recent";
 import { isEmpty } from "ramda";
 import { getAllPosts } from "@/lib/mdx-posts";
 import { getAuthorAction } from "@/lib/actions";
+import { PersonSchema } from "@/components";
 
 export default async function Home() {
   const author = await getAuthorAction();
@@ -14,6 +15,7 @@ export default async function Home() {
         <Intro author={author} />
       </div>
       {!isEmpty(posts) && <Recent posts={posts} />}
+      <PersonSchema author={author} />
     </div>
   );
 }

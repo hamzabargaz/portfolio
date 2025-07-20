@@ -2,6 +2,35 @@ import React from "react";
 import Title from "@/components/ui/title";
 import Card from "@/components/kit/card";
 import { FadeIn } from "@/components/kit/animate";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About - Hamza Bargaz",
+  description:
+    "Learn more about Hamza Bargaz, a frontend developer passionate about creating user-friendly web applications and building amazing tech products.",
+  openGraph: {
+    title: "About - Hamza Bargaz",
+    description:
+      "Learn more about Hamza Bargaz, a frontend developer passionate about creating user-friendly web applications and building amazing tech products.",
+    url: "https://bargaz.me/about",
+    type: "profile",
+    images: [
+      {
+        url: "/images/avatar.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Hamza Bargaz",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About - Hamza Bargaz",
+    description:
+      "Learn more about Hamza Bargaz, a frontend developer passionate about creating user-friendly web applications.",
+    images: ["/images/avatar.jpg"],
+  },
+};
 
 type Props = {};
 
@@ -11,7 +40,7 @@ export default async function About({}: Props) {
       <FadeIn>
         <Card className='p-6'>
           <div className='flex items-center justify-between'>
-            <div className='flex flex-col gap-4 text-2xl font-light'>
+            <div className='flex flex-col gap-4 text-xl font-light'>
               <Title>About me</Title>
               <p className='font-medium text-primary dark:text-tertiary'>
                 Hi there! 👋 I'm Hamza Bargaz, and I am a front-end developer.

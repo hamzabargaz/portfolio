@@ -7,3 +7,10 @@ export { default as Footer } from "./kit/footer";
 export { default as CTA } from "./kit/cta";
 export { default as ContentRender } from "./kit/content-render";
 export { default as PostCard } from "./kit/post-card";
+export {
+  PersonSchema,
+  BlogPostingSchema,
+  OrganizationSchema,
+  WebsiteSchema,
+} from "./structured-data";
+export { PerformanceMonitor } from "./performance-monitor";
