@@ -1,9 +1,9 @@
 import Link from "next/link";
 import Card from "@/components/kit/card";
 import Image from "next/image";
-import { getSinglePost } from "@/lib/hygraph";
+import { getSinglePost } from "@/lib/mdx-posts";
 import { notFound } from "next/navigation";
-import { ContentRender } from "@/components";
+import { ContentRender, BlogPostingSchema } from "@/components";
 import cx from "classnames";
 import { Metadata } from "next";
 import { FadeIn } from "@/components/kit/animate";
@@ -11,7 +11,8 @@ import { FadeIn } from "@/components/kit/animate";
 export async function generateMetadata({
   params,
 }: any): Promise<Metadata | undefined> {
-  let post = await getSinglePost(params?.slug);
+  const resolvedParams = await params;
+  let post = await getSinglePost(resolvedParams?.slug);
   if (!post) {
     return;
   }
@@ -24,7 +25,7 @@ export async function generateMetadata({
     seo,
   } = post;
   const publishedTime = new Date(date).toISOString();
-  const { openGraph, twitter } = seo;
+  const { openGraph, twitter } = seo || {};
   return {
     title,
     description: excerpt,
@@ -33,11 +34,11 @@ export async function generateMetadata({
       title,
       description: excerpt,
       publishedTime,
-      url: openGraph.url,
-      siteName: openGraph.siteName,
+      url: openGraph?.url || "",
+      siteName: openGraph?.siteName || "",
       locale: "en_US",
       tags: post?.tags,
-      authors: openGraph.authors,
+      authors: openGraph?.authors || [],
       images: [
         {
           url: image,
@@ -49,8 +50,8 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       title,
-      creator: twitter.creator,
-      site: twitter.site,
+      creator: twitter?.creator || "",
+      site: twitter?.site || "",
       description: excerpt,
       images: [image],
     },
@@ -58,7 +59,8 @@ export async function generateMetadata({
 }
 
 export default async function Page({ params }: any) {
-  const post: any = await getSinglePost(params?.slug);
+  const resolvedParams = await params;
+  const post: any = await getSinglePost(resolvedParams?.slug);
 
   if (!post) {
     return notFound();
@@ -81,14 +83,16 @@ export default async function Page({ params }: any) {
             width={post.hero_image.width}
             height={post.hero_image.height}
             className='h-full w-full object-fill rounded-xl my-10'
+            priority
           />
           <section className='text-lg'>
-            <ContentRender content={post.content.raw} />
+            <ContentRender content={post.content} />
             <Link href='/posts' className='inline-block my-10'>
               ← Go back
             </Link>
           </section>
         </article>
+        <BlogPostingSchema post={post} />
       </FadeIn>
     </div>
   );

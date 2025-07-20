@@ -1,14 +1,21 @@
 import "../assets/styles/globals.css";
 import "react-loading-skeleton/dist/skeleton.css";
-import { Footer, NavigationHeader, Section } from "@/components";
+import {
+  Footer,
+  NavigationHeader,
+  Section,
+  WebsiteSchema,
+  PerformanceMonitor,
+} from "@/components";
 import { Epilogue } from "next/font/google";
 import cx from "classnames";
 import { ThemeProvider } from "@/lib/theme-provider";
-import { getAuthor, getTotalPosts } from "@/lib/hygraph";
+import { getAuthorAction, getTotalPostsAction } from "@/lib/actions";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export async function generateMetadata() {
-  const { seo } = await getAuthor();
+  const { seo } = await getAuthorAction();
   return {
     title: seo.title,
     description: seo.description,
@@ -23,14 +30,15 @@ export async function generateMetadata() {
     },
     icons: {
       icon: [
-        {
-          media: "(prefers-color-scheme: light)",
-          url: seo.icon_light.url,
-        },
-        {
-          media: "(prefers-color-scheme: dark)",
-          url: seo.icon_dark.url,
-        },
+        { url: seo.icon_light.url, media: "(prefers-color-scheme: light)" },
+        { url: seo.icon_dark.url, media: "(prefers-color-scheme: dark)" },
+      ],
+      apple: [
+        { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+      ],
+      other: [
+        { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+        { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
       ],
     },
     twitter: {
@@ -52,10 +60,26 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const data = await getAuthor();
-  const total_posts = await getTotalPosts();
+  const data = await getAuthorAction();
+  const total_posts = await getTotalPostsAction();
   return (
-    <html lang='en'>
+    <html lang='en' suppressHydrationWarning>
+      <head>
+        <meta name='viewport' content='width=device-width, initial-scale=1' />
+        <meta name='theme-color' content='#000000' />
+        <link rel='preconnect' href='https://fonts.googleapis.com' />
+        <link
+          rel='preconnect'
+          href='https://fonts.gstatic.com'
+          crossOrigin='anonymous'
+        />
+        <link rel='icon' href='/images/hb-light.png' />
+        <link
+          rel='icon'
+          href='/images/hb-dark.png'
+          media='(prefers-color-scheme: dark)'
+        />
+      </head>
       <body
         className={cx(
           "bg-light-100 dark:bg-dark-100 h-full text-light-300 dark:text-dark-300",
@@ -73,10 +97,13 @@ export default async function RootLayout({
             </div>
             <Footer title={data.full_name} />
           </main>
+          <WebsiteSchema />
+          <PerformanceMonitor />
         </ThemeProvider>
       </body>
 
       <GoogleAnalytics gaId={gaID} />
+      <SpeedInsights />
     </html>
   );
 }

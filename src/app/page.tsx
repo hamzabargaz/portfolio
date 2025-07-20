@@ -1,10 +1,12 @@
 import Intro from "./intro";
 import Recent from "./recent";
 import { isEmpty } from "ramda";
-import { getAllPosts, getAuthor } from "@/lib/hygraph";
+import { getAllPosts } from "@/lib/mdx-posts";
+import { getAuthorAction } from "@/lib/actions";
+import { PersonSchema } from "@/components";
 
 export default async function Home() {
-  const author = await getAuthor();
+  const author = await getAuthorAction();
   const posts = await getAllPosts();
 
   return (
@@ -13,6 +15,7 @@ export default async function Home() {
         <Intro author={author} />
       </div>
       {!isEmpty(posts) && <Recent posts={posts} />}
+      <PersonSchema author={author} />
     </div>
   );
 }

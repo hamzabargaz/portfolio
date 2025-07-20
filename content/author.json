@@ -1,0 +1,67 @@
+{
+  "website_url": "https://bargaz.me/",
+  "full_name": "Hamza Bargaz",
+  "intro": "Committed to elevating user experiences through code, I'm a frontend developer with a talent for harmonizing aesthetics and functionality.",
+  "avatar": "/images/avatar.jpg",
+  "social_links": [
+    {
+      "name": "linkedin",
+      "url": "https://www.linkedin.com/in/hamzabargaz/"
+    },
+    {
+      "name": "github",
+      "url": "https://github.com/hamzabargaz/"
+    },
+    {
+      "name": "instagram",
+      "url": "https://instagram.com/hamza.bargaz"
+    },
+    {
+      "name": "x",
+      "url": "https://x.com/hamzabargaz"
+    }
+  ],
+  "seo": {
+    "title": "Hamza Bargaz",
+    "description": "Software Engineer based in Morocco, passionate about web development and open source.",
+    "url": "https://bargaz.me/",
+    "icon_light": {
+      "url": "/images/hb-light.png"
+    },
+    "icon_dark": {
+      "url": "/images/hb-dark.png"
+    },
+    "type": "website",
+    "site_name": "Hamza Bargaz",
+    "locale": "en-US",
+    "openGraph": {
+      "type": "website",
+      "title": "Hamza Bargaz",
+      "description": "Software Engineer based in Morocco, passionate about web development and open source.",
+      "image": "/images/avatar.jpg",
+      "url": "https://bargaz.me",
+      "site_name": "Hamza Bargaz",
+      "locale": "en_US",
+      "section": "",
+      "author": "Hamza Bargaz",
+      "images": [
+        {
+          "url": "/images/avatar.jpg",
+          "width": 1200,
+          "height": 630
+        }
+      ]
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "creator": "hamza_bargaz",
+      "title": "Hamza Bargaz",
+      "description": "Software Engineer based in Morocco, passionate about web development and open source.",
+      "image": {
+        "url": "/images/avatar.jpg"
+      },
+      "site": "https://bargaz.me",
+      "locale": "en_US"
+    }
+  }
+}
