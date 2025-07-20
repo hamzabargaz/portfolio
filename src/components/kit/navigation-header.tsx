@@ -32,7 +32,7 @@ export default function NavigationHeader({ title, total_posts }: Props) {
   }, [pathname]);
 
   return (
-    <Section className='sticky top-5 z-20 shadow-lg rounded-3xl dark:shadow-light-400/5 backdrop-blur-sm'>
+    <Section className='sticky top-5 z-20 rounded-3xl backdrop-blur-sm'>
       <header className=''>
         <Card className='px-6 py-4 !bg-transparent'>
           <div className='flex items-center justify-between'>

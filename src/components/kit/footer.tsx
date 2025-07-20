@@ -1,11 +1,11 @@
 import React from "react";
 import cx from "classnames";
-import { Linkedin, Twitter, Instagram, Facebook } from "@assets/icons";
+import { Linkedin, Twitter, Instagram } from "@assets/icons";
 import { DM_Serif_Display } from "next/font/google";
 import Card from "./card";
 import Link from "next/link";
 import { Github } from "lucide-react";
-import { getAuthor } from "@/lib/hygraph";
+import { getAuthorAction } from "@/lib/actions";
 
 const dmSerifDisplay = DM_Serif_Display({
   subsets: ["latin"],
@@ -17,25 +17,26 @@ type Props = {
 };
 
 export default async function Footer({ title }: Props) {
-  const author: any = await getAuthor();
-  const socialMedia = author.author_social_Media;
+  const author = await getAuthorAction();
+  const socialLinks = author.social_links || [];
 
   return (
     <footer className='py-6'>
-      <Card className='flex items-center w-full p-4'>
+      <Card className='flex items-center w-full p-4 !bg-transparent'>
         <div className='flex items-center space-x-4'>
-          <span
+          <Link
+            href='/'
             className={cx(
               dmSerifDisplay.className,
-              "relative flex items-center text-sm font-bold whitespace-pre leading-3"
+              "flex items-center text-sm font-bold whitespace-pre leading-3"
             )}
           >
             {`${title.replace(" ", "\n")}.`}
-          </span>
+          </Link>
         </div>
         <div className='flex items-center ml-auto gap-4'>
-          {socialMedia.map((item: any, i: number) => (
-            <SocialItem key={item.id} item={item} />
+          {socialLinks.map((item: any, i: number) => (
+            <SocialItem key={i} item={item} />
           ))}
         </div>
       </Card>
@@ -48,10 +49,9 @@ const SocialItem = ({ item }: any) => {
 
   const getIcon: any = {
     linkedin: Linkedin,
-    twitter: Twitter,
     github: Github,
     instagram: Instagram,
-    facebook: Facebook,
+    x: Twitter,
   };
 
   const Icon: any = getIcon[name];

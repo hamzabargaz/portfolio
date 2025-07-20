@@ -1,30 +1,21 @@
-import Card from "@/components/kit/card";
 import Intro from "./intro";
-import Featured from "./featured";
 import Recent from "./recent";
 import { isEmpty } from "ramda";
-import { getAllFeatures, getAllPosts, getAuthor } from "@/lib/hygraph";
+import { getAllPosts } from "@/lib/mdx-posts";
+import { getAuthorAction } from "@/lib/actions";
+import { PersonSchema } from "@/components";
 
 export default async function Home() {
-  const author = await getAuthor();
-  const features = await getAllFeatures();
+  const author = await getAuthorAction();
   const posts = await getAllPosts();
 
   return (
     <div className='mt-3 flex flex-col h-full pb-20 md:pb-0'>
       <div className='grid gap-4 grid-cols-1 md:grid-cols-2 mb-4'>
-        <Card className='p-6'>
-          <Intro author={author} />
-        </Card>
-        <Card className='p-6'>
-          <Featured features={features} />
-        </Card>
+        <Intro author={author} />
       </div>
-      {!isEmpty(posts) && (
-        <Card className='grow p-4'>
-          <Recent posts={posts} />
-        </Card>
-      )}
+      {!isEmpty(posts) && <Recent posts={posts} />}
+      <PersonSchema author={author} />
     </div>
   );
 }

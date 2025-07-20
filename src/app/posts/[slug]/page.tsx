@@ -1,16 +1,18 @@
 import Link from "next/link";
 import Card from "@/components/kit/card";
 import Image from "next/image";
-import { getSinglePost } from "@/lib/hygraph";
+import { getSinglePost } from "@/lib/mdx-posts";
 import { notFound } from "next/navigation";
-import { ContentRender } from "@/components";
+import { ContentRender, BlogPostingSchema } from "@/components";
 import cx from "classnames";
 import { Metadata } from "next";
+import { FadeIn } from "@/components/kit/animate";
 
 export async function generateMetadata({
   params,
 }: any): Promise<Metadata | undefined> {
-  let post = await getSinglePost(params?.slug);
+  const resolvedParams = await params;
+  let post = await getSinglePost(resolvedParams?.slug);
   if (!post) {
     return;
   }
@@ -18,66 +20,80 @@ export async function generateMetadata({
   let {
     title,
     date,
-    excerpt: description,
-    hero_image: { url: ogImage },
+    excerpt,
+    hero_image: { url: image, width, height },
+    seo,
   } = post;
   const publishedTime = new Date(date).toISOString();
-
+  const { openGraph, twitter } = seo || {};
   return {
     title,
-    description,
+    description: excerpt,
     openGraph: {
-      title,
-      description,
       type: "article",
+      title,
+      description: excerpt,
       publishedTime,
-      url: `${post.slug}`,
+      url: openGraph?.url || "",
+      siteName: openGraph?.siteName || "",
+      locale: "en_US",
+      tags: post?.tags,
+      authors: openGraph?.authors || [],
       images: [
         {
-          url: ogImage,
+          url: image,
+          width,
+          height,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
       title,
-      description,
-      images: [ogImage],
+      creator: twitter?.creator || "",
+      site: twitter?.site || "",
+      description: excerpt,
+      images: [image],
     },
   };
 }
 
 export default async function Page({ params }: any) {
-  const post: any = await getSinglePost(params?.slug);
+  const resolvedParams = await params;
+  const post: any = await getSinglePost(resolvedParams?.slug);
 
   if (!post) {
     return notFound();
   }
 
   return (
-    <Card className='p-6 mt-3 h-full'>
-      <article className='px-5 max-w-2xl mx-auto leading-6 whitespace-pre-line'>
-        <h1
-          className={cx(
-            "text-center text-5xl font-bold my-6 font-sans leading-normal"
-          )}
-        >
-          {post.title}
-        </h1>
-        <Image
-          src={post.hero_image.url}
-          alt={post.title}
-          width={post.hero_image.width}
-          height={post.hero_image.height}
-          className='h-full w-full object-fill rounded-xl my-10'
-        />
-        <section className='text-lg'>
-          <ContentRender content={post.content.raw} />
-          <Link href='/posts' className='inline-block my-10'>
-            ← Go back
-          </Link>
-        </section>
-      </article>
-    </Card>
+    <div className='mt-20 h-full'>
+      <FadeIn>
+        <article className='px-5 mx-auto leading-6 whitespace-pre-line'>
+          <h1
+            className={cx(
+              "text-center text-3xl md:text-5xl font-bold my-10 font-sans leading-normal"
+            )}
+          >
+            {post.title}
+          </h1>
+          <Image
+            src={post.hero_image.url}
+            alt={post.title}
+            width={post.hero_image.width}
+            height={post.hero_image.height}
+            className='h-full w-full object-fill rounded-xl my-10'
+            priority
+          />
+          <section className='text-lg'>
+            <ContentRender content={post.content} />
+            <Link href='/posts' className='inline-block my-10'>
+              ← Go back
+            </Link>
+          </section>
+        </article>
+        <BlogPostingSchema post={post} />
+      </FadeIn>
+    </div>
   );
 }

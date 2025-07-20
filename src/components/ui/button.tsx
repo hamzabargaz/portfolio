@@ -34,7 +34,7 @@ const styles = {
     "text-light-100 dark:text-dark-400 dark:hover:text-light-100 hover:text-dark-400"
   ),
   secondary: cx(
-    "text-dark-400 dark:text-light-400 hover:bg-dark-400/5 dark:hover:bg-light-400/10"
+    "border-2 border-transparent text-dark-400 dark:text-light-400 hover:bg-dark-400/5 dark:hover:bg-light-400/10"
   ),
   none: "",
 };
