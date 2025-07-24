@@ -3,7 +3,7 @@ import { Section, ThemeSwitch, CTA } from "@/components/index";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import cx from "classnames";
-import { User, Newspaper } from "lucide-react";
+import { User, Newspaper, LucideIcon } from "lucide-react";
 import Card from "./card";
 import { DM_Serif_Display } from "next/font/google";
 import { Close, Menu } from "@/assets/icons";
@@ -15,11 +15,55 @@ const dmSerifDisplay = DM_Serif_Display({
   weight: "400",
 });
 
+// Types
 type Props = {
   title: string;
   total_posts: number;
 };
 
+type NavItem = {
+  href: string;
+  title: string;
+  Icon: LucideIcon;
+};
+
+type MenuToggleProps = {
+  isOpen: boolean;
+  setIsOpen: (value: boolean) => void;
+  isMobile: boolean;
+};
+
+// Constants
+const GLASS_STYLES = {
+  container:
+    "bg-white/20 dark:bg-black/20 backdrop-blur-xl border border-white/30 dark:border-white/10 shadow-lg shadow-black/5 dark:shadow-black/20",
+  navLink: {
+    base: "px-4 py-2 font-medium rounded-xl flex items-center gap-2 border backdrop-blur-sm transition-all duration-200",
+    active:
+      "bg-white/30 dark:bg-white/10 border-white/40 dark:border-white/20 shadow-sm",
+    hover:
+      "hover:bg-white/20 hover:dark:bg-white/5 border-transparent hover:border-white/30 hover:dark:border-white/15",
+  },
+  ctaSection:
+    "bg-white/10 dark:bg-white/5 backdrop-blur-sm border border-white/20 dark:border-white/10",
+  divider: "border-white/20 dark:border-white/10",
+};
+
+// Utils
+const getNavItems = (total_posts: number): NavItem[] => [
+  { href: "/about", title: "About", Icon: User },
+  ...(total_posts !== 0
+    ? [{ href: "/posts", title: "Posts", Icon: Newspaper }]
+    : []),
+];
+
+const getNavLinkClasses = (isActive: boolean) =>
+  cx(
+    GLASS_STYLES.navLink.base,
+    isActive ? GLASS_STYLES.navLink.active : GLASS_STYLES.navLink.hover
+  );
+
+// Main Component
 export default function NavigationHeader({ title, total_posts }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMobile();
@@ -31,34 +75,28 @@ export default function NavigationHeader({ title, total_posts }: Props) {
     }
   }, [pathname]);
 
+  const formattedTitle = `${title.replace(" ", "\n")}.`;
+
   return (
-    <Section className='sticky top-5 z-20 rounded-3xl backdrop-blur-sm'>
-      <header className=''>
-        <Card className='px-6 py-4 !bg-transparent'>
+    <Section className='sticky top-5 z-20 rounded-3xl backdrop-blur-xl'>
+      <header>
+        <Card className={cx("px-6 py-4", GLASS_STYLES.container)}>
           <div className='flex items-center justify-between'>
-            <Link
-              href='/'
-              className={cx(
-                dmSerifDisplay.className,
-                "flex items-center text-sm font-bold whitespace-pre leading-3"
-              )}
-            >
-              {`${title.replace(" ", "\n")}.`}
-            </Link>
-            <div className='flex items-center ml-auto'>
-              <NavItems total_posts={total_posts} />
-              <ThemeSwitch />
-              <MenuToggle
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-                isMobile={isMobile}
-              />
-            </div>
+            <BrandLogo title={formattedTitle} />
+            <NavigationControls
+              total_posts={total_posts}
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              isMobile={isMobile}
+            />
           </div>
         </Card>
+
         {isMobile && isOpen && (
-          <Card className='block sm:hidden mt-3 p-4'>
-            <MobileNav total_posts={total_posts} />
+          <Card
+            className={cx("block sm:hidden mt-3 p-4", GLASS_STYLES.container)}
+          >
+            <MobileNavigation total_posts={total_posts} />
           </Card>
         )}
       </header>
@@ -66,91 +104,112 @@ export default function NavigationHeader({ title, total_posts }: Props) {
   );
 }
 
-type TMenuToggle = {
-  isOpen: boolean;
-  setIsOpen: (arg: boolean) => void;
-  isMobile: boolean;
-};
+// Sub-components
+const BrandLogo = ({ title }: { title: string }) => (
+  <Link
+    href='/'
+    className={cx(
+      dmSerifDisplay.className,
+      "flex items-center text-sm font-bold whitespace-pre leading-3"
+    )}
+  >
+    {title}
+  </Link>
+);
 
-const MenuToggle = ({ isOpen, setIsOpen, isMobile }: TMenuToggle) => {
-  const iconClassNames = "w-7 h-7 block sm:hidden shrink-0";
+const NavigationControls = ({
+  total_posts,
+  isOpen,
+  setIsOpen,
+  isMobile,
+}: {
+  total_posts: number;
+  isOpen: boolean;
+  setIsOpen: (value: boolean) => void;
+  isMobile: boolean;
+}) => (
+  <div className='flex items-center ml-auto'>
+    <DesktopNavigation total_posts={total_posts} />
+    <ThemeSwitch />
+    <MenuToggle isOpen={isOpen} setIsOpen={setIsOpen} isMobile={isMobile} />
+  </div>
+);
+
+const MenuToggle = ({ isOpen, setIsOpen, isMobile }: MenuToggleProps) => {
+  const iconClasses = "w-7 h-7 block sm:hidden shrink-0";
+
   return (
-    <div className='cursor-pointer' onClick={() => setIsOpen(!isOpen)}>
+    <button
+      className='cursor-pointer'
+      onClick={() => setIsOpen(!isOpen)}
+      aria-label={isOpen ? "Close menu" : "Open menu"}
+    >
       {isMobile && isOpen ? (
-        <Close classNames={iconClassNames} />
+        <Close classNames={iconClasses} />
       ) : (
-        <Menu classNames={iconClassNames} />
+        <Menu classNames={iconClasses} />
       )}
-    </div>
+    </button>
   );
 };
 
-const MobileNav = ({ total_posts }: { total_posts: number }) => {
+const MobileNavigation = ({ total_posts }: { total_posts: number }) => {
   const pathname = usePathname();
+  const navItems = getNavItems(total_posts);
+
   return (
     <div className='flex sm:hidden flex-col gap-2 text-sm mt-6'>
-      {[
-        { href: "/about", title: "About", Icon: User },
-        ...(total_posts !== 0
-          ? [{ href: "/posts", title: "Posts", Icon: Newspaper }]
-          : []),
-      ].map((link) => {
-        const isActive = pathname === link.href;
-        return (
-          <Link
-            key={link.title}
-            href={link.href}
-            className={cx(
-              "px-4 py-2 font-medium rounded-xl flex items-center gap-2 border-4",
-              isActive
-                ? "bg-light-400 dark:bg-dark-400  border-light-100 dark:border-dark-100"
-                : "hover:bg-light-400 hover:dark:bg-dark-400 border-transparent hover:border-light-100 hover:dark:border-dark-100"
-            )}
-          >
-            <link.Icon className='w-5 h-5' />
-            {link.title}
-          </Link>
-        );
-      })}
-      <div className='flex items-center justify-center gap-x-2 bg-light-100/50 dark:bg-dark-100/50 p-1 rounded-xl'>
+      {navItems.map((link) => (
+        <NavLink
+          key={link.title}
+          item={link}
+          isActive={pathname === link.href}
+        />
+      ))}
+
+      <div
+        className={cx(
+          "flex items-center justify-center gap-x-2 p-1 rounded-xl",
+          GLASS_STYLES.ctaSection
+        )}
+      >
         <CTA />
       </div>
     </div>
   );
 };
 
-const NavItems = ({ total_posts }: { total_posts: number }) => {
+const DesktopNavigation = ({ total_posts }: { total_posts: number }) => {
   const pathname = usePathname();
+  const navItems = getNavItems(total_posts);
+
   return (
-    <div className='hidden sm:flex items-center gap-x-2 text-base leading-5 '>
+    <div className='hidden sm:flex items-center gap-x-2 text-base leading-5'>
       <div className='hidden sm:flex gap-x-4 items-start'>
-        {[
-          { href: "/about", title: "About", Icon: User },
-          ...(total_posts !== 0
-            ? [{ href: "/posts", title: "Posts", Icon: Newspaper }]
-            : []),
-        ].map((link) => {
-          const isActive = pathname === link.href;
-          return (
-            <Link
-              key={link.title}
-              href={link.href}
-              className={cx(
-                "px-4 py-2 font-medium rounded-xl flex items-center gap-2 border-4",
-                isActive
-                  ? "bg-light-400 dark:bg-dark-400  border-light-100 dark:border-dark-100"
-                  : "hover:bg-light-400 hover:dark:bg-dark-400 border-transparent hover:border-light-100 hover:dark:border-dark-100"
-              )}
-            >
-              <link.Icon className='w-5 h-5' />
-              {link.title}
-            </Link>
-          );
-        })}
+        {navItems.map((link) => (
+          <NavLink
+            key={link.title}
+            item={link}
+            isActive={pathname === link.href}
+          />
+        ))}
       </div>
-      <div className='hidden md:flex pl-2 gap-4 border-l border-light-400 dark:border-dark-400'>
+
+      <div
+        className={cx(
+          "hidden md:flex pl-2 gap-4 border-l",
+          GLASS_STYLES.divider
+        )}
+      >
         <CTA />
       </div>
     </div>
   );
 };
+
+const NavLink = ({ item, isActive }: { item: NavItem; isActive: boolean }) => (
+  <Link href={item.href} className={getNavLinkClasses(isActive)}>
+    <item.Icon className='w-5 h-5' />
+    {item.title}
+  </Link>
+);
