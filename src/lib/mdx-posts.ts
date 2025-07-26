@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { parse } from "date-fns";
 
 const root = process.cwd();
 const postsDirectory = path.join(root, "content", "posts");
@@ -102,6 +103,19 @@ function getMDXData(dir: string) {
   });
 }
 
+// Helper function to parse DD-MM-YYYY format using date-fns
+function parseDate(dateString: string): Date {
+  if (!dateString) return new Date();
+
+  try {
+    // Parse DD-MM-YYYY format
+    return parse(dateString, "dd-MM-yyyy", new Date());
+  } catch {
+    // Fallback to current date if parsing fails
+    return new Date();
+  }
+}
+
 export const getAllPosts = async (): Promise<Post[]> => {
   try {
     const postsData = getMDXData(postsDirectory);
@@ -139,7 +153,7 @@ export const getAllPosts = async (): Promise<Post[]> => {
     // Sort posts by date (newest first)
     return posts.sort(
       (a: Post, b: Post) =>
-        new Date(b.date).getTime() - new Date(a.date).getTime()
+        parseDate(b.date).getTime() - parseDate(a.date).getTime()
     );
   } catch (error) {
     console.error("Error reading posts:", error);
@@ -204,10 +218,7 @@ export const getTotalPosts = async (): Promise<number> => {
 
 export function formatDate(date: string, includeRelative = false) {
   const currentDate = new Date();
-  if (!date.includes("T")) {
-    date = `${date}T00:00:00`;
-  }
-  const targetDate = new Date(date);
+  const targetDate = parseDate(date);
 
   const yearsAgo = currentDate.getFullYear() - targetDate.getFullYear();
   const monthsAgo = currentDate.getMonth() - targetDate.getMonth();
