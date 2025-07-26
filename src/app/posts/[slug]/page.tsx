@@ -69,7 +69,7 @@ export default async function Page({ params }: any) {
   return (
     <div className='mt-20 h-full'>
       <FadeIn>
-        <article className='px-5 mx-auto leading-6 whitespace-pre-line'>
+        <article className='px-5 mx-auto'>
           <h1
             className={cx(
               "text-center text-3xl md:text-5xl font-bold my-10 font-sans leading-normal"

@@ -1,6 +1,6 @@
 import React from "react";
 import { MDXRemote, type MDXRemoteProps } from "next-mdx-remote/rsc";
-import { highlight } from "sugar-high";
+import { codeToHtml } from "shiki";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -54,9 +54,56 @@ function RoundedImage(props: any) {
   return <Image alt={props.alt} className='rounded-lg' {...props} />;
 }
 
-function Code({ children, ...props }: any) {
-  let codeHTML = highlight(children);
-  return <code dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />;
+// Shiki Code Block Component
+async function ShikiCodeBlock({ children, className, ...props }: any) {
+  const lang = className?.replace(/language-/, "") || "text";
+
+  try {
+    const lightHtml = await codeToHtml(children, {
+      lang,
+      theme: "min-light",
+    });
+
+    const darkHtml = await codeToHtml(children, {
+      lang,
+      theme: "one-dark-pro",
+    });
+
+    return (
+      <>
+        <div
+          className='block dark:hidden [&_pre]:!bg-gray-50 [&_pre]:!border [&_pre]:!border-gray-200 [&_pre]:!rounded-lg [&_pre]:!p-4 [&_pre]:!text-sm [&_pre]:!mb-10'
+          dangerouslySetInnerHTML={{ __html: lightHtml }}
+        />
+        <div
+          className='hidden dark:block [&_pre]:!bg-gray-900 [&_pre]:!border [&_pre]:!border-gray-700 [&_pre]:!rounded-lg [&_pre]:!p-4 [&_pre]:!text-sm [&_pre]:!mb-10'
+          dangerouslySetInnerHTML={{ __html: darkHtml }}
+        />
+      </>
+    );
+  } catch (error) {
+    // Fallback to simple code block
+    return (
+      <pre
+        className='bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-10'
+        {...props}
+      >
+        <code>{children}</code>
+      </pre>
+    );
+  }
+}
+
+// Inline Code Component
+function InlineCode({ children, ...props }: any) {
+  return (
+    <code
+      className='bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-1 py-0.5 rounded text-sm font-mono'
+      {...props}
+    >
+      {children}
+    </code>
+  );
 }
 
 function slugify(str: string) {
@@ -106,14 +153,39 @@ const components = {
   h6: createHeading(6),
   Image: RoundedImage,
   a: CustomLink,
-  code: Code,
-  p: ({ children }: any) => <p className='mb-4'>{children}</p>,
+  code: ({ children, className, ...props }: any) => {
+    // If it has a className, it's a code block, otherwise it's inline code
+    if (className) {
+      return (
+        <ShikiCodeBlock className={className} {...props}>
+          {children}
+        </ShikiCodeBlock>
+      );
+    }
+    return <InlineCode {...props}>{children}</InlineCode>;
+  },
+  p: ({ children }: any) => <p className='mb-10 leading-relaxed'>{children}</p>,
+  ul: ({ children }: any) => (
+    <ul className='list-disc mb-10 ml-6 space-y-2'>{children}</ul>
+  ),
+  ol: ({ children }: any) => (
+    <ol className='list-decimal mb-10 ml-6 space-y-2'>{children}</ol>
+  ),
+  li: ({ children }: any) => <li>{children}</li>,
+  strong: ({ children }: any) => (
+    <strong className='font-semibold'>{children}</strong>
+  ),
+  em: ({ children }: any) => <em className='italic'>{children}</em>,
+  blockquote: ({ children }: any) => (
+    <blockquote className='border-l-4 border-blue-500 pl-4 py-2 mb-10 bg-blue-50 dark:bg-blue-900/10 italic'>
+      {children}
+    </blockquote>
+  ),
+  hr: () => <hr className='my-8 border-gray-300 dark:border-gray-600' />,
   pre: ({ children, ...props }: any) => {
+    // This handles the case where pre is used without code highlighting
     return (
-      <pre
-        className='bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto'
-        {...props}
-      >
+      <pre className='mb-10' {...props}>
         {children}
       </pre>
     );
