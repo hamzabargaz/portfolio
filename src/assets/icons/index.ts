@@ -9,4 +9,3 @@ export { default as ArrowUpRight } from "./ui/arrow-up-right";
 export { default as Linkedin } from "./social/linkedin";
 export { default as Twitter } from "./social/twitter";
 export { default as Instagram } from "./social/instagram";
-export { default as Facebook } from "./social/facebook";

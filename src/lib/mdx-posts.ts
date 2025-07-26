@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { parse } from "date-fns";
+import { parseDate, formatDate as formatDateUtil } from "./date-utils";
 
 const root = process.cwd();
 const postsDirectory = path.join(root, "content", "posts");
@@ -101,19 +101,6 @@ function getMDXData(dir: string) {
       content,
     };
   });
-}
-
-// Helper function to parse DD-MM-YYYY format using date-fns
-function parseDate(dateString: string): Date {
-  if (!dateString) return new Date();
-
-  try {
-    // Parse DD-MM-YYYY format
-    return parse(dateString, "dd-MM-yyyy", new Date());
-  } catch {
-    // Fallback to current date if parsing fails
-    return new Date();
-  }
 }
 
 export const getAllPosts = async (): Promise<Post[]> => {
@@ -217,34 +204,5 @@ export const getTotalPosts = async (): Promise<number> => {
 };
 
 export function formatDate(date: string, includeRelative = false) {
-  const currentDate = new Date();
-  const targetDate = parseDate(date);
-
-  const yearsAgo = currentDate.getFullYear() - targetDate.getFullYear();
-  const monthsAgo = currentDate.getMonth() - targetDate.getMonth();
-  const daysAgo = currentDate.getDate() - targetDate.getDate();
-
-  let formattedDate = "";
-
-  if (yearsAgo > 0) {
-    formattedDate = `${yearsAgo}y ago`;
-  } else if (monthsAgo > 0) {
-    formattedDate = `${monthsAgo}mo ago`;
-  } else if (daysAgo > 0) {
-    formattedDate = `${daysAgo}d ago`;
-  } else {
-    formattedDate = "Today";
-  }
-
-  const fullDate = targetDate.toLocaleString("en-us", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-
-  if (!includeRelative) {
-    return fullDate;
-  }
-
-  return `${fullDate} (${formattedDate})`;
+  return formatDateUtil(date, includeRelative);
 }
