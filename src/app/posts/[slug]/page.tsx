@@ -7,6 +7,7 @@ import { ContentRender, BlogPostingSchema } from "@/components";
 import cx from "classnames";
 import { Metadata } from "next";
 import { FadeIn } from "@/components/kit/animate";
+import { formatDateToISO } from "@/lib/date-utils";
 
 export async function generateMetadata({
   params,
@@ -24,7 +25,7 @@ export async function generateMetadata({
     hero_image: { url: image, width, height },
     seo,
   } = post;
-  const publishedTime = new Date(date).toISOString();
+  const publishedTime = formatDateToISO(date);
   const { openGraph, twitter } = seo || {};
   return {
     title,
