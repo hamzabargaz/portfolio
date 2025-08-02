@@ -72,11 +72,11 @@ async function ShikiCodeBlock({ children, className, ...props }: any) {
     return (
       <>
         <div
-          className='block dark:hidden [&_pre]:!bg-gray-50 [&_pre]:!border [&_pre]:!border-gray-200 [&_pre]:!rounded-lg [&_pre]:!p-4 [&_pre]:!text-sm [&_pre]:!mb-10'
+          className='block dark:hidden [&_pre]:!bg-gray-50 [&_pre]:!border [&_pre]:!border-gray-200 [&_pre]:!rounded-lg [&_pre]:!p-4 [&_pre]:!text-sm [&_pre]:!mb-10 [&_pre]:!overflow-x-auto'
           dangerouslySetInnerHTML={{ __html: lightHtml }}
         />
         <div
-          className='hidden dark:block [&_pre]:!bg-gray-900 [&_pre]:!border [&_pre]:!border-gray-700 [&_pre]:!rounded-lg [&_pre]:!p-4 [&_pre]:!text-sm [&_pre]:!mb-10'
+          className='hidden dark:block [&_pre]:!bg-gray-900 [&_pre]:!border [&_pre]:!border-gray-700 [&_pre]:!rounded-lg [&_pre]:!p-4 [&_pre]:!text-sm [&_pre]:!mb-10 [&_pre]:!overflow-x-auto'
           dangerouslySetInnerHTML={{ __html: darkHtml }}
         />
       </>
