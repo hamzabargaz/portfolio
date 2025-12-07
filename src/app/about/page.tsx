@@ -32,9 +32,7 @@ export const metadata: Metadata = {
   },
 };
 
-type Props = {};
-
-export default async function About({}: Props) {
+export default async function About() {
   return (
     <main className='mt-4'>
       <FadeIn>
