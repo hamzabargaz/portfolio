@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Card from "@/components/kit/card";
 import Image from "next/image";
 import { getSinglePost } from "@/lib/mdx-posts";
 import { notFound } from "next/navigation";
@@ -9,16 +8,20 @@ import { Metadata } from "next";
 import { FadeIn } from "@/components/kit/animate";
 import { formatDateToISO } from "@/lib/date-utils";
 
+type PageProps = {
+  params: Promise<{ slug: string }>;
+};
+
 export async function generateMetadata({
   params,
-}: any): Promise<Metadata | undefined> {
+}: PageProps): Promise<Metadata | undefined> {
   const resolvedParams = await params;
-  let post = await getSinglePost(resolvedParams?.slug);
+  const post = await getSinglePost(resolvedParams?.slug);
   if (!post) {
     return;
   }
 
-  let {
+  const {
     title,
     date,
     excerpt,
@@ -59,9 +62,9 @@ export async function generateMetadata({
   };
 }
 
-export default async function Page({ params }: any) {
+export default async function Page({ params }: PageProps) {
   const resolvedParams = await params;
-  const post: any = await getSinglePost(resolvedParams?.slug);
+  const post = await getSinglePost(resolvedParams?.slug);
 
   if (!post) {
     return notFound();

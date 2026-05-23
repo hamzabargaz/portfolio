@@ -44,6 +44,7 @@ function parseFrontmatter(fileContent: string) {
 
   const frontMatterBlock = match[1];
   const frontMatterLines = frontMatterBlock.trim().split("\n");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- frontmatter values are dynamic (strings or JSON-parsed arrays/objects)
   const metadata: any = {};
 
   frontMatterLines.forEach((line) => {

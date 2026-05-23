@@ -5,12 +5,10 @@ import { CheckCheckIcon, Copy } from "lucide-react";
 import copyToClipboard from "@/lib/copy-to-clipboard";
 import { getCalApi } from "@calcom/embed-react";
 
-type Props = {};
-
 const email = process.env.NEXT_PUBLIC_EMAIL_USER || "";
 const cal_username = process.env.NEXT_PUBLIC_CAL_USERNAME;
 
-export default function cta({}: Props) {
+export default function CTA() {
   const [copied, setCopied] = React.useState(false);
 
   React.useEffect(() => {

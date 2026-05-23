@@ -39,7 +39,7 @@ export default async function Posts() {
     <>
       <div className='my-4'>
         <div className='w-full mb-4 grid grid-cols-1 md:grid-cols-2 gap-4'>
-          {posts.map((post: any, i: number) => (
+          {posts.map((post, i) => (
             <FadeIn key={post.id}>
               <PostCard key={i} {...post} />
             </FadeIn>

@@ -1,14 +1,12 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Newspaper } from "lucide-react";
-import Badge from "../ui/badge";
 import { ArrowRight } from "@/assets/icons";
-import { Button } from "..";
 import Card from "./card";
+import type { Post as PostType } from "@/lib/mdx-posts";
 
-export default function Post(post: any) {
-  const { title, excerpt, tags, hero_image, slug } = post;
+export default function Post(post: PostType) {
+  const { title, excerpt, hero_image, slug } = post;
 
   return (
     <Link href={"/posts/" + slug}>
@@ -26,7 +24,7 @@ export default function Post(post: any) {
             </div>
           </div>
 
-          {!hero_image && (
+          {hero_image?.url && (
             <div className='w-full bg-light-200 dark:bg-dark-200 h-44 rounded-b-xl flex items-center justify-center'>
               <Image
                 alt={post.slug}

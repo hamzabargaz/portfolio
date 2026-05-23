@@ -7,6 +7,7 @@ import cx from "classnames";
 import Card from "@/components/kit/card";
 import { ArrowRight } from "@/assets/icons";
 import { FadeIn } from "@/components/kit/animate";
+import type { AuthorData } from "@/lib/actions";
 
 const dmSerifDisplay = DM_Serif_Display({
   subsets: ["latin"],
@@ -14,7 +15,7 @@ const dmSerifDisplay = DM_Serif_Display({
 });
 
 type Props = {
-  author: any;
+  author: AuthorData;
 };
 
 export default async function Intro({ author }: Props) {
@@ -57,7 +58,7 @@ export default async function Intro({ author }: Props) {
                   "bg-gradient-to-r from-dark-300 dark:from-light-300 to-dark-400 dark:to-light-400"
                 )}
               >
-                Hey There i'm Hamza 👋
+                Hey There i&apos;m Hamza 👋
               </h1>
               <p className='leading-6'>
                 A passionate front-end developer for technology and love using
