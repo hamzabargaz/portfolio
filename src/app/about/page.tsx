@@ -41,7 +41,7 @@ export default async function About() {
             <div className='flex flex-col gap-4 text-xl font-light'>
               <Title>About me</Title>
               <p className='font-medium text-primary dark:text-tertiary'>
-                Hi there! 👋 I'm Hamza Bargaz, and I am a front-end developer.
+                Hi there! 👋 I&apos;m Hamza Bargaz, and I am a front-end developer.
               </p>
               <p>
                 I have a deep passion for technology and love using my skills to
@@ -55,7 +55,7 @@ export default async function About() {
               </p>
               <p>
                 I am driven by the desire to build amazing tech products that
-                make a positive impact on people's lives. In my current role as
+                make a positive impact on people&apos;s lives. In my current role as
                 a front-end developer, I am using my skills to build and
                 maintain high-quality web applications that deliver exceptional
                 user experiences.

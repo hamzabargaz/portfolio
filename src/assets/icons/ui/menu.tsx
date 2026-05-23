@@ -1,8 +1,7 @@
 import React from "react";
 
-type Props = {
+type Props = React.SVGProps<SVGSVGElement> & {
   classNames?: string;
-  [key: string]: any;
 };
 
 export default function Menu({ classNames = "", ...props }: Props) {

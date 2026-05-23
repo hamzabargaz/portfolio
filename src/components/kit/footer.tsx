@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ComponentType, SVGProps } from "react";
 import cx from "classnames";
 import { Linkedin, Twitter, Instagram } from "@assets/icons";
 import { DM_Serif_Display } from "next/font/google";
@@ -6,6 +6,9 @@ import Card from "./card";
 import Link from "next/link";
 import { Github } from "lucide-react";
 import { getAuthorAction } from "@/lib/actions";
+
+type SocialLink = { name: string; url: string };
+type IconComponent = ComponentType<SVGProps<SVGSVGElement> & { className?: string }>;
 
 const dmSerifDisplay = DM_Serif_Display({
   subsets: ["latin"],
@@ -35,7 +38,7 @@ export default async function Footer({ title }: Props) {
           </Link>
         </div>
         <div className='flex items-center ml-auto gap-4'>
-          {socialLinks.map((item: any, i: number) => (
+          {socialLinks.map((item: SocialLink, i: number) => (
             <SocialItem key={i} item={item} />
           ))}
         </div>
@@ -44,17 +47,17 @@ export default async function Footer({ title }: Props) {
   );
 }
 
-const SocialItem = ({ item }: any) => {
+const SocialItem = ({ item }: { item: SocialLink }) => {
   const { url, name } = item;
 
-  const getIcon: any = {
+  const getIcon: Record<string, IconComponent> = {
     linkedin: Linkedin,
     github: Github,
     instagram: Instagram,
     x: Twitter,
   };
 
-  const Icon: any = getIcon[name];
+  const Icon = getIcon[name];
 
   return (
     <Link

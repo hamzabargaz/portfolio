@@ -1,3 +1,4 @@
+import React from "react";
 import cx from "classnames";
 
 type TCard = {
@@ -5,7 +6,7 @@ type TCard = {
   className?: string;
 };
 
-export default function Card({ children, className = "p-4", ...props }: TCard) {
+export default function Card({ children, className = "p-4" }: TCard) {
   return (
     <div
       className={cx(className, "rounded-3xl bg-light-200 dark:bg-dark-200")}
@@ -16,11 +17,7 @@ export default function Card({ children, className = "p-4", ...props }: TCard) {
   );
 }
 
-type THeader = {
-  children?: React.ReactNode;
-  className?: string;
-  [key: string]: any;
-};
+type THeader = React.HTMLAttributes<HTMLDivElement>;
 
 Card.Header = function Header({ children, className = "", ...props }: THeader) {
   return (
