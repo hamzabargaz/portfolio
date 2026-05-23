@@ -1,10 +1,10 @@
 import React from "react";
 import cx from "classnames";
 
-type Props = {
-  children?: React.ReactNode;
-  className?: string;
-  [key: string]: any;
+type BadgeVariant = "default" | "secondary" | "outline";
+
+type Props = React.HTMLAttributes<HTMLDivElement> & {
+  variant?: BadgeVariant;
 };
 
 export default function Badge({
@@ -12,7 +12,7 @@ export default function Badge({
   variant = "default",
   ...props
 }: Props) {
-  const variants: any = {
+  const variants: Record<BadgeVariant, string> = {
     default:
       "border-transparent bg-light-200 dark:bg-dark-200 hover:bg-light-200/80 hover:dark:bg-dark-200/80",
     secondary:

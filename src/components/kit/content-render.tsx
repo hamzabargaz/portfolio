@@ -1,12 +1,15 @@
 import React from "react";
-import { MDXRemote, type MDXRemoteProps } from "next-mdx-remote/rsc";
+import { MDXRemote } from "next-mdx-remote/rsc";
 import { codeToHtml } from "shiki";
-import Image from "next/image";
+import Image, { type ImageProps } from "next/image";
 import Link from "next/link";
 
 type Props = {
-  content: string; // Raw MDX content
+  content?: string; // Raw MDX content
 };
+
+type MDXChildren = { children?: React.ReactNode };
+type MDXBlock = React.HTMLAttributes<HTMLElement>;
 
 function CustomLink({
   href,
@@ -50,21 +53,23 @@ function CustomLink({
   );
 }
 
-function RoundedImage(props: any) {
-  return <Image alt={props.alt} className='rounded-lg' {...props} />;
+function RoundedImage(props: ImageProps) {
+  return <Image {...props} className='rounded-lg' />;
 }
 
-// Shiki Code Block Component
-async function ShikiCodeBlock({ children, className, ...props }: any) {
+type CodeBlockProps = React.HTMLAttributes<HTMLElement>;
+
+async function ShikiCodeBlock({ children, className, ...props }: CodeBlockProps) {
   const lang = className?.replace(/language-/, "") || "text";
+  const source = typeof children === "string" ? children : String(children ?? "");
 
   try {
-    const lightHtml = await codeToHtml(children, {
+    const lightHtml = await codeToHtml(source, {
       lang,
       theme: "min-light",
     });
 
-    const darkHtml = await codeToHtml(children, {
+    const darkHtml = await codeToHtml(source, {
       lang,
       theme: "one-dark-pro",
     });
@@ -81,8 +86,7 @@ async function ShikiCodeBlock({ children, className, ...props }: any) {
         />
       </>
     );
-  } catch (error) {
-    // Fallback to simple code block
+  } catch {
     return (
       <pre
         className='bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-10'
@@ -94,8 +98,7 @@ async function ShikiCodeBlock({ children, className, ...props }: any) {
   }
 }
 
-// Inline Code Component
-function InlineCode({ children, ...props }: any) {
+function InlineCode({ children, ...props }: React.HTMLAttributes<HTMLElement>) {
   return (
     <code
       className='bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-1 py-0.5 rounded text-sm font-mono'
@@ -118,8 +121,9 @@ function slugify(str: string) {
 }
 
 function createHeading(level: number) {
-  const Heading = ({ children }: any) => {
-    let slug = slugify(children);
+  const Heading = ({ children }: MDXChildren) => {
+    const text = typeof children === "string" ? children : String(children ?? "");
+    const slug = slugify(text);
     return React.createElement(
       `h${level}`,
       {
@@ -153,8 +157,7 @@ const components = {
   h6: createHeading(6),
   Image: RoundedImage,
   a: CustomLink,
-  code: ({ children, className, ...props }: any) => {
-    // If it has a className, it's a code block, otherwise it's inline code
+  code: ({ children, className, ...props }: CodeBlockProps) => {
     if (className) {
       return (
         <ShikiCodeBlock className={className} {...props}>
@@ -164,32 +167,31 @@ const components = {
     }
     return <InlineCode {...props}>{children}</InlineCode>;
   },
-  p: ({ children }: any) => <p className='mb-10 leading-relaxed'>{children}</p>,
-  ul: ({ children }: any) => (
+  p: ({ children }: MDXChildren) => (
+    <p className='mb-10 leading-relaxed'>{children}</p>
+  ),
+  ul: ({ children }: MDXChildren) => (
     <ul className='list-disc mb-10 ml-6 space-y-2'>{children}</ul>
   ),
-  ol: ({ children }: any) => (
+  ol: ({ children }: MDXChildren) => (
     <ol className='list-decimal mb-10 ml-6 space-y-2'>{children}</ol>
   ),
-  li: ({ children }: any) => <li>{children}</li>,
-  strong: ({ children }: any) => (
+  li: ({ children }: MDXChildren) => <li>{children}</li>,
+  strong: ({ children }: MDXChildren) => (
     <strong className='font-semibold'>{children}</strong>
   ),
-  em: ({ children }: any) => <em className='italic'>{children}</em>,
-  blockquote: ({ children }: any) => (
+  em: ({ children }: MDXChildren) => <em className='italic'>{children}</em>,
+  blockquote: ({ children }: MDXChildren) => (
     <blockquote className='border-l-4 border-blue-500 pl-4 py-2 mb-10 bg-blue-50 dark:bg-blue-900/10 italic'>
       {children}
     </blockquote>
   ),
   hr: () => <hr className='my-8 border-gray-300 dark:border-gray-600' />,
-  pre: ({ children, ...props }: any) => {
-    // This handles the case where pre is used without code highlighting
-    return (
-      <pre className='mb-10' {...props}>
-        {children}
-      </pre>
-    );
-  },
+  pre: ({ children, ...props }: MDXBlock) => (
+    <pre className='mb-10' {...props}>
+      {children}
+    </pre>
+  ),
 };
 
 export default function ContentRender({ content }: Props) {

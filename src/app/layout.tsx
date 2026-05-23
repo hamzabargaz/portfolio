@@ -7,7 +7,6 @@ import {
   WebsiteSchema,
   PerformanceMonitor,
 } from "@/components";
-import { Epilogue } from "next/font/google";
 import cx from "classnames";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { getAuthorAction, getTotalPostsAction } from "@/lib/actions";
@@ -22,7 +21,7 @@ export async function generateMetadata() {
     metadataBase: new URL(seo.url),
     openGraph: {
       ...seo.openGraph,
-      images: seo.openGraph.images.map((image: any) => ({
+      images: seo.openGraph.images.map((image) => ({
         ...image,
         url: new URL(image.url, seo.url).href,
       })),
@@ -47,11 +46,6 @@ export async function generateMetadata() {
     },
   };
 }
-
-const epilogue = Epilogue({
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
-});
 
 const gaID = process.env.GA_ID || "";
 

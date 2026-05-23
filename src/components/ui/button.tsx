@@ -1,10 +1,10 @@
+import React from "react";
 import cx from "classnames";
 
-type Props = {
-  children?: React.ReactNode;
-  className?: string;
-  appearance?: "primary" | "secondary" | "none";
-  [key: string]: any;
+type Appearance = "primary" | "secondary" | "none";
+
+type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  appearance?: Appearance;
 };
 
 export default function CTABtn({

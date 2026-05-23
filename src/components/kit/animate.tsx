@@ -1,12 +1,8 @@
 "use client";
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, type HTMLMotionProps } from "framer-motion";
 
-type Props = {
-  children?: React.ReactNode;
-  className?: string;
-  [key: string]: any;
-};
+type Props = HTMLMotionProps<"div">;
 
 export const FadeIn = ({ children, ...props }: Props) => {
   return (

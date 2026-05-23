@@ -2,9 +2,10 @@ import React from "react";
 import { PostCard } from "@/components";
 import cx from "classnames";
 import { FadeIn } from "@/components/kit/animate";
+import type { Post } from "@/lib/mdx-posts";
 
 type Props = {
-  posts: any;
+  posts: Post[];
 };
 
 export default async function Recent({ posts }: Props) {
@@ -21,7 +22,7 @@ export default async function Recent({ posts }: Props) {
         </h2>
       </FadeIn>
       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-        {posts.map((post: any, i: number) => (
+        {posts.map((post, i) => (
           <FadeIn transition={{ duration: `0.${i + 5}` }} key={post.id}>
             <PostCard {...post} />
           </FadeIn>
