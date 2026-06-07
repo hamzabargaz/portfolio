@@ -6,6 +6,7 @@ import {
   Section,
   WebsiteSchema,
   PerformanceMonitor,
+  TopLoadingBar,
 } from "@/components";
 import cx from "classnames";
 import { ThemeProvider } from "@/lib/theme-provider";
@@ -81,6 +82,7 @@ export default async function RootLayout({
         )}
       >
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+          <TopLoadingBar />
           <main className='py-6 gap-y-2 mx-auto flex flex-col h-screen justify-between px-2 md:px-0'>
             <div className='grow flex flex-col'>
               <NavigationHeader
