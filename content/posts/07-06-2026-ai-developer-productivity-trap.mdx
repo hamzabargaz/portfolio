@@ -1,0 +1,81 @@
+---
+title: "Is AI Actually Making You Faster? The Developer Productivity Trap"
+slug: "ai-developer-productivity-trap"
+date: "07-06-2026"
+excerpt: "AI coding feels fast — but METR's data says your gut can't be trusted. How to measure your real developer productivity, and the habits that protect it."
+tags:
+  [
+    "Developer Productivity",
+    "AI",
+    "Self-Development",
+    "Coding Agents",
+    "Engineering Habits",
+    "Deep Work",
+  ]
+hero_image: "/images/blog/ai-developer-productivity-trap.jpg"
+seo:
+  openGraph:
+    authors: ["Hamza Bargaz"]
+    type: "article"
+    url: "https://www.bargaz.me/posts/ai-developer-productivity-trap"
+    siteName: "Hamza Bargaz"
+  twitter:
+    card: summary_large_image
+    site: "https://www.bargaz.me/posts/ai-developer-productivity-trap"
+    creator: "@hamza_bargaz"
+---
+
+Here's an uncomfortable question for 2026: do you actually *know* AI is making you faster, or does it just feel that way? Developer productivity is the one metric we all claim to care about and almost none of us measure — and the best research we have says our gut is lying to us.
+
+In mid-2025, the research nonprofit METR ran a [randomized controlled trial](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/) — a study where tasks are randomly assigned to "AI allowed" or "AI not allowed", so you can compare like with like. Experienced open-source developers expected AI to speed them up by 24%. It made them **19% slower**. The brutal part: even after finishing, they still believed AI had sped them up by 20%.
+
+**The feeling of speed and the fact of speed are two different things.** That gap is the productivity trap.
+
+## The Data Got Better — the Trap Didn't Go Away
+
+To be fair to the tools: that study used early-2025 assistants, and things moved fast. METR's [February 2026 follow-up](https://metr.org/blog/2026-02-24-uplift-update/) with late-2025 agentic tools points toward real speedup — returning participants showed an estimated 18% acceleration — though the researchers themselves flag the data as weak, because developers increasingly refuse to work without AI at all, which skews who participates. One participant put it perfectly: working without AI now feels *"like trying to get across the city walking when all of a sudden I was more used to taking an Uber."*
+
+And in a [May 2026 survey](https://metr.org/blog/2026-05-11-ai-usage-survey/), 349 technical workers self-reported a 1.4–2× boost in the value of their work — with METR again noting reasons to be skeptical of self-reports.
+
+See the pattern? The honest reading of three studies in a row is: **AI probably helps, the effect is real but smaller than it feels, and self-perception is the least reliable instrument you own.**
+
+## Why Your Brain Gets Developer Productivity Wrong
+
+When an agent writes 200 lines while you grab coffee, that *feels* like magic. What your brain doesn't log is the 40 minutes you spent afterwards reviewing it, untangling a subtly wrong abstraction, and re-prompting. Effort feels like work; waiting and reviewing don't — even when they eat the same hours.
+
+I notice this on my own work in fintech, where the review bar is non-negotiable — money UIs don't get to ship "mostly correct" code. The agent's draft arrives fast. *Trustworthy* code arrives at whatever speed verification takes. The bottleneck moved; it didn't disappear.
+
+## Measure Yourself Before the Vibes Do
+
+You don't need a metrics platform for this — your git history is already a dataset. Native tools first:
+
+```bash
+# Merged PRs that were yours, in the last 4 weeks
+git log --since="4 weeks ago" --author="you@email.com" \
+  --merges --oneline | wc -l
+```
+
+Track two or three boring numbers weekly: tasks shipped, time from "started" to "merged", and how often AI output survived review without rework. A dashboard tool earns its place only when your team is big enough that collecting this by hand costs more than the subscription.
+
+Then run your own tiny RCT: for two weeks, do similar-sized tasks alternately with and without heavy AI assistance, and write down real clock time. It's crude, but it beats vibes — METR's developers were off by nearly 40 percentage points.
+
+## Habits That Keep the Gains Real
+
+A few rules I've settled on, in the spirit of honest self-development rather than tool worship:
+
+**Pick tasks deliberately.** AI shines on greenfield scaffolding, tests, and unfamiliar APIs. It's weakest exactly where METR's first study lived: large, mature codebases with strict implicit standards. Know which kind of task is in front of you before you delegate it.
+
+**Don't babysit the agent.** Waiting for output while half-watching it is the worst of both worlds — no deep work, no rest. Kick off the task, then do something with your full attention until it's done.
+
+**Review like it's a junior's PR.** Because statistically, it is — confident, fast, and occasionally wrong in ways that look right.
+
+**Protect one AI-free skill block.** Debugging instinct and architectural judgment are muscles. The Uber quote above should worry you a little: convenience is great, but you still want to be able to walk.
+
+## The Short Version
+
+- METR's RCT showed devs *felt* 20% faster with AI while being 19% slower; 2026 data points to real speedup, but self-reports stay unreliable.
+- Feeling fast is not being fast — measure tasks shipped, time-to-merge, and rework rate with the git history you already have.
+- Delegate greenfield and boilerplate; stay hands-on in mature, high-stakes code.
+- Stop babysitting agents, review AI output like a junior's PR, and keep one AI-free block a week to stay sharp.
+
+*Enjoyed this? Browse more posts on [the blog](/posts) or learn more [about me](/about).*
