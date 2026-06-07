@@ -1,0 +1,114 @@
+---
+title: "Handling Money on the Frontend: How to Not Lose a Cent"
+slug: "handling-money-on-the-frontend"
+date: "02-06-2026"
+excerpt: "In JavaScript, 0.1 + 0.2 isn't 0.3 — and in a finance app, that tiny gap costs trust. Here's the simple way I handle money on the frontend, no libraries needed until you really need one."
+tags:
+  [
+    "Fintech",
+    "Frontend",
+    "JavaScript",
+    "Money",
+    "Precision",
+    "Intl.NumberFormat",
+  ]
+hero_image: "/images/blog/handling-money-on-the-frontend.jpg"
+seo:
+  openGraph:
+    authors: ["Hamza Bargaz"]
+    type: "article"
+    url: "https://www.bargaz.me/posts/handling-money-on-the-frontend"
+    siteName: "Hamza Bargaz"
+  twitter:
+    card: summary_large_image
+    site: "https://www.bargaz.me/posts/handling-money-on-the-frontend"
+    creator: "@hamza_bargaz"
+---
+
+Open your browser console and type this:
+
+```js
+0.1 + 0.2;
+// 0.30000000000000004
+```
+
+Not a typo — JavaScript really thinks `0.1 + 0.2` is a tiny bit more than `0.3`. On most apps, nobody notices. On a finance app, that tiny bit is how you lose a user's trust: nothing looks worse than a total that's off by a cent.
+
+I've spent most of my career building finance apps — accounting tools, dashboards, payment flows — and the good news is that handling money safely is simpler than people think. **You don't even need a library for most of it.** Three rules cover almost everything.
+
+## Why computers are bad at money
+
+Computers store numbers in binary, and some everyday decimals — like `0.1` — can't be written exactly in binary. It's the same reason you can't write `1/3` exactly as a decimal: you get `0.333...` and have to cut it off somewhere.
+
+So every time you do math on prices, a tiny error sneaks in. You won't see it on one line — you'll see it when a long invoice's total disagrees with what the customer adds up by hand.
+
+The fix is one mindset shift: **stop thinking in dollars, start thinking in cents.**
+
+## Rule 1: Store money as whole numbers
+
+Never hold a price as `19.99`. Hold it as `1999` — the number of cents. Whole numbers are always exact in JavaScript; decimals are not.
+
+```js
+// ❌ Risky — decimals drift
+const tax = 19.99 * 0.2; // 3.9980000000000002
+
+// ✅ Safe — work in cents, round once
+const tax = Math.round(1999 * 0.2); // 400
+```
+
+Keep money as cents everywhere — in your state, your database, your API. Only turn it back into "dollars" at the very last moment, on screen.
+
+> Careful: not every currency has two decimals. The Japanese yen has none, the Kuwaiti dinar has three. Don't hardcode "multiply by 100" — keep the currency's decimal count next to the amount.
+
+## Rule 2: Format with the built-in `Intl.NumberFormat`
+
+To show `1999` to a human, the browser already has everything you need — symbols, separators, and decimals for any language:
+
+```js
+const formatMoney = (cents, currency = "USD", locale = "en-US") =>
+  new Intl.NumberFormat(locale, { style: "currency", currency }).format(
+    cents / 100
+  );
+
+formatMoney(1999); // "$19.99"
+formatMoney(1999, "EUR", "fr-FR"); // "19,99 €"
+```
+
+Two habits to keep:
+
+- **That `/ 100` is the last step before the screen.** Never let a formatted value flow back into a calculation.
+- **Creating a formatter is slow** — don't make a new one per table row. Create one per currency and reuse it (in React: `useMemo`, or a small module-level cache).
+
+These two rules alone solve money for most apps. **No dependencies.**
+
+## Rule 3: Know when a library earns its place
+
+Native stops being enough in exactly three situations:
+
+1. **Splitting an amount** — divide $100 by 3 and naive math gives `33.33` three times: a cent has vanished and your books don't balance.
+2. **Mixing currencies** — different decimal rules, easy to get wrong.
+3. **Strict rounding rules** — banks and tax authorities often mandate specific rounding methods. Not something to guess.
+
+That's when [dinero.js](https://dinerojs.com/) (complete) or [currency.js](https://currency.js.org/) (about 1KB) is the smarter call. Here's the split problem done right — note the currency is just a plain object you define yourself:
+
+```js
+import { dinero, allocate, toSnapshot } from "dinero.js";
+
+const USD = { code: "USD", base: 10, exponent: 2 };
+
+const dinner = dinero({ amount: 10000, currency: USD }); // $100.00
+allocate(dinner, [1, 1, 1]).map((s) => toSnapshot(s).amount);
+// [3334, 3333, 3333] — adds back to exactly 10000
+```
+
+That last cent is the whole point. In finance, the books balancing *is* the job.
+
+One last tip: in money **inputs**, let the user see a formatted string, but keep the real value as whole cents behind the scenes. The display is just a picture; the cents are the truth.
+
+## The short version
+
+Store money as whole cents. Format it with `Intl.NumberFormat` only at the very end. Reach for dinero.js or currency.js only when you split amounts, mix currencies, or face strict rounding rules. Do that, and your totals will always add up — which, in a finance app, is the entire point.
+
+---
+
+*I write about finance-critical frontend, the modern React and Next.js stack, and bringing AI into real products. More of my writing is [here](/posts) — and if you're building something where the numbers matter, [let's talk](/about).*
