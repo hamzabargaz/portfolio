@@ -1,0 +1,88 @@
+---
+title: "The React Compiler Quietly Ends the useMemo Era"
+slug: "react-compiler-and-the-end-of-usememo"
+date: "21-06-2026"
+excerpt: "React Compiler 1.0 is stable and memoizes your components for you. Here's what changes for useMemo and useCallback—and the rare lines where you still write them by hand."
+tags:
+  [
+    "React",
+    "React Compiler",
+    "Performance",
+    "Frontend",
+    "TypeScript",
+    "Next.js",
+  ]
+hero_image: "/images/blog/react-compiler-and-the-end-of-usememo.jpg"
+seo:
+  openGraph:
+    authors: ["Hamza Bargaz"]
+    type: "article"
+    url: "https://www.bargaz.me/posts/react-compiler-and-the-end-of-usememo"
+    siteName: "Hamza Bargaz"
+  twitter:
+    card: summary_large_image
+    site: "https://www.bargaz.me/posts/react-compiler-and-the-end-of-usememo"
+    creator: "@hamza_bargaz"
+---
+
+For years, making React fast meant sprinkling two hooks across your code: `useMemo` and `useCallback`. They tell React, "don't recompute this value—or rebuild this function—unless its inputs actually changed." Useful, but noisy. You end up writing plumbing that has nothing to do with what your feature does.
+
+That era is closing. **React Compiler 1.0 shipped as stable in October 2025**, and it does that memoization work for you, automatically, at build time. If you start a new project in 2026, this changes the very first habit most of us learned.
+
+## What "memoization" even means
+
+Quick refresher in plain words. Every time a React component re-renders, it re-runs all the code inside it—including any calculations and any functions you define. Usually that's cheap. Sometimes it isn't: a heavy calculation, or a function passed to a child that's wrapped to skip re-renders.
+
+**Memoization is just caching the result so it isn't redone needlessly.** `useMemo` caches a computed value; `useCallback` caches a function. Both ask you to hand-write a list of "dependencies"—the inputs that should trigger a recompute. Forget one, and you get a stale value. Add a wrong one, and the cache never helps. It's fiddly, and it's a classic source of subtle bugs.
+
+## What the compiler actually does
+
+React Compiler is a build-time tool. It reads your components, works out exactly which values depend on which inputs, and inserts the caching for you—often more precisely than a human would. It can even memoize in spots where the hooks literally couldn't, such as after an early `return`.
+
+The headline result: **you write plain code, and the compiler makes it fast.**
+
+```jsx
+// Before: manual plumbing
+const sorted = useMemo(
+  () => items.sort(compareFn),
+  [items, compareFn]
+);
+const handleClick = useCallback(
+  () => onSelect(id),
+  [onSelect, id]
+);
+
+// With the compiler: just write the logic
+const sorted = items.sort(compareFn);
+const handleClick = () => onSelect(id);
+```
+
+Both versions behave the same at runtime. The second one is what you actually meant to write.
+
+### Turning it on
+
+It's opt-in, not magic that appears on its own. The compiler ships as a Babel plugin, and the major toolchains have first-class support—**Next.js, Vite, and Expo** all have a switch for it. In Next.js, you enable `reactCompiler` in `next.config`. The related lint rules now live in `eslint-plugin-react-hooks`, so your editor flags patterns the compiler can't safely optimize. Turn those rules on first; they pay for themselves even before the compiler does.
+
+## When you still reach for the hooks
+
+Here's the honest part, because "delete all your `useMemo` calls" is bad advice. The hooks aren't gone—they're now an **escape hatch** for the few cases where you want manual control.
+
+The one that matters most in real apps: **a memoized value used as an Effect dependency.** If an object or array feeds a `useEffect` dependency list, you may still want `useMemo` to guarantee its identity stays stable, so the effect doesn't fire on every render. That's a correctness concern, not a performance one—and it's the exact line where the hook earns its place.
+
+You'll also keep them temporarily in older code the compiler hasn't been enabled for yet. There's no rush to rip anything out. Leaving existing `useMemo` and `useCallback` in place is safe; the compiler works around them.
+
+So the rule for new code is simple: **write it plain, let the compiler memoize, and add a hook back only when an Effect's dependency identity depends on it.**
+
+## Is it safe for production?
+
+Reasonable question for anyone shipping money-moving software, which is the world I work in. The compiler was battle-tested on Meta's own apps—Instagram and others—well before the 1.0 label, and it's designed to bail out quietly on any component it can't prove is safe rather than risk breaking behavior. It also leans on React's existing rules; if your components already follow the Rules of React, you're most of the way there.
+
+My take after watching it mature: **adopt it on new projects now, and on existing ones once the lint rules come back clean.** The win isn't a flashy benchmark. It's that a whole category of fiddly, bug-prone code stops being your job.
+
+## The short version
+
+React Compiler 1.0 is stable and memoizes your components automatically at build time, so most `useMemo` and `useCallback` calls become unnecessary. Enable it in Next.js, Vite, or Expo, and turn on the `eslint-plugin-react-hooks` rules first. Keep the hooks only as an escape hatch—chiefly when a value's identity must stay stable for a `useEffect` dependency. Write the plain version; let the build make it fast.
+
+---
+
+*I write about finance-critical frontend, the modern React and Next.js stack, and bringing AI into real products. More of my writing is [here](/posts) — and if you're building something where the details matter, [let's talk](/about).*
