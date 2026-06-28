@@ -1,0 +1,101 @@
+---
+title: "AGENTS.md: The One File That Makes AI Coding Agents Actually Useful"
+slug: "write-an-agents-md-file"
+date: "28-06-2026"
+excerpt: "Your AI coding agent keeps guessing your project's rules and getting them wrong. An AGENTS.md file fixes that — a plain Markdown note your agent reads before it writes a line."
+tags:
+  [
+    "AI",
+    "AGENTS.md",
+    "Coding Agents",
+    "Cursor",
+    "Claude Code",
+    "Developer Productivity",
+  ]
+hero_image: "/images/blog/write-an-agents-md-file.jpg"
+seo:
+  openGraph:
+    authors: ["Hamza Bargaz"]
+    type: "article"
+    url: "https://www.bargaz.me/posts/write-an-agents-md-file"
+    siteName: "Hamza Bargaz"
+  twitter:
+    card: summary_large_image
+    site: "https://www.bargaz.me/posts/write-an-agents-md-file"
+    creator: "@hamza_bargaz"
+---
+
+You ask your AI coding agent for a small change. It comes back with code that works — but it used a different test runner than your team, formatted everything the way it likes, and imported a library you spent last quarter removing. So you fix it by hand, and quietly wonder why the "agent" needs so much babysitting.
+
+Here's the thing: the agent isn't being dumb. It just walked into your project blind. It has no idea how your team builds, tests, or names things — so it guesses. And it guesses wrong in the exact ways a brand-new hire would on day one.
+
+The fix is almost boringly simple: **leave the agent a note.** That note has a name now — `AGENTS.md` — and it's quickly becoming a standard worth adopting.
+
+## What an AGENTS.md file actually is
+
+`AGENTS.md` is a single Markdown file you drop at the root of your repository. Markdown is just plain text with light formatting — the same stuff you already write in a README. There's no schema to learn, no tool to install, no config to wire up.
+
+The easiest way to think about it: **a README is for humans, an AGENTS.md is for the AI agent.** Your README explains what the project is. Your AGENTS.md explains how to work in it — the build command, the test command, the folder layout, the conventions that would get a junior engineer a stern code review if they ignored them.
+
+When a supported agent starts a task, it reads this file first and treats it as house rules. That's the whole idea.
+
+## Why this caught on so fast
+
+This isn't a one-vendor gimmick. As of 2026, `AGENTS.md` is read natively by a long list of tools — Cursor, GitHub Copilot, Claude Code, Codex, Gemini CLI, Aider, Windsurf, Zed and more than twenty others — and it's used in over 60,000 repositories. It's even stewarded by the Linux Foundation's Agentic AI Foundation, which is a fancy way of saying no single company owns it.
+
+That matters for a practical reason. Before this, every tool wanted its own special file with its own special format. If your teammate used Cursor and you used Claude Code, you each maintained separate instructions that drifted apart. One shared file that every agent understands kills that busywork.
+
+**One file, every agent, no lock-in.** That's the pitch, and it holds up.
+
+## What to put in it
+
+Don't overthink this. Start with the questions you'd answer for a new teammate in their first hour. A solid starter looks like this:
+
+```markdown
+# AGENTS.md
+
+## Setup
+
+- Install: `pnpm install`
+- Dev server: `pnpm dev`
+
+## Testing
+
+- Run all tests: `pnpm test`
+- Always run tests before saying a task is done.
+
+## Conventions
+
+- TypeScript only. No new `.js` files.
+- Use the existing `Button` component in `src/ui` — don't create new ones.
+- Format money with `Intl.NumberFormat`, never by hand.
+
+## Don't
+
+- Don't add new dependencies without flagging it first.
+- Don't touch files in `src/legacy/`.
+```
+
+Notice what's there: real commands, named files, and clear "don't" rules. The agent can't read your team's mind, but it can follow an instruction like "use the existing Button component" perfectly — if you write it down once.
+
+A couple of habits that pay off:
+
+**Be specific, not aspirational.** "Write clean code" tells the agent nothing. "Keep components under 150 lines and put shared logic in `src/hooks`" tells it exactly what you mean.
+
+**Put the rule where the work happens.** You can place an `AGENTS.md` in a subfolder, and most agents treat the closest one as the most important. So a rule that only applies to your payments code can live next to the payments code.
+
+## A fair warning: it's not magic
+
+I work on finance apps, where a wrong convention isn't just ugly — it can mean a number that's off by a cent in front of a user. So I'm careful about overselling tools, and `AGENTS.md` deserves an honest caveat.
+
+Early research in 2026 is mixed on how much these files improve agent results. Some studies show clear gains in fewer failed runs and faster reviews; others find the benefit depends heavily on how well the file is written and which task you're doing. The lesson isn't "skip it." It's that **a vague AGENTS.md helps about as much as a vague onboarding doc** — which is to say, not much.
+
+So treat it as a living file. When the agent makes the same mistake twice, that's your signal to add one line to the file instead of fixing the output by hand again. Over a few weeks it stops being a chore and starts being the reason the agent finally feels like a teammate instead of an intern you re-explain everything to.
+
+## The short version
+
+If you use any AI coding agent, create a plain `AGENTS.md` at the root of your repo. Put your real build and test commands in it, name the conventions and the files that matter, and add a short "don't" list. It's native Markdown — no library, no setup — and nearly every agent reads it automatically. Keep it updated whenever the agent repeats a mistake, and be specific: a precise file beats a poetic one every time.
+
+---
+
+_Liked this? I write about frontend, fintech, and building with AI over on [/posts](https://www.bargaz.me/posts). A bit more about me and what I work on lives at [/about](https://www.bargaz.me/about)._
