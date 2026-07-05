@@ -1,0 +1,123 @@
+---
+title: "Stopping Double Charges: Idempotency Keys on the Frontend"
+slug: "stopping-double-charges-on-the-frontend"
+date: "05-07-2026"
+excerpt: "A double-click on the Pay button shouldn't charge someone twice. Here's how one line of native JavaScript — an idempotency key — quietly prevents it."
+tags:
+  [
+    "Fintech",
+    "Frontend",
+    "JavaScript",
+    "Payments",
+    "Idempotency",
+    "React",
+  ]
+hero_image: "/images/blog/stopping-double-charges-on-the-frontend.jpg"
+seo:
+  openGraph:
+    authors: ["Hamza Bargaz"]
+    type: "article"
+    url: "https://www.bargaz.me/posts/stopping-double-charges-on-the-frontend"
+    siteName: "Hamza Bargaz"
+  twitter:
+    card: summary_large_image
+    site: "https://www.bargaz.me/posts/stopping-double-charges-on-the-frontend"
+    creator: "@hamza_bargaz"
+---
+
+A user clicks **Pay**. The spinner starts. Nothing happens for two seconds, so they click again. Now their card is charged twice.
+
+I've spent most of my career on finance apps — payment flows, dashboards, checkout screens — and this is one of the few bugs that turns a happy customer into an angry email in about thirty seconds. The frustrating part is that the usual "fix" everyone reaches for doesn't actually fix it.
+
+Let me show you the small, native trick that does: an **idempotency key**.
+
+## Why disabling the button isn't enough
+
+The first instinct is to disable the button while the request is in flight. Good idea — you should do it — but it only guards against one thing: a fast second click on the same page.
+
+It does nothing about the rest:
+
+- The network hiccups, the request times out, and your own code **retries** — a second real charge.
+- The user's phone drops off wifi mid-request, they refresh, and hit Pay again.
+- They left checkout open in two tabs.
+
+In every one of those cases, the button state is irrelevant. Two separate requests reach your payment provider, and each one looks perfectly valid. **The browser can't promise a payment happens only once. Only the server can.** Your job on the frontend is to give the server enough information to recognise a repeat.
+
+## What an idempotency key actually is
+
+"Idempotent" is a fancy word for a simple promise: **doing the same thing twice has the same result as doing it once.** Flipping a light switch to "on" is idempotent. Charging a card is not — do it twice and you've taken twice the money.
+
+An idempotency key makes a payment idempotent. It's just a unique string you attach to the request. The payment provider stores it: the first time it sees the key, it processes the charge and remembers the result. If it sees the *same* key again, it skips the work and replays the original response. Stripe, for example, keeps keys for 24 hours — long enough to cover retries during an outage.
+
+So two identical requests, same key, one charge. Exactly what we want.
+
+## Generating the key: one native line
+
+You don't need a library for this. Every modern browser ships `crypto.randomUUID()`, which returns a fresh, universally-unique ID:
+
+```js
+crypto.randomUUID();
+// "8f14e45f-ceea-4e0c-9d4a-1b2c3d4e5f60"
+```
+
+One caveat worth knowing: `crypto.randomUUID()` only works in a **secure context** — HTTPS, or localhost during development. For a payment page that's already a given, but it's the reason it might return `undefined` if you ever test over plain `http://`.
+
+## The rule that makes it work
+
+Here's the part most tutorials get wrong. **Generate the key once, when the payment intent is created — not on every click.**
+
+If you call `crypto.randomUUID()` inside your click handler, every click produces a *new* key, and the whole safety net disappears. The second click looks brand new to the server, and you're back to double charges.
+
+Tie the key to the thing being paid for, and reuse it for every attempt at that payment:
+
+```jsx
+function Checkout({ amount }) {
+  // Created once when the component mounts — survives re-renders and retries.
+  const idempotencyKey = useRef(crypto.randomUUID());
+  const [paying, setPaying] = useState(false);
+
+  async function pay() {
+    setPaying(true);
+    try {
+      await fetch("/api/charge", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Idempotency-Key": idempotencyKey.current,
+        },
+        body: JSON.stringify({ amount }),
+      });
+    } finally {
+      setPaying(false);
+    }
+  }
+
+  return (
+    <button onClick={pay} disabled={paying}>
+      {paying ? "Processing…" : "Pay"}
+    </button>
+  );
+}
+```
+
+`useRef` matters here: it holds the same value across re-renders, so a spinner flip or a state update won't quietly hand you a new key. If the user retries the whole payment after a real failure, that's when you generate a fresh key — a genuinely new attempt deserves a new one.
+
+The server then passes that header straight to your payment provider (or checks it against your own database if you handle charges yourself). That's the whole pattern.
+
+## Where a library earns its place
+
+For the key itself, reach for nothing — `crypto.randomUUID()` is enough. **A library earns its place the moment you add automatic retries.** If you wrap `fetch` in something that retries failed requests with backoff, you *must* make sure it reuses the same idempotency key on each attempt, or you've built a double-charge machine with extra steps. That's the one line to check in any retry helper you adopt.
+
+## The short version
+
+- Disabling the Pay button stops fast double-clicks, and nothing else.
+- Only the server can guarantee a charge happens once — the frontend's job is to help it recognise repeats.
+- Attach an **idempotency key** (an `Idempotency-Key` header) to every payment request.
+- Generate it with `crypto.randomUUID()` **once per payment**, store it in a `useRef`, and reuse it for retries.
+- If you add automatic retries, confirm they keep the same key.
+
+It's a five-minute change that quietly saves you from the worst kind of bug — the one that costs a real person real money. In fintech, that trust is the whole product.
+
+---
+
+_Enjoyed this? I write about frontend, fintech, and building for the web. Browse more on [/posts](https://www.bargaz.me/posts), or find out who's behind them on [/about](https://www.bargaz.me/about)._
