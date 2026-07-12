@@ -1,0 +1,102 @@
+---
+title: "Preventing Double Charges: The Frontend Bug That Bills a Customer Twice"
+slug: "preventing-double-charges-on-the-frontend"
+date: "12-07-2026"
+excerpt: "A slow network and an impatient click can charge a customer twice. Here's the two-layer fix I use on payment screens — disable the button, then back it with an idempotency key."
+tags:
+  [
+    "Fintech",
+    "Frontend",
+    "Payments",
+    "React",
+    "Idempotency",
+    "UX",
+  ]
+hero_image: "/images/blog/preventing-double-charges-on-the-frontend.jpg"
+seo:
+  openGraph:
+    authors: ["Hamza Bargaz"]
+    type: "article"
+    url: "https://www.bargaz.me/posts/preventing-double-charges-on-the-frontend"
+    siteName: "Hamza Bargaz"
+  twitter:
+    card: summary_large_image
+    site: "https://www.bargaz.me/posts/preventing-double-charges-on-the-frontend"
+    creator: "@hamza_bargaz"
+---
+
+Picture the worst review a payment screen can get. A customer taps **Pay**. The screen sits there for a second — no spinner, no change — so they tap again. Somewhere on a server, two charges go through. Now they've paid twice, and you've turned a sale into a refund, an angry email, and a chargeback.
+
+I've spent most of my career on finance-critical frontends — payment flows, dashboards, money-moving software — and this is one of the oldest bugs in the book. The good news: it's also one of the most fixable. You need **two layers**, and the first one is nearly free.
+
+## Why the double charge happens
+
+It's rarely the user being careless. It's the frontend failing to say "got it."
+
+When a payment request goes out, there's a gap — sometimes a full second or two on a shaky mobile connection — between the tap and the answer. If nothing on screen changes during that gap, a normal person assumes their tap didn't land. So they tap again. Two taps, two requests, two charges.
+
+There's a second, sneakier cause: **automatic retries.** A request goes out, the network stalls, and the browser or your own code quietly resends it. The first one actually succeeded — the response just got lost on the way back. The user never touched anything, and they still got billed twice.
+
+So you're defending against two different things: an impatient human, and an unreliable network. Each needs its own fix.
+
+## Layer 1: disable the button the moment it's clicked
+
+The human problem has a boring, built-in answer — the instant the form is submitting, disable the button so it can't fire again. No library needed.
+
+If you're on React 19, the framework hands you this for free. When you attach an **action** to a form (a function that runs on submit), React tracks a `pending` flag for you — `true` while the request is in flight, `false` when it's done. You read it with `useActionState` and use it to disable the button:
+
+```jsx
+import { useActionState } from "react";
+
+function PayButton({ payAction }) {
+  const [state, submit, pending] = useActionState(payAction, null);
+
+  return (
+    <form action={submit}>
+      <button type="submit" disabled={pending}>
+        {pending ? "Processing…" : "Pay"}
+      </button>
+    </form>
+  );
+}
+```
+
+That's the whole first layer. The button greys out on the first tap, the label changes to "Processing…", and the second tap has nothing to click. You're also giving the user the feedback they were missing — the reason they double-tapped in the first place.
+
+**This handles the common case, and you should always do it.** But it only guards the button. It does nothing about the network resending a request on its own. For a to-do app, layer 1 is enough. For money, it isn't.
+
+## Layer 2: give the payment an idempotency key
+
+Here's the word that does the heavy lifting: **idempotency.** It sounds academic, but the idea is simple — an action you can repeat as many times as you like and it only happens once. Pressing a floor button in an elevator is idempotent; mashing it ten times doesn't summon ten elevators.
+
+We make a payment idempotent by attaching a unique ticket number to each attempt, called an **idempotency key**. The server keeps a short memory of keys it has seen. First time it sees your key, it charges the card and files the result under that key. If the same key shows up again — from a retry, a lost response, anything — it skips the charge and just hands back the first result. One attempt, one charge, no matter how many times the request arrives.
+
+The one rule that matters: **generate the key on the frontend, once per attempt, and reuse it across retries.** Browsers have a built-in tool for this, so you don't need a library:
+
+```js
+const idempotencyKey = crypto.randomUUID();
+// e.g. "9f1c2e7a-3b6d-4a91-bc0e-2f8d5a1e77c4"
+
+await fetch("/api/pay", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Idempotency-Key": idempotencyKey,
+  },
+  body: JSON.stringify({ amount, currency }),
+});
+```
+
+Create the key when the payment attempt begins — not inside the retry loop. If you generate a fresh key on every try, each retry looks brand new to the server, and you're right back to double charges. The whole point is that the retries share one key.
+
+This isn't a homegrown trick, either. It's exactly how **Stripe** works: you pass an `Idempotency-Key` header, and Stripe caches that request's result for 24 hours so any repeat within the window returns the original response instead of charging again.
+
+Where does this layer earn its place? **Any request that moves money or creates a record you can't afford to duplicate** — a charge, a transfer, an order, a payout. For a search box or a settings toggle, skip it. For a Pay button, it's not optional.
+
+## The short version
+
+A double charge usually starts on the frontend: a slow response, no feedback, an impatient second tap — or a network that silently retries a request that already succeeded. Fix it in two layers. First, disable the submit button while the request is in flight; React 19's form actions give you a `pending` flag for free, so it costs you almost nothing. Second, for anything that moves money, attach an **idempotency key** — a `crypto.randomUUID()` generated once per attempt and reused across retries — so the server charges exactly once no matter how many copies of the request arrive. Layer one keeps honest users honest. Layer two keeps the network honest.
+
+---
+
+*I write about finance-critical frontend, the modern React and Next.js stack, and bringing AI into real products. More of my writing is [here](/posts) — and if you're building something where the details matter, [let's talk](/about).*
