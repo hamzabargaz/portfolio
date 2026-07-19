@@ -1,0 +1,66 @@
+---
+title: "Decision Fatigue Is the Real AI Burnout, and One Rule Fixes It"
+slug: "decision-fatigue-ai-code-review"
+date: "19-07-2026"
+excerpt: "AI didn't make your job easier — it moved the work to your judgment. Here's the one-task rule I use to stop decision fatigue from turning into burnout."
+tags:
+  [
+    "Self Development",
+    "Productivity",
+    "AI",
+    "Burnout",
+    "Code Review",
+    "Software Engineering",
+  ]
+hero_image: "/images/blog/decision-fatigue-ai-code-review.jpg"
+seo:
+  openGraph:
+    authors: ["Hamza Bargaz"]
+    type: "article"
+    url: "https://www.bargaz.me/posts/decision-fatigue-ai-code-review"
+    siteName: "Hamza Bargaz"
+  twitter:
+    card: summary_large_image
+    site: "https://www.bargaz.me/posts/decision-fatigue-ai-code-review"
+    creator: "@hamza_bargaz"
+---
+
+You open your editor. The agent already produced 300 lines overnight, or in the two minutes you were pouring coffee. You haven't written a single character yet, and you already feel behind.
+
+That feeling has a name, and it isn't burnout in the old sense — the one caused by too many hours. It's **decision fatigue**: the mental cost of making judgment call after judgment call, all day, without the recovery time that used to come from just... typing. AI made code cheap. It made nothing cheaper about deciding whether that code is right.
+
+## Code got cheap. Judgment didn't
+
+Before agents, a chunk of your day was spent on something other than typing — thinking, planning, holding the shape of the problem in your head while your fingers caught up. That thinking was slow, but it was also where the recovery happened.
+
+Agentic coding collapses that gap. You go from a plan almost straight to a result, and what used to be scattered across a day now arrives in a dense burst: review this diff, approve that approach, decide whether this edge case matters, sign off on a refactor you didn't write. **Stack Overflow's reporting on this** points to research showing automation intensity for engineering teams has climbed sharply, without the workday itself getting any longer — the day just got denser. You're not doing less work. You're doing the same hours at a higher resolution, and every frame in that higher resolution is a decision.
+
+Reviewing someone else's reasoning is also just harder than reviewing your own. When you wrote the code, the "why" is already in your head. When an agent wrote it, you have to reconstruct that why from the diff before you can trust your own approval — and doing that reconstruction, repeatedly, for hours, is what actually drains you. It's not the code. It's the judging.
+
+## Why "just review carefully" doesn't scale
+
+The obvious advice — slow down, review more carefully — sounds right and doesn't hold up. Attention isn't a setting you can dial up on demand; it's a resource, and it depletes the same way regardless of how important the fifteenth decision of the day feels compared to the first. Late in a review-heavy day, a **senior fintech engineer waving through a payments diff** is running on the same depleted budget as anyone else, which is exactly the moment a rounding error or a missed edge case slips through — in money code, that's not a cosmetic bug.
+
+The instinct to fix this with more tools makes it worse before it makes it better. Another dashboard, another AI-review-of-the-AI-review, another notification stream to "help you stay on top of it" is one more thing competing for the same depleted attention. The fix isn't more input. It's fewer decisions per hour, deliberately.
+
+## The one rule: cap consecutive AI-heavy tasks
+
+Here's the actual practice, and it costs nothing to adopt: **never review or steer two AI-heavy tasks back to back without a real break in between.** Not a Slack-scroll break — a genuine few minutes away from the screen. One agent task, then stop, then the next.
+
+It sounds almost too small to matter. In practice it's the difference between catching a subtle bug in a payment confirmation flow and rubber-stamping it because you're on task nine before lunch. The break isn't slack time you're stealing from the sprint — it's the recovery window agentic work quietly deleted, and putting it back is the whole fix.
+
+Pair it with one more habit: **read the plan before you read the code.** If your agent supports a plan-first mode, use it, and actually read the plan rather than skimming to the "looks good" button. Catching a wrong assumption in three sentences of plan is a cheap decision. Catching it in four hundred lines of implementation is an expensive one, and expensive decisions are exactly what you're trying to ration.
+
+## Where a second AI pass actually earns its keep
+
+None of this means treat every tool with suspicion. There's one place an automated second pass genuinely helps: catching the **mechanical** stuff — lint violations, obvious type errors, missing null checks — before it ever reaches your eyes. That's the line where it earns its place: it protects your judgment budget for the things only a human should decide, like whether an approach fits the architecture or whether an edge case is actually safe to skip. Handing the mechanical checks to a linter or a CI step isn't outsourcing your thinking; it's the same reason you don't proofread your own semicolons — some checks don't need a human's judgment at all, so don't spend any of it there.
+
+## The short version
+
+AI didn't shrink your workload — it moved the load from typing to deciding, and deciding all day is what's actually draining you. Attention depletes regardless of how you feel about the task, so "review more carefully" isn't a plan. The rule that works: **cap consecutive AI-heavy tasks and take a real break between them**, read the plan before the code so mistakes get caught cheap instead of expensive, and let automated tools absorb the purely mechanical checks so your judgment is spent only where it's actually needed.
+
+You didn't sign up to be a full-time decision-maker. Protect the parts of the job that still feel like yours.
+
+---
+
+_I write about frontend craft, fintech, and the habits that make an engineering career sustainable. More at [/posts](https://www.bargaz.me/posts) — or read more [about me](https://www.bargaz.me/about)._
