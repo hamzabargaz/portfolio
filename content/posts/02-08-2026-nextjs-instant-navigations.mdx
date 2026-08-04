@@ -1,0 +1,67 @@
+---
+title: "Next.js Instant Navigations: Your Server App Can Finally Feel Like a SPA"
+slug: "nextjs-instant-navigations"
+date: "02-08-2026"
+excerpt: "Next.js 16.3's Instant Navigations makes server-rendered pages respond to clicks instantly, like a SPA. How Stream, Cache, and Block work — and when to opt in."
+tags:
+  [
+    "Next.js",
+    "React",
+    "Performance",
+    "Frontend",
+    "Server Components",
+    "UX",
+  ]
+hero_image: "/images/blog/nextjs-instant-navigations.jpg"
+seo:
+  openGraph:
+    authors: ["Hamza Bargaz"]
+    type: "article"
+    url: "https://www.bargaz.me/posts/nextjs-instant-navigations"
+    siteName: "Hamza Bargaz"
+  twitter:
+    card: summary_large_image
+    site: "https://www.bargaz.me/posts/nextjs-instant-navigations"
+    creator: "@hamza_bargaz"
+---
+
+Click a link in most Next.js apps and here's what happens: nothing. The screen just sits there while a request crosses the network, and only when the server answers does the next page appear. Users feel that pause every single time. **Instant Navigations**, the headline feature of the [Next.js 16.3 preview](https://nextjs.org/blog/next-16-3-instant-navigations), is Vercel's answer — and it's the most honest one they've given to the oldest complaint about Server Components.
+
+A quick translation for anyone newer to this debate: a **SPA** (single-page app) ships enough code to the browser that clicking a link swaps the page instantly, then fills in data. A server-driven app like Next.js waits for the server before showing anything. Servers bring real advantages — less JavaScript shipped, data close to the code — but that click-and-wait feeling is why plenty of teams never left SPAs. I work on finance dashboards all day, and a half-second of dead air after a click reads as "broken" to users long before it reads as "slow."
+
+## How Instant Navigations works: Stream, Cache, or Block
+
+Turn on the `cacheComponents` flag in `next.config.ts` and Next.js starts treating every slow navigation in development as an error. For each route that `await`s data on the server, you pick one of three options:
+
+**Stream** with `<Suspense>`. The user instantly sees a loading state, and the real content pours in as the server responds. **Cache** with `'use cache'`. The user instantly sees previously cached UI, reused between requests. Either way, the click responds immediately — that's the SPA feel.
+
+**Block**, the third option, is an explicit opt-out:
+
+```tsx
+// page.tsx — "I want this navigation to wait for the server"
+export const instant = false;
+```
+
+That line matters more than it looks. A blog might never want a loading skeleton for posts; a payment confirmation screen might legitimately prefer a pause over a shell that could mislead. The point is that slowness becomes a decision you write down, not a default you drift into.
+
+## Prefetching finally stops being ridiculous
+
+The second half of the feature fixes something you've probably seen in your Network tab: Next.js used to fire a prefetch request for *every link* on screen. Twenty chat links in a sidebar meant twenty requests — even though they all point to the same route. Vercel's own words: "this looked ridiculous, and frankly, we agree."
+
+With `partialPrefetching: true`, Next.js instead prefetches **one reusable shell per route** — a shell for `/chat/[id]`, one for `/dashboard` — and caches it on the client for the session. It's the same trick SPAs use with per-route code splitting, applied to server rendering. If a specific link deserves richer prefetching, `<Link prefetch={true}>` opts that one link into more, rendering down to whatever is synchronous or marked `'use cache'`. Native behavior first; the per-link prop is the escape hatch, and a sidebar of high-traffic links is the exact line where it earns its place.
+
+There's tooling to keep you honest, too: a Navigation Inspector in DevTools that pauses any navigation at its shell so you can see what users get instantly, and an `instant()` Playwright helper that fails a test if content you promised instantly actually waited on the network.
+
+## Should you turn it on?
+
+Here's my read. This is a **preview** — you install it with `npm install next@preview`, and there are known issues (Safari devtools quirks, some blocking routes going unreported). If you ship money-moving software like I do, that word "preview" is your answer for production: not yet. The stable release is expected within weeks, and both flags are slated to become defaults in a future major version — so this is the direction of travel, not an experiment.
+
+What I'd do today: enable both flags in a side project or a staging branch and just read what Instant Insights tells you. Every error is a route where your users currently stare at a frozen screen. You'll fix most of them with a `<Suspense>` boundary you should arguably have had anyway. When 16.3 goes stable, you'll already know the shape of the work — and adopting the defaults early beats being forced through them in a major upgrade later.
+
+## The short version
+
+Next.js Instant Navigations (16.3 preview) makes server-rendered apps respond to clicks instantly: Stream with `<Suspense>`, Cache with `'use cache'`, or explicitly Block with `export const instant = false`. Partial Prefetching replaces per-link prefetch spam with one cached shell per route. It's behind `cacheComponents` and `partialPrefetching` flags, both headed for default status. Try it in a branch now; put it in production when stable lands.
+
+---
+
+*I write about finance-critical frontend, the modern React and Next.js stack, and bringing AI into real products. More of my writing is [here](/posts) — and if you're building something where the details matter, [let's talk](/about).*
