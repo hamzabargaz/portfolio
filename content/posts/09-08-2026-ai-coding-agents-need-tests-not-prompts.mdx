@@ -1,0 +1,76 @@
+---
+title: "AI Coding Agents Don't Need Better Prompts — They Need a Test to Fail"
+slug: "ai-coding-agents-need-tests-not-prompts"
+date: "09-08-2026"
+excerpt: "AI coding agents now open PRs on their own. The teams shipping safely aren't prompting harder — they write the test first and let the agent chase green."
+tags:
+  [
+    "AI",
+    "Testing",
+    "Agentic Coding",
+    "Developer Workflow",
+    "Software Engineering",
+    "Frontend",
+  ]
+hero_image: "/images/blog/ai-coding-agents-need-tests-not-prompts.jpg"
+seo:
+  openGraph:
+    authors: ["Hamza Bargaz"]
+    type: "article"
+    url: "https://www.bargaz.me/posts/ai-coding-agents-need-tests-not-prompts"
+    siteName: "Hamza Bargaz"
+  twitter:
+    card: summary_large_image
+    site: "https://www.bargaz.me/posts/ai-coding-agents-need-tests-not-prompts"
+    creator: "@hamza_bargaz"
+---
+
+Somewhere this month, an agent on your team opened a pull request nobody typed. AI coding agents crossed a line in 2026: they don't suggest the next line anymore, they plan the change, write the files, run the checks, and hand you a finished PR. And the teams handling that shift well have quietly converged on something that sounds almost old-fashioned: **the test is the spec, and the agent's job is to make it pass.**
+
+A quick translation for anyone outside the loop: a **coding agent** is an AI tool that works on your codebase autonomously — think of it as a very fast contractor who never gets tired and never asks follow-up questions. That last part is the problem. When a contractor can't ask questions, the quality of the outcome depends entirely on the quality of the contract. Your prompt is not a contract. A failing test is.
+
+## Why prompting harder stopped working
+
+The instinct, when an agent gets something wrong, is to write a longer prompt. More context, more rules, more "make sure you handle the edge cases." I've watched this fail over and over, and the reason is simple: **prose is checked by nobody.** The agent reads your beautifully detailed instructions, produces something that superficially matches them, and there is no mechanism in the loop that verifies the match. You've written a wish, not a requirement.
+
+This matters more now because the volume changed. Adoption isn't fringe — [Stack Overflow's developer survey](https://survey.stackoverflow.co/2025/ai) has AI tool usage at 84% of developers and climbing — and one engineer can now generate more PRs before lunch than they used to ship in a week. Every one of those PRs lands on the same reviewer: you. If the only quality gate is your attention, the gate is already broken; attention doesn't scale with PR volume, and pretending it does is how a subtle bug sails through on the ninth diff of the day.
+
+The industry's answer, visible in [Anthropic's 2026 agentic coding trends report](https://resources.anthropic.com/hubfs/2026%20Agentic%20Coding%20Trends%20Report.pdf) and echoed by every AI-native team writeup this summer, is a deliberately boring loop: read, plan, build, **verify**, ship. Everything interesting is hiding in that fourth word.
+
+## Write the test first, then hand over the keys
+
+Here's the practice, and it fits in one sentence: **before you point an agent at a task, write the test that defines "done" — then let the agent iterate until it's green.**
+
+This is test-driven development, an idea from the early 2000s that spent two decades as something teams admired and skipped. Agents flipped its economics. Writing a test first used to feel slow because you were also the one writing the implementation. Now the implementation is nearly free, which means the test is the only artifact where your judgment actually enters the loop — so that's where your time should go.
+
+It looks like this. I work on finance UIs, where "roughly right" is a bug category of its own, so my contract for a money-formatting task is a test, not a paragraph:
+
+```ts
+// format-money.test.ts — this file IS the task description
+import { formatMoney } from "./format-money";
+
+test("never loses a cent to floating point", () => {
+  expect(formatMoney(1999, "SAR")).toBe("SAR 19.99"); // cents in, string out
+  expect(formatMoney(1, "SAR")).toBe("SAR 0.01");
+});
+
+test("refuses fractional cents instead of rounding silently", () => {
+  expect(() => formatMoney(19.5, "SAR")).toThrow();
+});
+```
+
+Ten lines, and they encode a real decision: amounts are integers of cents, and silent rounding is forbidden. An agent can't "superficially match" this the way it matches prose. Either the suite is green or it isn't — and when it's green, your review shrinks to the question a human is actually good at: is this approach sane? You're no longer proofreading arithmetic at 4pm.
+
+## You already own the whole gate
+
+Here's the part I like most: this requires **nothing new**. The verify step is your existing test runner, your existing TypeScript compiler, your existing linter and CI pipeline — the same gate your own code passes through. Agent code goes through the same door, no exceptions. Start this week by picking one agent task and writing the test before the prompt; that's the entire migration.
+
+Where does a new tool earn its place? Exactly one line: **when the agent can't run your checks itself.** If your agent works where your test suite can't execute — no sandbox, no local runner — then a sandboxed execution environment is worth adopting, because a loop where the agent can't see red or green isn't a loop, it's a slot machine. Short of that line, resist the shopping trip. The teams shipping safely didn't buy a verification product. They wrote tests.
+
+## The short version
+
+AI coding agents got autonomous enough to open PRs, which means your attention is no longer a scalable quality gate. Longer prompts don't fix that — prose is checked by nobody. Write the test that defines "done" before the agent starts, let it iterate to green, and route its work through the same CI your own code passes. Your judgment moves to the one artifact that enforces it: the test.
+
+---
+
+_I write about frontend craft, fintech, and the habits that make an engineering career sustainable. More at [/posts](https://www.bargaz.me/posts) — or read more [about me](https://www.bargaz.me/about)._
