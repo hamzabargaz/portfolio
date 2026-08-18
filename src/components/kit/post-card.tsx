@@ -25,13 +25,14 @@ export default function Post(post: PostType) {
           </div>
 
           {hero_image?.url && (
-            <div className='w-full bg-light-200 dark:bg-dark-200 h-44 rounded-b-xl flex items-center justify-center'>
+            <div className='w-full mt-auto bg-light-200 dark:bg-dark-200 rounded-b-3xl overflow-hidden'>
               <Image
                 alt={post.slug}
                 src={hero_image.url}
                 width={hero_image.width}
                 height={hero_image.height}
-                className='h-full w-full object-cover rounded-b-xl'
+                sizes='(min-width: 768px) 50vw, 100vw'
+                className='w-full h-auto'
               />
             </div>
           )}

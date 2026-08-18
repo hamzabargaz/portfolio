@@ -40,3 +40,7 @@ history-chats/
 
 # playwright mcp verification artifacts (local browser-test output, not for repo)
 .playwright-mcp/
+
+# local launch config for the preview tool
+.claude/
+
