@@ -1,0 +1,88 @@
+---
+title: "Context Engineering: Why Your AI Agent Gets Worse the More You Tell It"
+slug: "context-engineering-for-coding-agents"
+date: "17-08-2026"
+excerpt: "Context engineering is the skill of giving your AI agent less, not more. Here's why a stuffed context window makes answers worse — and the four fixes."
+tags:
+  [
+    "AI",
+    "Context Engineering",
+    "Coding Agents",
+    "Claude Code",
+    "Cursor",
+    "Developer Productivity",
+  ]
+hero_image: "/images/blog/context-engineering-for-coding-agents.jpg"
+seo:
+  openGraph:
+    authors: ["Hamza Bargaz"]
+    type: "article"
+    url: "https://www.bargaz.me/posts/context-engineering-for-coding-agents"
+    siteName: "Hamza Bargaz"
+  twitter:
+    card: summary_large_image
+    site: "https://www.bargaz.me/posts/context-engineering-for-coding-agents"
+    creator: "@hamza_bargaz"
+---
+
+You start a session with your AI coding agent and the first twenty minutes are great. It finds the bug, explains the fix, writes the test. Then, an hour later, the same agent in the same conversation starts contradicting itself. It forgets a decision you made together. It rewrites a file you told it not to touch.
+
+Nothing broke. You just filled its head.
+
+The skill that fixes this has a name — **context engineering** — and in 2026 it has quietly become the thing that separates people who get real work out of AI agents from people who keep starting over.
+
+## What context engineering actually means
+
+"Context" is everything the model can see while it answers you: your instructions, the files it opened, the results of every command it ran, and the whole conversation so far. It all lives in one bucket called the context window, measured in tokens (roughly, chunks of a word).
+
+Context engineering is deciding what goes in that bucket — and, more importantly, what stays out. Anthropic's engineering team frames the goal as finding **the smallest set of high-signal information that gets you the outcome you want**.
+
+That "smallest" is doing a lot of work in that sentence, and it's the part most people get backwards.
+
+## More context does not mean better answers
+
+The instinct is obvious: the model has a huge context window, so give it everything and let it sort things out. Paste the whole file. Attach the whole folder. Never start a new chat.
+
+The research says that instinct is wrong. Chroma's widely-cited [context rot](https://research.trychroma.com/context-rot) study tested 18 models — including frontier ones — and found that they do **not** use their context evenly. Accuracy on even simple retrieval tasks slid as the input got longer, long before anyone hit the actual limit. Anthropic describes the same effect as an "attention budget": every token you add spends a little of it.
+
+Think of it like a colleague reading a 400-page brief before a meeting versus a two-page summary of the parts that matter. Same person, same intelligence — very different answers.
+
+So a bigger context window isn't a licence to stuff it. It's just a bigger bucket that still rots.
+
+## Four moves that fix it, no install required
+
+Every one of these ships with the agent you already use. None of them needs a vector database.
+
+**1. Start a fresh conversation more often than feels natural.** This is the single highest-value habit and it costs nothing. When you finish a task, don't roll into the next one in the same thread. Most agents also have a compaction step — they summarise the conversation so far and continue from that summary, keeping the decisions and dropping the noise. If your tool does it automatically, let it; if it has a manual command, use it before you feel like you need it.
+
+**2. Point instead of pasting.** Don't dump three files into the chat "just in case". Tell the agent where to look and let it fetch what it needs:
+
+```txt
+Bad:  [pastes 600 lines of checkout code] why is the total wrong?
+
+Good: The total is wrong on the cart page. Start at
+      src/features/cart/useCartTotal.ts and follow the
+      money calculation. Don't read the UI components yet.
+```
+
+The second version is shorter, and it's better — you've told the agent what to ignore, which is the expensive part.
+
+**3. Keep a notes file the agent maintains.** Ask it to write decisions and open questions into a plain `NOTES.md` as it works. Files survive a context reset; conversation history doesn't. When you start fresh tomorrow, "read NOTES.md" restores the important 2% in a few hundred tokens instead of replaying yesterday's forty tool calls. This pairs perfectly with an [`AGENTS.md`](https://www.bargaz.me/posts/write-an-agents-md-file) for the rules that never change.
+
+**4. Delegate the big search to a sub-agent.** Most agents can spawn a helper with its own clean context. "Find every place we format a currency in this repo" might burn fifty thousand tokens of searching — but the helper hands back a one-paragraph answer, and your main conversation stays clean. Use it for anything that's mostly reading.
+
+## Where a tool actually earns its place
+
+I work on finance-facing frontends, where a plausible-but-wrong answer is more dangerous than no answer. So my bar for adding tooling is high, and here's where I'd put it.
+
+The four habits above cover a single developer working in a repo the agent can read. **A retrieval tool earns its place when the knowledge the agent needs isn't in the repo at all** — years of Slack threads, a Confluence wiki, support tickets, a design system in another product. That's a real search problem and a search tool is the right answer.
+
+What doesn't earn its place is indexing a codebase your agent can already `grep` in a quarter of a second. You'd be paying setup, cost, and a stale index for something the file system does for free.
+
+## The short version
+
+Context engineering is the practice of curating what your AI agent sees, and the counterintuitive rule is that **less context usually beats more**. Models get measurably less reliable as input grows, well before the window is full — so treat attention as a budget, not a bucket. Start fresh conversations often, let compaction run, point at files instead of pasting them, have the agent keep a `NOTES.md`, and push heavy searching into a sub-agent. All of that is built in. Only reach for a retrieval tool when the knowledge genuinely lives outside your repo.
+
+---
+
+_Liked this? I write about frontend, fintech, and building with AI over on [/posts](https://www.bargaz.me/posts). A bit more about me and what I work on lives at [/about](https://www.bargaz.me/about)._
