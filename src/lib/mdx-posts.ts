@@ -1,9 +1,32 @@
 import fs from "fs";
 import path from "path";
+import { imageSize } from "image-size";
 import { parseDate, formatDate as formatDateUtil } from "./date-utils";
 
 const root = process.cwd();
 const postsDirectory = path.join(root, "content", "posts");
+const publicDirectory = path.join(root, "public");
+
+// Default for missing/unreadable images. Matches the 1200x630 OG ratio the
+// generated hero images use so cards keep a sane aspect while loading.
+const FALLBACK_HERO_SIZE = { width: 1200, height: 630 };
+
+// Reads the intrinsic size of a hero image under /public so the card can
+// reserve the correct aspect box instead of cropping into a fixed height.
+function getHeroImage(url: string | undefined): Post["hero_image"] {
+  if (!url) return { url: "", ...FALLBACK_HERO_SIZE };
+  if (!url.startsWith("/")) return { url, ...FALLBACK_HERO_SIZE };
+
+  try {
+    const { width, height } = imageSize(
+      fs.readFileSync(path.join(publicDirectory, url))
+    );
+    if (width && height) return { url, width, height };
+  } catch {
+    // Missing or unreadable file — fall through to fallback dimensions
+  }
+  return { url, ...FALLBACK_HERO_SIZE };
+}
 
 export interface Post {
   id: string;
@@ -116,11 +139,7 @@ export const getAllPosts = async (): Promise<Post[]> => {
         excerpt: metadata.excerpt || "",
         date: metadata.date || "",
         tags: Array.isArray(metadata.tags) ? metadata.tags : [],
-        hero_image: {
-          url: metadata.hero_image || "",
-          width: 800,
-          height: 400,
-        },
+        hero_image: getHeroImage(metadata.hero_image),
         content,
         seo: metadata.seo || {
           openGraph: {
@@ -168,11 +187,7 @@ export const getSinglePost = async (slug: string): Promise<Post | null> => {
       excerpt: metadata.excerpt || "",
       date: metadata.date || "",
       tags: Array.isArray(metadata.tags) ? metadata.tags : [],
-      hero_image: {
-        url: metadata.hero_image || "",
-        width: 800,
-        height: 400,
-      },
+      hero_image: getHeroImage(metadata.hero_image),
       content,
       seo: metadata.seo || {
         openGraph: {
