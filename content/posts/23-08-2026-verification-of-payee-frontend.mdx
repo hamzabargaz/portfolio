@@ -1,0 +1,124 @@
+---
+title: "Verification of Payee: The Four Answers Your Transfer Screen Has to Handle"
+slug: "verification-of-payee-frontend"
+date: "23-08-2026"
+excerpt: "The EU's Verification of Payee rules reach version 1.1 on 20 September 2026. Your transfer form has to handle four answers — here's how to build each one."
+tags:
+  [
+    "Fintech",
+    "Frontend",
+    "Payments",
+    "SEPA",
+    "UX",
+    "React",
+  ]
+hero_image: "/images/blog/verification-of-payee-frontend.jpg"
+seo:
+  openGraph:
+    authors: ["Hamza Bargaz"]
+    type: "article"
+    url: "https://www.bargaz.me/posts/verification-of-payee-frontend"
+    siteName: "Hamza Bargaz"
+  twitter:
+    card: summary_large_image
+    site: "https://www.bargaz.me/posts/verification-of-payee-frontend"
+    creator: "@hamza_bargaz"
+---
+
+Someone gets an invoice by email. The IBAN on it was swapped by a scammer an hour earlier. They paste it into their banking app, type the company name from the letterhead, and hit send. Money gone, usually for good.
+
+**[Verification of Payee](https://www.europeanpaymentscouncil.eu/what-we-do/other-schemes/verification-payee)** is Europe's answer to that. Before the transfer is authorised, the bank quietly asks the receiving bank one question: *does this name actually belong to this account?* The answer comes back in a second or two — and then it lands on a screen that some frontend engineer has to design.
+
+That screen is the whole control. If it's confusing, people click through it. If it's alarming for no reason, people click through it faster. And on **20 September 2026**, version 1.1 of the scheme rulebook takes effect, so a lot of these screens are being rebuilt right now.
+
+## What Verification of Payee actually checks
+
+It's narrower than it sounds. The payer's bank sends the payee's name and IBAN to the payee's bank, which compares them against what it has on file and replies. That's it — no identity check, no fraud score, no opinion about whether the payment is a good idea.
+
+A few facts worth having straight, because they shape the UI:
+
+- It applies to **all** euro credit transfers in the EU, not just instant ones — it comes from Article 5c of the [Instant Payments Regulation](https://eur-lex.europa.eu/eli/reg/2024/886/oj).
+- It has to be **free** to the payer, and available in every channel: web, mobile, API.
+- The payer must see the result **before** authorising, not after.
+- Even on a bad result, **the payer can still go ahead** — but if they do after being warned, the loss is on them.
+
+That last pair is the design problem in one line. You can't block the payment, and the consequence of a careless click is permanent.
+
+## The four answers
+
+The scheme defines four outcomes, and your UI needs a distinct state for each one:
+
+**Match.** The name and the IBAN agree. Say so once, quietly, and get out of the way. A green check and two words. Don't celebrate — this is the boring path and 95% of traffic lives here.
+
+**Close match.** The names are nearly the same, and the response includes **the actual registered name**. This is the state that earns its keep. Someone typed "Sofia Trading" and the account says "Sofia Trading BV" — fine. Or they typed "Sofia Trading" and the account says "Sofia Tradingg Ltd" — not fine at all. Show the returned name plainly, in full, and let the human decide.
+
+**No match.** The name doesn't belong to that account. Full stop, loud warning, and make continuing deliberately hard.
+
+**Verification not possible.** The receiving bank didn't answer, timed out, or isn't covered by the scheme. This is not a failure and not a warning — it's an absence. Word it as "we couldn't check" and nothing stronger.
+
+Model those as a union type so the compiler forces you to handle all four:
+
+```ts
+type PayeeCheck =
+  | { status: "match" }
+  | { status: "close_match"; registeredName: string }
+  | { status: "no_match" }
+  | { status: "unavailable" };
+```
+
+The moment you write `if (result.status !== "match")` and lump the other three together, you've built the bad version. "We couldn't reach the bank" and "this account belongs to someone else" are not the same message and must never share a component.
+
+## Never fuzzy-match on the frontend
+
+There's a real temptation here: the response comes back "close match," and someone suggests running a string-similarity check in the browser to decide how worried to be. Or worse — auto-correcting the name field to the returned value so the form "just works."
+
+Don't. **The verdict is the receiving bank's to give, and the decision is the user's to make.** Your job is presentation, not adjudication. No Levenshtein library earns its place on this screen. If you auto-fill the registered name into the input, you've silently converted every close match into a match and deleted the only moment of attention the whole flow has.
+
+The one legitimate use of a library here is none. This is a rendering problem.
+
+## Make the risky path cost something
+
+Since you can't block the payment, the next best lever is friction — placed precisely, and only on the states that deserve it.
+
+```jsx
+import { useState } from "react";
+
+function NoMatchWarning({ onProceed }) {
+  const [acknowledged, setAcknowledged] = useState(false);
+
+  return (
+    <div role="alert">
+      <h3>This account is registered to a different name</h3>
+      <p>
+        If you continue, the money may go to someone you didn’t intend
+        to pay — and it usually can’t be recovered.
+      </p>
+      <label>
+        <input
+          type="checkbox"
+          checked={acknowledged}
+          onChange={(e) => setAcknowledged(e.target.checked)}
+        />
+        I’ve checked the details and want to send anyway
+      </label>
+      <button onClick={onProceed} disabled={!acknowledged}>
+        Send anyway
+      </button>
+    </div>
+  );
+}
+```
+
+Three things are doing work there. `role="alert"` means a screen reader announces it the moment it appears — this is a warning, not decoration. The checkbox turns a reflex into a decision. And the button says **"Send anyway"**, not "Continue," because the label is the last thing a rushing person reads.
+
+Keep the same restraint everywhere else. On a plain match, no checkbox, no extra tap. Friction you apply to all four states isn't a safeguard — it's a habit, and habits get clicked through.
+
+## The short version
+
+Verification of Payee asks the receiving bank whether a name and an IBAN belong together, and hands your UI one of four answers: **match**, **close match** (with the real registered name attached), **no match**, or **not possible**. Give each one its own state — collapsing them is the classic bug, especially treating a timeout like a fraud warning. Show the returned name on a close match, never auto-fill it, and never run your own similarity check in the browser. Save your friction for **no match**: an explicit acknowledgement and a button that says what it does. Version 1.1 of the rulebook lands on 20 September 2026, so if you're building in euro payments, this screen is on your plate whether you asked for it or not.
+
+The regulation gives the user a warning. Whether it means anything is a frontend decision.
+
+---
+
+*I write about finance-critical frontend, the modern React and Next.js stack, and bringing AI into real products. More of my writing is [here](/posts) — and if you're building something where the details matter, [let's talk](/about).*
