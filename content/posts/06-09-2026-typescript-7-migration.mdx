@@ -1,0 +1,105 @@
+---
+title: "TypeScript 7 Is 10x Faster — but Your Linter Can't Use It Yet"
+slug: "typescript-7-migration"
+date: "06-09-2026"
+excerpt: "TypeScript 7's Go compiler builds up to 12x faster and shipped in July. It also has no plugin API — so here's what to move now and what to leave on 6."
+tags:
+  [
+    "Frontend",
+    "TypeScript",
+    "Tooling",
+    "Performance",
+    "Developer Experience",
+    "Build Tools",
+  ]
+hero_image: "/images/blog/typescript-7-migration.jpg"
+seo:
+  openGraph:
+    authors: ["Hamza Bargaz"]
+    type: "article"
+    url: "https://www.bargaz.me/posts/typescript-7-migration"
+    siteName: "Hamza Bargaz"
+  twitter:
+    card: summary_large_image
+    site: "https://www.bargaz.me/posts/typescript-7-migration"
+    creator: "@hamza_bargaz"
+---
+
+Your CI pipeline has a step that types-checks the whole codebase, and you've quietly accepted how long it takes. Two minutes. Seven minutes. Long enough that you switch tabs. That number is the single easiest win available to a frontend team right now, and most teams haven't taken it — because a **TypeScript 7 migration** looks scarier than it is, and in one specific way it's also more annoying than the release notes admit.
+
+TypeScript 7 [went stable on 8 July 2026](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/). It's the same compiler, rewritten in Go — a "port," as the team carefully calls it, meaning they rebuilt it line for line rather than redesigning it. Type-checking behaviour is meant to be identical. Only the speed changed.
+
+## What actually shipped
+
+The speedups are not marketing rounding. On Microsoft's own benchmarks, VS Code's codebase went from 125.7s to 10.6s. Sentry: 139.8s to 15.7s. The team quotes 8x–12x on full builds.
+
+The numbers from teams running it in production are the ones I find more convincing:
+
+- Slack brought CI type-checking from about **7.5 minutes to 1.25 minutes**, and say it eliminated 40% of their merge queue time.
+- Canva's editor went from ~58 seconds to see the first error down to **4.8 seconds**.
+
+That second one is the underrated half. A faster `tsc` is nice; an editor that stops lying to you for a minute after opening a large project changes how the day feels. Memory use went *down* too, 6–26%.
+
+One knob worth knowing: type-checking runs on 4 parallel workers by default, tunable with `--checkers`. VS Code's benchmark drops to 7.51s at `--checkers 8` — more cores, more memory, so a small CI runner may want fewer:
+
+```sh
+tsc --checkers 8          # beefy dev machine
+tsc --checkers 1          # constrained CI runner
+```
+
+## The catch nobody puts in the headline
+
+**TypeScript 7.0 ships without a programmatic API.** Not a smaller API — none. Every tool that imports `typescript` to walk your code rather than just running `tsc` is stuck on version 6.
+
+I checked this before writing, rather than trusting a changelog: the current `typescript-eslint` on npm is 8.69.0, published 31 August, and its peer dependency range still reads `>=4.8.4 <6.1.0`. TypeScript 7 is not in that range. Your linter genuinely cannot run on it today.
+
+The same wall hits anything that embeds the compiler to type-check inside templates — **Vue, Svelte, Astro, MDX, and Angular's template checking**. Those rely on Volar, Volar needs the API, and the API is expected in TypeScript 7.1. Nightly 7.1 builds are already publishing under `typescript@next` (there was a fresh one the morning I wrote this), and the team is back to a normal 3–4 month release cadence, so this is a wait measured in months, not years.
+
+So the honest split is: **if you're on plain React or Next.js with `.ts`/`.tsx` files, you're in the clear lane. If your components are `.vue`, `.svelte`, or `.astro`, sit this one out.**
+
+## How to do a TypeScript 7 migration today
+
+You don't have to choose. Microsoft ships a compatibility package, `@typescript/typescript6`, precisely so both can coexist — and this is the exact line where a workaround earns its place instead of being a hack:
+
+```json
+{
+  "devDependencies": {
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "typescript": "npm:@typescript/typescript6@^6.0.2"
+  }
+}
+```
+
+Read that carefully, because it's inside out on purpose. The name `typescript` stays pointed at version 6, so `typescript-eslint` and your editor tooling resolve it and keep working untouched. TypeScript 7 arrives under a second alias, and `npx tsc` gives you the fast native compiler.
+
+The practical shape: **native compiler for CI and `--watch`, TypeScript 6 for the plugin-dependent path.** You get the win where it actually costs you, and nothing in your lint setup notices. Angular teams can run it in reverse — TS 7 at the command line, TS 6 driving the editor.
+
+Delete the alias the moment 7.1 lands with the API. This is a bridge, not an architecture.
+
+## The config changes that will actually bite you
+
+The speed is free. The upgrade isn't, because 7.0 inherits TypeScript 6.0's stricter defaults and turns old deprecations into hard errors. The two that catch most projects:
+
+```diff
+  {
+    "compilerOptions": {
++     "rootDir": "./src",
++     "types": ["node", "jest"]
+    },
+    "include": ["./src"]
+  }
+```
+
+`rootDir` now defaults to `./`, so if your `tsconfig.json` sits above `src` your output structure shifts unless you say so. And `types` defaults to an empty list instead of pulling in every `@types` package it finds — better hygiene, and an immediate wall of missing globals if you weren't explicit.
+
+Then the removals. `target: es5`, `downlevelIteration`, `baseUrl`, `moduleResolution: node`, and the `amd`/`umd`/`systemjs` module formats are gone — hard errors, not warnings. In a well-kept Next.js app this is usually a ten-minute cleanup. In a codebase carrying a `baseUrl` and a decade of `paths`, budget an afternoon. My advice: **land TypeScript 6.0 first as its own boring PR**, absorb the default changes there, then flip to 7 as a one-line change. Debugging new defaults and a new compiler in the same diff is how a free win turns into a bad week.
+
+## The short version
+
+TypeScript 7 is a Go port of the same compiler, stable since July, 8–12x faster on full builds — Slack cut CI type-checking from 7.5 minutes to 1.25. But 7.0 has no plugin API, so `typescript-eslint` (still capped below 6.1 on npm today) and anything checking Vue, Svelte, Astro, MDX or Angular templates can't use it until 7.1. **Alias both versions in `package.json`: run the native compiler for CI and watch mode, keep TypeScript 6 under the `typescript` name for your linter and editor.** Do the 6.0 defaults migration as a separate PR first, and drop the alias when 7.1 ships the API.
+
+Speed this cheap almost never arrives without a rewrite of your own. Take it — just take it in two commits.
+
+---
+
+_I write about frontend craft, fintech, and the habits that make an engineering career sustainable. More at [/posts](https://www.bargaz.me/posts) — or read more [about me](https://www.bargaz.me/about)._
