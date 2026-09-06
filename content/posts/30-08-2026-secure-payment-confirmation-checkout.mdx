@@ -1,0 +1,107 @@
+---
+title: "Secure Payment Confirmation: Pay With Face ID Instead of an SMS Code"
+slug: "secure-payment-confirmation-checkout"
+date: "30-08-2026"
+excerpt: "Secure Payment Confirmation lets a shopper approve a payment with a fingerprint instead of a texted code. It's a W3C draft, Chrome-only, and still worth wiring up today."
+tags:
+  [
+    "Fintech",
+    "Frontend",
+    "Payments",
+    "Passkeys",
+    "WebAuthn",
+    "Checkout",
+  ]
+hero_image: "/images/blog/secure-payment-confirmation-checkout.jpg"
+seo:
+  openGraph:
+    authors: ["Hamza Bargaz"]
+    type: "article"
+    url: "https://www.bargaz.me/posts/secure-payment-confirmation-checkout"
+    siteName: "Hamza Bargaz"
+  twitter:
+    card: summary_large_image
+    site: "https://www.bargaz.me/posts/secure-payment-confirmation-checkout"
+    creator: "@hamza_bargaz"
+---
+
+You know the moment. The card details are in, you hit **Pay**, and the page hands you off to your bank. A grey screen appears. Somewhere a text message is being sent. You switch apps, wait, squint at six digits, switch back, type them in — and hope the session hasn't expired. That handoff is where a good chunk of online carts quietly die.
+
+**Secure Payment Confirmation** is the web standard built to replace that grey screen with a fingerprint. I've spent most of my career on finance-critical frontends, and this is the first proposal in a while that makes checkout genuinely *less* annoying without making it less safe. It's also not finished. Both of those things are worth knowing before you plan a quarter around it.
+
+## What Secure Payment Confirmation actually does
+
+Start with the rule it exists to satisfy. In Europe, most online card payments need **strong customer authentication** — the bank has to check it's really you, and the check has to be *dynamically linked* to the specific payment. That means whatever you approve has to be tied to this exact amount going to this exact merchant. A generic "confirm it's you" tap doesn't count. That linkage is why banks fell back on SMS codes and hosted 3-D Secure pages: they needed a screen they controlled, showing the real amount.
+
+Secure Payment Confirmation (SPC) moves that screen into the browser itself. Initiated by Google and Stripe and now developed in the W3C Web Payments Working Group, it works like this:
+
+1. Your checkout page calls the API with the amount, the payee, and a challenge from the bank.
+2. **The browser** — not your page, not an iframe — draws a dialog showing the card, the amount and who's being paid.
+3. The shopper approves with Face ID, a fingerprint, or a device PIN.
+4. The browser returns a signed blob proving *this user* confirmed *these transaction details*.
+
+The signature covers the amount and the payee, which is exactly the dynamic linking the regulation asks for. And because the credential belongs to the bank's domain rather than yours, the same fingerprint works across every merchant the shopper visits. No redirect, no app switch, no six digits.
+
+That last point is the part people miss. Under plain WebAuthn, a passkey is locked to the site that created it, so a bank's credential is useless on a merchant's page. SPC is the piece that lets a merchant page invoke a *bank's* credential — with a browser-drawn dialog standing in for the trust the redirect used to provide.
+
+## The code is smaller than you'd guess
+
+Two things matter on the frontend: check for support first, then build a `PaymentRequest` with the `secure-payment-confirmation` method.
+
+```js
+const spcAvailable =
+  window.PaymentRequest &&
+  PaymentRequest.securePaymentConfirmationAvailability &&
+  (await PaymentRequest.securePaymentConfirmationAvailability()) === "available";
+
+if (!spcAvailable) {
+  return fallbackTo3DS(); // redirect flow, unchanged
+}
+
+const request = new PaymentRequest(
+  [
+    {
+      supportedMethods: "secure-payment-confirmation",
+      data: {
+        credentialIds, // from the bank
+        rpId: "bank.example",
+        challenge, // random bytes from the bank
+        instrument: {
+          displayName: "Visa Platinum",
+          details: "****1234 | 01/29",
+          icon: "https://bank.example/card-art.png",
+        },
+        payeeName: "Merchant Shop",
+        payeeOrigin: "https://merchant.example",
+        timeout: 360000,
+      },
+    },
+  ],
+  { total: { label: "Total", amount: { currency: "EUR", value: "82.40" } } }
+);
+
+const response = await request.show();
+// hand response to your PSP for verification
+```
+
+Two details save you a support ticket later. `securePaymentConfirmationAvailability()` tells you the **browser** supports SPC — not that this shopper has a usable credential on this device. Those are different questions, and you still need the fallback path for the second one. And the challenge and credential IDs come from the bank, never from your own server; your page is a courier, not an issuer.
+
+## Where it earns its place — and where it doesn't
+
+Here's the honest state of things as of this writing. SPC is a **W3C Candidate Recommendation Draft**, republished on 28 May 2026 — a real spec on a real track, not a Chrome experiment. But it ships in Chrome and Edge, on macOS, Windows and Android. **Safari has not implemented it.** On iOS, every browser is Safari's engine underneath. So a large, wealthy slice of your mobile checkout traffic cannot use this today, full stop.
+
+That sounds like a reason to wait. I don't think it is — as long as you're honest about what you're building:
+
+- **Add it as a progressive enhancement, never a replacement.** The redirect flow stays exactly where it is. SPC is the fast path for the browsers that have it, and `securePaymentConfirmationAvailability()` is the single line that decides. If you'd have to rebuild your fallback to add SPC, you've designed it wrong.
+- **Don't build the plumbing yourself.** This is the one place I'd reach for your payment provider's SDK rather than the raw API. Verifying the signed response, managing credential IDs per issuer, handling the card network's rules — that's their job, and getting it wrong is a compliance problem, not a bug.
+- **Skip it entirely if you don't do step-up authentication.** No SCA requirement, no 3-D Secure, no reason. SPC solves a specific friction, and if you don't have that friction it's just surface area.
+
+The direction of travel is clear enough — Mastercard and Visa have both been shipping passkey-based payment authentication, and the card networks want the redirect gone as much as your conversion dashboard does. Wiring the fast path now means you benefit the day Safari catches up, instead of starting then.
+
+## The short version
+
+Secure Payment Confirmation lets a shopper approve a payment with a fingerprint inside a browser-drawn dialog, instead of being redirected to a bank page and waiting for an SMS code. The browser returns a signature covering the amount and the payee, which satisfies the dynamic-linking rule that made the redirect necessary in the first place. It's a W3C Candidate Recommendation Draft as of May 2026, supported in Chrome and Edge but **not Safari** — so treat it as a fast path guarded by `securePaymentConfirmationAvailability()`, with your existing 3-D Secure flow untouched underneath. Use your PSP's SDK for the verification side. And if your checkout never asks for a step-up, don't add it at all.
+
+---
+
+*I write about finance-critical frontend, the modern React and Next.js stack, and bringing AI into real products. More of my writing is [here](/posts) — and if you're building something where the details matter, [let's talk](/about).*
