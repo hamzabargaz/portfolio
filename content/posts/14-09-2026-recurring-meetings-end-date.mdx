@@ -1,0 +1,100 @@
+---
+title: "Every Recurring Meeting Needs an End Date"
+slug: "recurring-meetings-end-date"
+date: "14-09-2026"
+excerpt: "Recurring meetings never die, because nobody ever decided to keep them. Set an end date when you create one — and run a 30-minute audit on the rest."
+tags:
+  [
+    "Self Development",
+    "Productivity",
+    "Career",
+    "Meetings",
+    "Focus",
+    "Software Engineering",
+  ]
+hero_image: "/images/blog/recurring-meetings-end-date.jpg"
+seo:
+  openGraph:
+    authors: ["Hamza Bargaz"]
+    type: "article"
+    url: "https://www.bargaz.me/posts/recurring-meetings-end-date"
+    siteName: "Hamza Bargaz"
+  twitter:
+    card: summary_large_image
+    site: "https://www.bargaz.me/posts/recurring-meetings-end-date"
+    creator: "@hamza_bargaz"
+---
+
+Open your calendar and look at next week. Count the blocks that repeat every week. Now ask, for each one: who actually decided this should still be happening in September 2026?
+
+Usually the honest answer is nobody. **Recurring meetings don't survive because they're useful — they survive because ending one requires a decision, and nobody wants to be the person who makes it.** The meeting was created once, for a real reason, and then it simply kept going.
+
+I've watched this happen at a product studio and at a fintech company, two engineering cultures with almost nothing else in common. The pattern was identical. A sync gets created for a launch. The launch ships. The sync stays.
+
+## Why recurring meetings never die
+
+A one-off meeting has a natural death: it happens, then it's over. A repeating one has to be actively killed, and killing it costs something socially — you decline a thing a colleague set up, in public, and imply their time wasn't well spent.
+
+So the default wins. In Google Calendar, choose "Weekly" and hit save, and the event just keeps going; the interface never asks when it should stop. Outlook is the same: "no end date" unless you go hunting for the setting.
+
+That default lands right where it hurts most. Microsoft's telemetry across Microsoft 365 found that [half of all meetings fall between 9–11 am and 1–3 pm](https://www.microsoft.com/en-us/worklab/work-trend-index/breaking-down-infinite-workday) — the exact hours most people do their sharpest thinking. Repeating meetings claim those slots first, because whoever booked them booked them back when the calendar was still empty.
+
+And it compounds quietly. Microsoft's earlier [Work Trend Index](https://www.microsoft.com/en-us/worklab/work-trend-index/great-expectations-making-hybrid-work-work) measured the average Teams user's weekly meeting time up **252%** in the two years after February 2020. Nothing since has walked that back.
+
+## The rule: every recurring meeting you create gets an end date
+
+Here's the whole practice, and it takes four seconds: **when you create a repeating meeting, set it to end.**
+
+Not "it ends when the project ends" — a real date. Eight weeks out. Twelve. Pick something and put it in the field.
+
+This isn't a productivity hack so much as a change in who carries the burden of proof. Today the meeting continues unless someone argues to stop it. With an end date, it stops unless someone argues to continue it. **Same meeting, opposite default** — and the second one is the honest default, because by the time it expires you'll know whether it earned the slot.
+
+If the team still wants it, recreating the series takes ten seconds and everyone has just consciously chosen it. That's a far better meeting than the one nobody chose.
+
+### The field is already there
+
+You do not need a tool for this. No meeting-cost calculator, no calendar-analytics subscription, no browser extension that shades your week red. **The built-in recurrence settings do the entire job.**
+
+In Google Calendar: open the repeat dropdown, pick **Custom**, then use **Ends on** (a date) or **Ends after** (a number of occurrences). In Outlook, the recurrence dialog calls it **End by**.
+
+If you create events programmatically — a team bot, an onboarding script — it's one field in the recurrence rule that calendars use under the hood:
+
+```
+RRULE:FREQ=WEEKLY;BYDAY=TU;UNTIL=20261215T000000Z
+```
+
+`UNTIL` is the end date; `COUNT=10` does the same job by number of occurrences. If your script sets neither, you have just created something permanent — which is almost never what you meant.
+
+There is one line where a tool does earn its place: measuring aggregate cost across a whole org, like how many engineer-hours a standing meeting burns per quarter. Your calendar won't tell you that. For your own week, it's overkill.
+
+## The 30-minute audit for what's already there
+
+End dates fix new meetings. The ones already on your calendar need one pass.
+
+Block 30 minutes. Open week view, scroll forward four weeks, and for every repeating block ask a single question: **if this didn't exist, would I create it today?**
+
+Three buckets:
+
+- **Yes, clearly.** Leave it alone. Optionally add an end date a quarter out so it comes back for review.
+- **No.** If it's yours, delete the series. If it isn't, decline the series and tell the organiser why in one sentence.
+- **Not sure.** This will be most of them. Set an end date six weeks out. You've just turned a permanent commitment into a trial.
+
+That third bucket is why the audit works. You don't need a confident opinion about every meeting today. You only need to stop things from being permanent by accident.
+
+## When it isn't your meeting
+
+Most of your calendar was booked by someone else, and "I'm declining your meeting" is a much harder sentence than "I'm deleting mine."
+
+The version that works isn't a complaint about value. It's a question about the end: _"Is this sync still needed through Q4, or can we end it after the release and bring it back if we miss it?"_
+
+That's an easy yes. You're not saying it's worthless — you're proposing it prove itself once. More often than not the organiser is relieved, because they'd wondered the same thing and didn't want to be the one to say it.
+
+## The short version
+
+Repeating meetings survive by default, not by decision — keeping them costs nothing visible, ending them costs social capital. **So put an end date on every recurring meeting you create**: Google Calendar's Custom → **Ends on**, Outlook's **End by**, or `UNTIL` / `COUNT` in the recurrence rule if you're scheduling from code. That one field flips the burden of proof, so a meeting has to earn renewal instead of needing a reason to die. Then spend 30 minutes auditing the ones you already have, with one question — _would I create this today?_ — and park everything uncertain behind a six-week end date. For meetings you don't own, ask about the end date, never about the value.
+
+Mid-September is the right week for the audit. Q4 planning is starting, the calendar you drifted into over the summer is about to become the one you keep until December, and right now almost nobody has booked anything yet.
+
+---
+
+_I write about frontend craft, fintech, and the habits that make an engineering career sustainable. More at [/posts](https://www.bargaz.me/posts) — or read more [about me](https://www.bargaz.me/about)._
