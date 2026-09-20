@@ -1,0 +1,86 @@
+---
+title: "The AI-Assisted Coding Interview Scores Your Judgment, Not Your Typing"
+slug: "ai-assisted-coding-interview-practice"
+date: "20-09-2026"
+excerpt: "Google, Meta and Canva now hand you an AI assistant in the coding round. It scores judgment, not typing — here's how to practice for the new format."
+tags:
+  [
+    "Career",
+    "Interviews",
+    "AI",
+    "Productivity",
+    "Software Engineering",
+  ]
+hero_image: "/images/blog/ai-assisted-coding-interview-practice.jpg"
+seo:
+  openGraph:
+    authors: ["Hamza Bargaz"]
+    type: "article"
+    url: "https://www.bargaz.me/posts/ai-assisted-coding-interview-practice"
+    siteName: "Hamza Bargaz"
+  twitter:
+    card: summary_large_image
+    site: "https://www.bargaz.me/posts/ai-assisted-coding-interview-practice"
+    creator: "@hamza_bargaz"
+---
+
+September is when hiring pipelines wake up. Budgets reset, headcount unfreezes, and a lot of engineers start brushing off the same prep routine they've used for a decade: grind algorithm problems, memorize patterns, practice writing code fast on a blank screen.
+
+That routine now prepares you for a round several large companies have stopped running. In the **AI-assisted coding interview**, you're handed the same assistant you use at work — and the person watching isn't measuring how fast you type. They're measuring whether you can tell good output from plausible-looking garbage.
+
+## What actually changed
+
+Three companies moved first, and they moved in the same direction.
+
+**Meta** started rolling out an AI-enabled coding round in October 2025. It replaces one of the two traditional coding interviews at the onsite stage — you still get a classic algorithm round alongside it. You work in a three-panel setup: file explorer, editor, and a chat window with the model. It's 60 minutes on a multi-file codebase: bug fixing, implementation, optimization.
+
+**Google** is piloting something similar for junior and mid-level roles on selected US teams: a new "code comprehension" round where you read, debug and optimize a codebase you didn't write, with Gemini available as the assistant. Sundar Pichai said in April that **75% of new code at Google is now AI-generated**, up from 50% the previous autumn, and described the workflow as engineers supervising agents. The interview is drifting toward the job.
+
+**Canva** got there earliest and said it most plainly — [candidates for frontend, backend and ML roles are expected to use AI tools](https://www.canva.dev/blog/engineering/yes-you-can-use-ai-in-our-interviews/), and the questions were rewritten to be "more complex, ambiguous, and realistic" so they can't be solved with a single prompt.
+
+Most companies haven't caught up. [Karat surveyed 400 engineering leaders](https://karat.com/engineering-interview-trends-2026/) across the US, India and China and found roughly two-thirds still ban AI in technical interviews — while those same leaders estimate more than half of candidates use it anyway. Read that as vendor research, since Karat sells AI-enabled interviews, but the direction matches what candidates report. Banning it doesn't remove AI from the room; it removes the interviewer's ability to see how you work with it.
+
+## What they're actually scoring
+
+Meta grades these rounds on four things: problem solving, code quality, **verification**, and communication. Google's internal guidance, as reported, tells interviewers to look at prompt quality, output validation, and debugging.
+
+Notice what's missing. Not one of those is "wrote the solution from memory."
+
+Verification is the one people are least ready for. A model will hand you something that compiles, runs, passes the happy path, and is quietly wrong. I spend my days on finance-critical frontends, and this is the exact shape of the bug I look for hardest — because it doesn't announce itself:
+
+```ts
+// Plausible. Compiles. Wrong.
+function formatAmount(cents: number, rate: number) {
+  return `$${((cents * rate) / 100).toFixed(2)}`;
+}
+```
+
+Nothing here is flagged by a type checker. But floating-point multiplication before rounding loses a cent on some inputs, `toFixed` rounds in a way you didn't choose, and the currency symbol is hardcoded. The candidate who says out loud "let me check what happens at 0.005, and where the rounding decision should live" scores on verification. The one who accepts it because it looked reasonable does not.
+
+## How to practice without buying anything
+
+Every one of these habits works with tools you already have open. No new subscription earns its place here.
+
+**Practice reading, not writing.** Clone a mid-sized open-source repo you've never touched. Spend 45 minutes explaining what one module does and finding a real weakness in it. That's the code comprehension round, rehearsed for free.
+
+**Interrogate the output before you accept it.** Take a task your assistant does well, then make a rule: you don't accept a diff until you've named one thing that could be wrong with it. Edge case, error path, assumption about input. The instinct of asking "where does this break?" before "does this run?" is the single most transferable skill into these rounds.
+
+**Narrate while you work.** This feels ridiculous alone at a desk and it's the highest-leverage drill here. Say out loud what you're about to ask the model, what you expect back, and how you'll check it. Communication is scored, and holding a coherent conversation while a model streams code at you is hard the first time you try it under pressure.
+
+**Rehearse one real decision you own.** Google's behavioral round now includes a technical design conversation based on your own prior work. Pick one decision you actually made — a trade-off, a constraint, a thing you'd do differently — and practice telling it in three minutes. Working from a running record of your own projects makes this much easier, which is one more reason to [keep a brag document](https://www.bargaz.me/posts/keep-a-brag-document-as-an-engineer).
+
+## Where a prep tool earns its place
+
+There's exactly one line where paying for something makes sense: **when you need a human on the other side.** Mock interviews with a real person test the part you can't rehearse alone — being watched, being interrupted, explaining yourself while your hands are busy. That's worth money.
+
+An AI tool that grades your practice answers is not: you'd be optimizing for a model's opinion of your reasoning, in a round built to test whether you can hold your own against exactly that. Use the assistant to build things and break things. Don't use it as the judge.
+
+## The short version
+
+The AI-assisted coding interview is real at Meta, Google and Canva, and it scores judgment over recall: verification, debugging, prompt quality, and whether you can explain yourself while working. Prepare by reading unfamiliar code, forcing yourself to name a flaw before accepting any AI output, narrating your process out loud, and having one real engineering decision ready to discuss. Pay for a human mock interviewer if you pay for anything.
+
+Algorithm practice still has a place — one traditional round usually survives. It's no longer the whole exam, and the part replacing it rewards something you've been building on the job all along.
+
+---
+
+_I write about frontend craft, fintech, and the habits that make an engineering career sustainable. More at [/posts](https://www.bargaz.me/posts) — or read more [about me](https://www.bargaz.me/about)._
