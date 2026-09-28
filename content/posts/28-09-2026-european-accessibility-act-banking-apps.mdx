@@ -1,0 +1,89 @@
+---
+title: "European Accessibility Act: Your Banking App Is Now Legally Required to Be Accessible"
+slug: "european-accessibility-act-banking-apps"
+date: "28-09-2026"
+excerpt: "The European Accessibility Act made accessible banking apps a legal duty. Here are the six money-UI fixes that matter most — amounts, OTPs, timeouts and more."
+tags:
+  [
+    "Accessibility",
+    "European Accessibility Act",
+    "Fintech",
+    "Frontend",
+    "WCAG",
+    "Banking",
+  ]
+hero_image: "/images/blog/european-accessibility-act-banking-apps.jpg"
+seo:
+  openGraph:
+    authors: ["Hamza Bargaz"]
+    type: "article"
+    url: "https://www.bargaz.me/posts/european-accessibility-act-banking-apps"
+    siteName: "Hamza Bargaz"
+  twitter:
+    card: summary_large_image
+    site: "https://www.bargaz.me/posts/european-accessibility-act-banking-apps"
+    creator: "@hamza_bargaz"
+---
+
+For years, accessibility in a banking app was a ticket in the backlog labelled "nice to have". Since **28 June 2025**, the **European Accessibility Act** turned it into a legal requirement for anyone offering consumer banking services in the EU — the website, the mobile app, the login, the payment flow, all of it.
+
+A year and a bit in, the grace period feeling is gone. The first lawsuits under the Act [hit four big French retailers](https://theobservable.substack.com/p/a-year-of-the-european-accessibility) in November 2025, German companies have been getting legal warning letters, and 2026 is the year audits and accessibility statements started getting read by people who can fine you.
+
+So let's talk about what it actually asks of a frontend, and the fixes that matter most in money UIs.
+
+## What the European Accessibility Act asks of banking apps
+
+The Act ([Directive 2019/882](https://eur-lex.europa.eu/eli/dir/2019/882/oj)) covers payment services, payment accounts, credit, e-money and more. In practice, conformance is measured against the European standard **EN 301 549**, which for the web maps to **WCAG 2.1 level AA** — the same checklist you've probably seen before, now with legal teeth.
+
+Two banking-specific rules are worth knowing by name:
+
+- **Identification, electronic signatures, security and payment steps** must themselves be accessible. Your login and your payment confirmation aren't exempt because they're "security".
+- **Information must be understandable** — the directive sets the bar at roughly level B2 (upper intermediate) of the European language framework. Plain language is literally in the law.
+
+Penalties are set by each country. Germany, for example, allows fines of up to €100,000 per violation. Only microenterprises (fewer than 10 people and under €2M turnover) are exempt for services, which leaves out basically every bank and fintech.
+
+## Six fixes that matter most in money UIs
+
+None of these need a library. They're HTML, a few attributes, and some discipline.
+
+**1. Make amounts readable as one thing.** A common pattern is to split euros and cents into separate styled spans so the cents look smaller. Some screen readers then read "twelve … fifty" as two unrelated numbers. Keep the full value in the accessible text:
+
+```tsx
+const fmt = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
+
+<span aria-label={fmt.format(amount)}>
+  <span aria-hidden="true" className="text-2xl">{whole}</span>
+  <span aria-hidden="true" className="text-sm">,{cents} €</span>
+</span>
+```
+
+**2. Never show debit vs. credit with colour alone.** A red number means "money out" only to people who can see red. WCAG calls this out directly (1.4.1, Use of Color). Show the sign — `−€45.00` — or a word like "Paid" next to it. It helps everyone scanning a statement quickly, too.
+
+**3. Use one input for one-time codes.** Six separate boxes look slick and break everything: screen readers announce six unlabelled fields, and paste often fails. One field does the job better, and lets the phone autofill the SMS code:
+
+```html
+<label for="otp">Enter the 6-digit code we sent you</label>
+<input id="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" />
+```
+
+**4. Warn before you log people out.** Banking sessions time out for good reasons, but WCAG 2.2.1 (Timing Adjustable) says users must be able to extend a time limit. Someone using a screen reader or a switch device takes longer to fill a transfer form. Show a warning before the timeout and give them a "Stay signed in" button.
+
+**5. Announce the result of a payment.** "Transfer failed" that only appears as a red box somewhere on screen is invisible to a screen reader user. Put the message in a live region (`role="alert"` for errors, `role="status"` for success) and link field errors to their inputs with `aria-describedby`.
+
+**6. Give every chart a plain-text twin.** Spending donuts and balance graphs are pictures. Add a one-line summary ("You spent €1,240 in August, 12% more than July") and a table view behind a toggle. Clear writing here is the B2 rule in action.
+
+## Where a tool actually earns its place
+
+Automated checkers like [axe-core](https://github.com/dequelabs/axe-core) earn their place **as a regression net in CI, after you've done a manual pass** with a real screen reader (VoiceOver and NVDA are free). They catch missing labels and contrast issues well. They can't tell you whether your transfer flow makes sense out loud, which is where most banking apps fail.
+
+What never earns its place is an accessibility overlay: the widget that promises compliance with one script tag. It doesn't fix your markup, disabled users regularly report it makes things worse, and it won't hold up as your answer when an auditor asks how you meet EN 301 549.
+
+I work on finance-facing frontends, and my honest take is that most of this list is also just good product work. Clear amounts, forgiving timeouts and readable errors lower support tickets for every user, not only the ones the law is written for.
+
+## The short version
+
+The European Accessibility Act has applied to EU banking services since 28 June 2025, and 2026 is when enforcement got real. Your app is judged against EN 301 549, which means WCAG 2.1 AA, plus plain-language and accessible-authentication rules specific to banking. Start with the money-UI basics: read amounts as one value, don't rely on colour for debits, use a single one-time-code input, let users extend timeouts, announce payment results, and give charts a text version. Test with a real screen reader, keep axe in CI, and skip the overlays.
+
+---
+
+_I write about frontend craft, fintech, and building with AI over on [/posts](https://www.bargaz.me/posts). More about me and what I work on lives at [/about](https://www.bargaz.me/about)._
