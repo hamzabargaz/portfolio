@@ -1,0 +1,123 @@
+---
+title: "React View Transitions Are Stable: Smooth Page Animations Without an Animation Library"
+slug: "react-view-transitions-stable"
+date: "25-10-2026"
+excerpt: "React 19.3 made View Transitions stable. Here's how to animate page changes with one wrapper, no animation library, and where a library still earns its place."
+tags:
+  [
+    "React",
+    "Next.js",
+    "View Transitions",
+    "Frontend",
+    "Animation",
+    "UX",
+  ]
+hero_image: "/images/blog/react-view-transitions-stable.jpg"
+seo:
+  openGraph:
+    authors: ["Hamza Bargaz"]
+    type: "article"
+    url: "https://www.bargaz.me/posts/react-view-transitions-stable"
+    siteName: "Hamza Bargaz"
+  twitter:
+    card: summary_large_image
+    site: "https://www.bargaz.me/posts/react-view-transitions-stable"
+    creator: "@hamza_bargaz"
+---
+
+Click a card in most web apps and the screen just *teleports*: one layout vanishes, another appears. Your brain has to work out what moved where. Native mobile apps never do this to you; they slide, fade, and morph so you always know where you are. **React View Transitions** is how that finally becomes a few lines of React instead of a weekend with an animation library.
+
+It's now official: [React 19.3](https://react.dev/blog/2026/09/09/react-19-3) shipped `<ViewTransition>` as a **stable** component, and [Next.js 16.4](https://nextjs.org/blog/next-16-4) bundles it. If you've been waiting for the experimental label to disappear, it has.
+
+## What React View Transitions actually are
+
+Quick translation first. The browser has a built-in feature, the [View Transitions API](https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API). You tell the browser "I'm about to change the page", it takes a snapshot of the old state, applies your change, and then animates between the two snapshots. The animation runs in the browser, not in your JavaScript, which is why it feels smooth.
+
+Same-document transitions (changes inside one page, which covers SPA-style navigation) have been [Baseline Newly available](https://web.dev/blog/same-document-view-transitions-are-now-baseline-newly-available) since October 2025, meaning all three major browser engines support them.
+
+React's contribution is the wiring. Wrapping something in `<ViewTransition>` tells React: "animate this when it enters, leaves, or changes." You don't call the browser API yourself.
+
+```jsx
+import { ViewTransition } from 'react';
+
+{isShowing && (
+  <ViewTransition>
+    <Component />
+  </ViewTransition>
+)}
+```
+
+That's the whole starting point. React picks the animation type for you: **enter**, **exit**, **update**, or **share** (an element that exists in two places, like a thumbnail that grows into a hero image).
+
+**Takeaway: no keyframes, no timing library. One wrapper, and the browser does the animating.**
+
+## The one rule: only Transitions animate
+
+Here's the part that trips people up. React only animates updates marked as a *Transition*, meaning updates wrapped in `startTransition`, a Suspense reveal, or `useDeferredValue`. A plain `setState` in a click handler won't animate.
+
+That's a feature, not a limitation. It stops every tiny state change from turning into a light show.
+
+```jsx
+startTransition(() => {
+  setCurrentSlide((c) => c + 1);
+});
+```
+
+## Telling React *why* something changed
+
+Want the slide to enter from the right when going forward, and from the left when going back? React 19.3 gives you `addTransitionType`:
+
+```jsx
+startTransition(() => {
+  addTransitionType('next');
+  setCurrentSlide((c) => c + 1);
+});
+
+<ViewTransition
+  enter={{ next: 'from-right', previous: 'from-left' }}
+  exit={{ next: 'to-left', previous: 'to-right' }}
+>
+  <Slide />
+</ViewTransition>
+```
+
+The names on the right are CSS classes you define, so the look stays in plain CSS where designers can edit it.
+
+## Fewer loading flickers with Suspense
+
+My favorite detail: put `<ViewTransition update="auto" default="none">` around a `<Suspense>` boundary and only the fallback-to-content swap animates. Content that's already cached appears instantly. Wrapping images and fonts in `<ViewTransition>` also makes them wait via Suspense while loading, so you avoid the pop-in flicker.
+
+On a finance dashboard, that matters. A balance card that fades in once beats numbers that jump around while the layout settles.
+
+## Where you still need a library
+
+Native-first doesn't mean never. Here's the line I'd draw:
+
+- **Use `<ViewTransition>`** for page changes, list reordering, expanding cards, and shared-element moves. It's built in, and it's cheap.
+- **Reach for a library** (Motion, GSAP) when you need *continuous* animation: drag gestures, physics-based springs, scroll-linked effects, or timelines you scrub by hand. View Transitions animate between two states; they don't track a finger.
+
+Also note the current limit: the React docs say it works in the **DOM only** for now, so React Native apps are out.
+
+## Don't forget motion-sensitive users
+
+Animation is a UX choice, and some people get dizzy from movement. Respect the browser's setting in your CSS:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none;
+  }
+}
+```
+
+If you build banking or payment screens, also resist animating anything that could make a number look like it changed when it didn't. Motion should explain, never decorate a money amount.
+
+## The short version
+
+React 19.3 made `<ViewTransition>` stable. Wrap what should animate, trigger the change inside `startTransition`, and the browser's own View Transitions API does the smooth part. Use `addTransitionType` for directional animations, wrap Suspense boundaries to cut loading flicker, and add `prefers-reduced-motion` for accessibility. Keep animation libraries for gestures and physics, not for page changes.
+
+---
+
+*I write about finance-critical frontend, the modern React and Next.js stack, and bringing AI into real products. More of my writing is [here](/posts), and if you're building something where the details matter, [let's talk](/about).*
