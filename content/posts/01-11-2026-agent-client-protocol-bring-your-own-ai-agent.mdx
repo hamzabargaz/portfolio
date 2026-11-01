@@ -1,0 +1,85 @@
+---
+title: "Agent Client Protocol: Stop Locking Your Editor to One AI Agent"
+slug: "agent-client-protocol-bring-your-own-ai-agent"
+date: "01-11-2026"
+excerpt: "Android Studio just opened up to 40+ AI coding agents. Here is the Agent Client Protocol behind it, and why you can now pick your editor and your AI separately."
+tags:
+  [
+    "AI",
+    "Agent Client Protocol",
+    "AI Agents",
+    "Developer Tools",
+    "Productivity",
+    "Frontend",
+  ]
+hero_image: "/images/blog/agent-client-protocol-bring-your-own-ai-agent.jpg"
+seo:
+  openGraph:
+    authors: ["Hamza Bargaz"]
+    type: "article"
+    url: "https://www.bargaz.me/posts/agent-client-protocol-bring-your-own-ai-agent"
+    siteName: "Hamza Bargaz"
+  twitter:
+    card: summary_large_image
+    site: "https://www.bargaz.me/posts/agent-client-protocol-bring-your-own-ai-agent"
+    creator: "@hamza_bargaz"
+---
+
+For the last two years, picking an AI coding assistant meant picking a whole package: the editor, the chat panel, and the AI behind it, all glued together. Want a different AI? Switch editors. Love your editor? Live with its AI. The **Agent Client Protocol** (ACP) is the quiet standard that's ending that deal.
+
+It just got a big public moment. On 28 October, Google [announced Android Studio Rabbit 2](https://developer.android.com/blog/posts/ai-agents-android-studio-integration) with "Bring Your Own Agent": pick from over 40 coding agents, including Claude Agent, Codex, Junie, and Google Antigravity, right inside the IDE (the app developers write code in).
+
+## What is the Agent Client Protocol?
+
+Think of a power socket. Any lamp works in any socket because both sides agreed on the plug shape. The Agent Client Protocol is that plug shape for editors and AI coding agents.
+
+The [official site](https://agentclientprotocol.com/overview/introduction) describes it as a standard way for editors and agents to talk, the same trick the [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) pulled off for code intelligence. Before LSP, every editor needed its own TypeScript support. After it, one language server worked everywhere.
+
+ACP does that for AI. An agent that speaks ACP works in any editor that speaks ACP. According to [Zed's ACP page](https://zed.dev/acp), that already includes Zed, JetBrains IDEs, Visual Studio Code, Neovim, Emacs, and others, with around 60 agents on the other side.
+
+**Takeaway: the editor and the AI are becoming two separate choices.**
+
+## How it works (in plain words)
+
+There are two roles. The **editor** is where you work and see results. The **agent** is the AI that reads your code and proposes changes.
+
+For a local agent, the editor simply starts it as a background program and they exchange messages over a pipe, using JSON-RPC over stdio. If that sounds like jargon: it's a text conversation between two programs on your own machine. No server, no account in the middle.
+
+Messages are plain structured text (Markdown for anything you read), and ACP reuses [MCP](https://modelcontextprotocol.io/) data shapes where it can, adding its own for things only coding tools need, like showing a diff. A useful way to remember it: **MCP connects an agent to tools and data; ACP connects an agent to your editor.** They're partners, not rivals.
+
+One honest caveat: the docs say full support for *remote* agents (ones running in the cloud) is still a work in progress. Today, ACP shines for agents on your own machine.
+
+## Why you should care
+
+**You stop re-learning everything.** Your keybindings, your theme, your review habits stay put while you try a new agent. When a better one ships next month, you change one setting instead of your workflow.
+
+**You can compare agents fairly.** Same editor, same project, same task, different agent. That's the only honest way to find out which one fits your codebase, instead of trusting a launch demo.
+
+**Teams avoid lock-in.** If your company standardizes on one AI vendor today, switching later shouldn't mean retraining everyone on a new editor.
+
+## The part that earns a library (or a rule)
+
+Native-first thinking applies here too. You don't need a framework to use ACP. If your editor already supports it, the setup is a menu or a small config entry, not a new dependency.
+
+Where I'd slow down is *trust*. An agent you plug in is a program running with your permissions, reading your files. Swapping agents is easy, so it's tempting to do it carelessly. Treat each new agent like a new teammate with access to your repo:
+
+- Check who makes it and how it handles your code before you connect it.
+- Keep secrets out of the project folder it can read.
+- Review every change it proposes. If you work on payment or banking code, that review is not optional.
+
+Android Studio's release is a good sign here: it ships an AI-powered Change Review that groups an agent's pending edits into themes, so you check a story instead of a wall of diffs. Whichever editor you use, build that habit.
+
+## Try it this week
+
+1. Check your editor's AI settings for an "agents" or ACP section.
+2. Add a second agent next to your current one.
+3. Give both the same small, boring task, like renaming a helper across files.
+4. Keep the one whose diff you'd rather review.
+
+## The short version
+
+The Agent Client Protocol is a shared plug between editors and AI coding agents, so you can choose each one separately. Android Studio Rabbit 2 just brought it to a huge audience, and it already works across many editors. It runs locally over a simple pipe, partners with MCP, and still has gaps for cloud agents. Swap agents freely, but review their changes like you would a new teammate's.
+
+---
+
+*I write about finance-critical frontend, the modern React and Next.js stack, and bringing AI into real products. More of my writing is [here](/posts), and if you're building something where the details matter, [let's talk](/about).*
