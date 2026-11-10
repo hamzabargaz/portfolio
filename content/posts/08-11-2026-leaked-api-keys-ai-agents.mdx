@@ -1,0 +1,99 @@
+---
+title: "Leaked API Keys Now Get Found by AI Agents in Minutes: The 15-Minute Fix"
+slug: "leaked-api-keys-ai-agents"
+date: "08-11-2026"
+excerpt: "Microsoft says AI agents are hunting leaked API keys on public GitHub and using them within minutes. Deleting the key isn't enough. Here's the 15-minute fix."
+tags:
+  [
+    "AI",
+    "Security",
+    "API Keys",
+    "GitHub",
+    "Secrets",
+    "DevSecOps",
+  ]
+hero_image: "/images/blog/leaked-api-keys-ai-agents.jpg"
+seo:
+  openGraph:
+    authors: ["Hamza Bargaz"]
+    type: "article"
+    url: "https://www.bargaz.me/posts/leaked-api-keys-ai-agents"
+    siteName: "Hamza Bargaz"
+  twitter:
+    card: summary_large_image
+    site: "https://www.bargaz.me/posts/leaked-api-keys-ai-agents"
+    creator: "@hamza_bargaz"
+---
+
+You commit a **leaked API key** by accident, notice two minutes later, and delete it. Phew. Except that, according to new research, "two minutes" may be plenty of time for an attacker who never sleeps and never gets bored: an AI agent.
+
+On 5 November 2026, [Microsoft Threat Intelligence published](https://www.microsoft.com/en-us/security/blog/2026/11/05/threat-actors-use-agentic-ai-tooling-to-find-and-abuse-exposed-secrets/) what it has been seeing. Attackers are using agentic AI tooling to search public GitHub repositories for exposed credentials, then act on what they find. In one observed case, an agent went from searching GitHub for client secrets to pulling data out of Azure Key Vault in **five minutes**.
+
+You don't need to be an expert to defend against this. You need one habit and two settings.
+
+## What actually happened
+
+A quick translation of the jargon. A **secret** is any value that proves "this request is allowed": an API key, a password, a database connection string, a token. An **agent** here is software that doesn't just run one script, it looks at results, decides what to try next, and keeps going.
+
+Microsoft says it has seen this kind of GitHub scanning since August 2026, with follow-on sign-ins as early as 28 October. The searches often combined a company name with words like "secret" or "key". And when the agent's requests failed because of a wrong API version, it corrected itself and retried within about a minute.
+
+That last detail is the real news. The old picture of a leaked key was a human who might stumble on it next week. The new picture is a patient machine that tries again until it works.
+
+**Takeaway: assume any secret that touched a public repo is already copied.**
+
+## Why deleting the key doesn't help
+
+Here's the trap. Git remembers everything. If you delete a key in a new commit, it's still sitting in the old one, one click away in the history. Even if you rewrite history, someone may have already copied it.
+
+Microsoft's advice is blunt: **rotate compromised or exposed credentials immediately**, and treat publicly exposed ones as compromised even after the content is removed. "Rotate" just means: create a new key, switch your app to it, and revoke the old one so it stops working.
+
+Order matters:
+
+1. Revoke or rotate the key in the provider's dashboard (AWS, Azure, OpenAI, Stripe, whoever issued it).
+2. Check the provider's sign-in or usage logs for activity you don't recognise.
+3. Only then clean up the code.
+
+Cleaning up first feels productive and fixes nothing.
+
+## The 15-minute fix, built-in first
+
+You don't need a new security product for this. Most of it ships with tools you already use.
+
+### 1. Keep secrets out of the repo by default
+
+Put real values in a local `.env` file and make sure Git never sees it:
+
+```bash
+# .gitignore
+.env
+.env.*
+!.env.example
+```
+
+Commit a `.env.example` with fake placeholder values so teammates know what's needed. This is plain Git, nothing to install.
+
+### 2. Turn on push protection
+
+GitHub's [push protection](https://docs.github.com/en/code-security/concepts/secret-security/about-push-protection) scans your commits as you push and blocks the push if it spots a known kind of secret. It was made [free for all public repositories](https://github.blog/news-insights/product-news/push-protection-is-generally-available-and-free-for-all-public-repositories/) back in 2024. It lives in your repo settings under code security, and takes about a minute to enable. Microsoft explicitly recommends it too.
+
+Blocking the push *before* the key reaches GitHub is the only fix that beats a five-minute attacker.
+
+### 3. Remove the secret entirely where you can
+
+The best secret is the one that doesn't exist. Microsoft recommends moving applications from secret-based sign-in to **managed identities**. On Azure, that means your app proves who it is through the platform itself, so there is no key in your code to leak. If your cloud has the equivalent (most do), use it for anything running in that cloud.
+
+### 4. Give every key the smallest possible power
+
+A leaked key that can only read one storage bucket is an annoying afternoon. A leaked key that can do everything is a headline. Create separate keys per app, with only the permissions each needs. And put a spending cap on any AI provider key; those are exactly what Microsoft says the agents went looking for.
+
+## Where a tool earns its place
+
+Push protection catches the secrets it recognises. Where a dedicated scanner like [gitleaks](https://github.com/gitleaks/gitleaks) earns its place is **old history and private repos you've never checked**: run it once against your full history and you'll find out whether something from 2022 is still live. That's the line. Run it once, rotate what it finds, and let push protection handle the future.
+
+## The short version
+
+AI agents now scan public GitHub for leaked secrets and act within minutes, per Microsoft's 5 November 2026 report. Deleting a leaked key does nothing; **rotate it first**, check the logs, then tidy the code. Keep secrets in a git-ignored `.env`, turn on push protection, use managed identities where possible, and give every key minimal permissions. Fifteen minutes now beats a very bad Monday.
+
+---
+
+*I write about finance-critical frontend, the modern React and Next.js stack, and bringing AI into real products. More of my writing is [here](/posts), and if you're building something where the details matter, [let's talk](/about).*
