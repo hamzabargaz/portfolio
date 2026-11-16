@@ -1,8 +1,8 @@
 ---
 title: "Verification of Payee: The Four Answers Your Transfer Screen Has to Handle"
 slug: "verification-of-payee-frontend"
-date: "23-08-2026"
-excerpt: "The EU's Verification of Payee rules reach version 1.1 on 20 September 2026. Your transfer form has to handle four answers — here's how to build each one."
+date: "16-11-2026"
+excerpt: "The EU's Verification of Payee rules reached version 1.1 on 20 September 2026. Your transfer form has to handle four answers — here's how to build each one."
 tags:
   [
     "Fintech",
@@ -29,7 +29,7 @@ Someone gets an invoice by email. The IBAN on it was swapped by a scammer an hou
 
 **[Verification of Payee](https://www.europeanpaymentscouncil.eu/what-we-do/other-schemes/verification-payee)** is Europe's answer to that. Before the transfer is authorised, the bank quietly asks the receiving bank one question: *does this name actually belong to this account?* The answer comes back in a second or two — and then it lands on a screen that some frontend engineer has to design.
 
-That screen is the whole control. If it's confusing, people click through it. If it's alarming for no reason, people click through it faster. And on **20 September 2026**, version 1.1 of the scheme rulebook takes effect, so a lot of these screens are being rebuilt right now.
+That screen is the whole control. If it's confusing, people click through it. If it's alarming for no reason, people click through it faster. And since **20 September 2026**, version 1.1 of the scheme rulebook has been in effect, so a lot of these screens are being rebuilt right now.
 
 ## What Verification of Payee actually checks
 
@@ -115,7 +115,7 @@ Keep the same restraint everywhere else. On a plain match, no checkbox, no extra
 
 ## The short version
 
-Verification of Payee asks the receiving bank whether a name and an IBAN belong together, and hands your UI one of four answers: **match**, **close match** (with the real registered name attached), **no match**, or **not possible**. Give each one its own state — collapsing them is the classic bug, especially treating a timeout like a fraud warning. Show the returned name on a close match, never auto-fill it, and never run your own similarity check in the browser. Save your friction for **no match**: an explicit acknowledgement and a button that says what it does. Version 1.1 of the rulebook lands on 20 September 2026, so if you're building in euro payments, this screen is on your plate whether you asked for it or not.
+Verification of Payee asks the receiving bank whether a name and an IBAN belong together, and hands your UI one of four answers: **match**, **close match** (with the real registered name attached), **no match**, or **not possible**. Give each one its own state — collapsing them is the classic bug, especially treating a timeout like a fraud warning. Show the returned name on a close match, never auto-fill it, and never run your own similarity check in the browser. Save your friction for **no match**: an explicit acknowledgement and a button that says what it does. Version 1.1 of the rulebook landed on 20 September 2026, so if you're building in euro payments, this screen is on your plate whether you asked for it or not.
 
 The regulation gives the user a warning. Whether it means anything is a frontend decision.
 
